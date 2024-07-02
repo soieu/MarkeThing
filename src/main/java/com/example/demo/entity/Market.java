@@ -33,7 +33,7 @@ public class Market {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//자동으로 증가함.
+    private Long id;
 
     @OneToOne(mappedBy = "market")
     private MarketPurchaseRequest  purchaseRequest;
