@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 
+import com.example.demo.payment.entity.Payment;
 import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.util.List;
