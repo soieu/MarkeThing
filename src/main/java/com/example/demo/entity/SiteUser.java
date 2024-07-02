@@ -2,23 +2,39 @@ package com.example.demo.entity;
 
 import com.example.demo.auth.dto.SignupDto;
 import com.example.demo.type.AuthType;
-import java.util.ArrayList;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@Entity
+@Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity(name="SITE_USER")
+@DynamicInsert
+@DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 @Table(name= "SITE_USER")
-
 public class SiteUser {
 
     @Id
@@ -46,7 +62,7 @@ public class SiteUser {
     @Column(name = "MANNER_SCORE")
     private Integer mannerScore;
 
-    @Column(name = "PROFILE_IMG", length =1023, nullable = false)
+    @Column(name = "PROFILE_IMG", length = 1023, nullable = false)
     private String profileImg;
 
     @Column(name = "STATUS", nullable = false)
@@ -65,10 +81,6 @@ public class SiteUser {
     @OneToMany(mappedBy = "siteUser")
     private List<ReplyComment> replyComments;
 
-    @OneToMany(mappedBy = "siteUser")
-    private List<Bookmark> bookmarks;
-
-
     @OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Manner> agents;
 
@@ -83,7 +95,7 @@ public class SiteUser {
     private List<ChatMessage> chatMessages;
 
     @OneToOne(mappedBy = "siteUser")
-    private RequestSuccess success; //일대일 관계를 맞음 주 테이블에 외래키가 있을때
+    private RequestSuccess success;
 
     @OneToOne(mappedBy = "siteUser")
     private Account account;
@@ -91,21 +103,11 @@ public class SiteUser {
     @OneToOne(mappedBy = "siteUser")
     private RequestSuccess requestSuccess;
 
-//    @OneToMany(mappedBy = "siteUser")
-//    private List<Manner> agents;//피평가자.
-
-    //한테이블이 한 테이블의 연관 관계를 두개의 속성이르 이러쿵 저러쿵..이거 해결을 해야 겠다.
-
     @OneToOne(mappedBy = "requester")
     private ChatRoom requester;
 
     @OneToOne(mappedBy = "agent")
     private ChatRoom agent;
-
-    @ManyToMany
-    @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"),
-                inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    private List<Role> roles = new ArrayList<>();
 
     @CreatedDate
     @Column(name = "CREATED_AT",nullable = false)
@@ -124,16 +126,6 @@ public class SiteUser {
                 .nickname(signupDto.getNickname())
                 .phoneNumber(signupDto.getPhoneNumber())
                 .address(signupDto.getAddress())
-                .authType(AuthType.GENERAL)
-                .status(true)//디폴트로는 그냥 이용 가능으로.  해줌.
                 .build(); //user 테이블 creat
     }
-
-
-
-
-
-
-
-
 }

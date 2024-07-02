@@ -24,33 +24,31 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
+@Entity
+@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@EntityListeners(AuditingEntityListener.class)
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "POST")
-
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "CHATROOM")
 public class ChatRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//자동으로 증가함.
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "REQUEST_ID", nullable = false)
     private MarketPurchaseRequest purchaseRequest;
 
     @OneToOne
-    @JoinColumn(name = "REQUESTER_ID")
+    @JoinColumn(name = "REQUESTER_ID", nullable = false)
     private SiteUser requester;
 
     @OneToOne
-    @JoinColumn(name = "AGENT_ID")
+    @JoinColumn(name = "AGENT_ID", nullable = false)
     private SiteUser agent;
 
     @OneToMany(mappedBy = "chatRoom")
@@ -59,6 +57,4 @@ public class ChatRoom {
     @CreatedDate
     @Column(name = "CREATED_AT",nullable = false)
     private LocalDate createdAt;
-
-
 }

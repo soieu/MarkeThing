@@ -17,14 +17,23 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-tomcat'
+
+    // not null 등 Validation 검사를 위해 사용
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // point 사용을 위한 라이브러리 추가
     implementation group: 'org.locationtech.jts', name: 'jts-core', version: '1.18.2'
 
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2'
-    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

@@ -5,11 +5,10 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
+@Builder
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class SignupDto{
 
     @NotBlank(message = "이메일을 입력해 주세요.")
@@ -28,6 +27,4 @@ public class SignupDto{
 
     @NotBlank(message = "주소를 입력해 주세요.")
     private String address;
-
-
 }

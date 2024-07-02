@@ -24,21 +24,20 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
+@Entity
+@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@EntityListeners(AuditingEntityListener.class)
 @DynamicInsert
 @DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "Payment")
-
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//자동으로 증가함.
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "ORDER_ID", nullable = false)
@@ -120,9 +119,4 @@ public class Payment {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDate updatedAt;
-
-
-
-
-
 }

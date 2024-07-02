@@ -12,21 +12,20 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 
+@Entity
+@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@EntityListeners(AuditingEntityListener.class)
 @DynamicInsert
 @DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "COMMUNITY")
-
 public class Community {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//자동으로 증가함.
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
@@ -51,9 +50,4 @@ public class Community {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDate updatedAt;
-
-
-
-
-
 }
