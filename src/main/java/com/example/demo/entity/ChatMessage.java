@@ -20,22 +20,21 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
+@Entity
+@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@EntityListeners(AuditingEntityListener.class)
 @DynamicInsert
 @DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "CHAT_MESSAGE")
 
 public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//자동으로 증가함.
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "ROOM_ID", nullable = false)
@@ -48,10 +47,7 @@ public class ChatMessage {
     @Column(name = "CONTENT", length = 1023, nullable = false)
     private String content;
 
-
     @CreatedDate
     @Column(name = "CREATED_AT",nullable = false)
     private LocalDate createdAt;
-
-
 }

@@ -20,37 +20,30 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@Entity
+@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@EntityListeners(AuditingEntityListener.class)
 @DynamicInsert
 @DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "REQUEST_SUCCESS")
 public class RequestSuccess {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//자동으로 증가함.
+    private Long id;
 
     @OneToOne
-    @JoinColumn(name = "REQUEST_ID")
+    @JoinColumn(name = "REQUEST_ID", nullable = false)
     private MarketPurchaseRequest purchaseRequest;
 
     @OneToOne
-    @JoinColumn(name = "SITE_USER_ID")
+    @JoinColumn(name = "SITE_USER_ID", nullable = false)
     private SiteUser siteUser;
 
-
     @CreatedDate
-    @Column(name = "CREATED_AT",nullable = false)
+    @Column(name = "CREATED_AT", nullable = false)
     private LocalDate createdAt;
-
-
-
-
-
-
 }

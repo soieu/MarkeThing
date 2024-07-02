@@ -26,38 +26,32 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
+@Entity
+@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@EntityListeners(AuditingEntityListener.class)
 @DynamicInsert
 @DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "NOTIFICATION")
-
 public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//자동으로 증가함.
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
-    private SiteUser siteUser; //유저 아이디
+    private SiteUser siteUser;
 
     @Column(name = "IS_READ", nullable = false)
     private int isRead;
 
-    @Column(name = "ALARM_PAGE_PATH", length = 255)
+    @Column(name = "ALARM_PAGE_PATH")
     private String pagePath;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ALARM_TYPE", length = 50, nullable = false)
-    private AlarmType alarmType;//알람 타입을 정의함.
-
-
-
-
-
+    private AlarmType alarmType;
 }

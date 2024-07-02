@@ -1,9 +1,7 @@
 package com.example.demo.entity;
 
 
-import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
-import com.example.demo.type.Status;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.Column;
@@ -30,31 +28,31 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@Entity
+@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@EntityListeners(AuditingEntityListener.class)
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "MARKET_PURCHASE_")
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "MARKET_PURCHASE_REQUEST")
 public class MarketPurchaseRequest {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//자동으로 증가함.
+    private Long id;
 
-
-    @Column(name = "TITLE",length =50,nullable = false)
+    @Column(name = "TITLE",length =50, nullable = false)
     private String title;
 
-    @Column(name = "CONTENT",length =1023,nullable = false)
+    @Column(name = "CONTENT",length =1023, nullable = false)
     private String content;
 
-    @Column(name = "POST_IMG",length =1023,nullable = false)
+    @Column(name = "POST_IMG",length =1023, nullable = false)
     private String postImg;
 
-    @Column(name = "FEE",length =1023,nullable = false)
+    @Column(name = "FEE", nullable = false)
     private int fee;
 
     @Enumerated(EnumType.STRING)
@@ -71,11 +69,11 @@ public class MarketPurchaseRequest {
     private String meetupAddress;
 
     @OneToOne(mappedBy = "purchaseRequest")
-    private RequestSuccess success; //일대일 관계를 맞음 주 테이블에 외래키가 있을때
+    private RequestSuccess success;
 
     @OneToOne
     @JoinColumn(name = "MARKET_ID")
-    private Market market;// 마켓의 아이디를 가져옴.
+    private Market market;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
@@ -87,7 +85,6 @@ public class MarketPurchaseRequest {
     @OneToMany(mappedBy = "purchaseRequest")
     private List<Payment> payments;
 
-
     @Column(name = "MEETUP_LOCATION")
     private Point meetupLocation;
 
@@ -98,7 +95,4 @@ public class MarketPurchaseRequest {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDate updatedAt;
-
-
-
 }

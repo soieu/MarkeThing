@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 
+import com.example.demo.type.Rate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,24 +15,20 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDate;
 
+@Entity
+@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@EntityListeners(AuditingEntityListener.class)
 @DynamicInsert
 @DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "MANNER")
 public class Manner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//자동으로 증가함.
-
-    @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    private Community community;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "AGENT_ID")
@@ -42,11 +39,9 @@ public class Manner {
     @JoinColumn(name = "REQUESTER_ID")
     private SiteUser requester;
 
-    @Column(name = "CONTENT",length =1023,nullable = false)
-    private String content;
-
-    @Column(name = "STATUS", length = 50, nullable = false)
-    private String status;//디폴트로 POST, 생성할 때.. 지정을 해줘야함.
+    @Enumerated(EnumType.STRING)
+    @Column(name = "RATE", length = 50, nullable = false)
+    private Rate rate;
 
     @CreatedDate
     @Column(name = "CREATED_AT",nullable = false)
@@ -55,6 +50,4 @@ public class Manner {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDate updatedAt;
-
-
 }

@@ -20,16 +20,17 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@Entity
+@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@EntityListeners(AuditingEntityListener.class)
 @DynamicInsert
 @DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "MARKET")
 public class Market {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;//자동으로 증가함.
@@ -37,26 +38,21 @@ public class Market {
     @OneToOne(mappedBy = "market")
     private MarketPurchaseRequest  purchaseRequest;
 
-
     @Column(name = "ID_NUM",nullable = false)
     private int idNum;
-    @Column(name = "MARKET_NAME", length = 255, nullable = false)
+
+    @Column(name = "MARKET_NAME", nullable = false)
     private String marketName;
+
     @Column(name = "MARKET_TYPE",nullable = false)
     private int type;
+
     @Column(name = "LOCATION", nullable = false)
     private Point point;
-    @Column(name = "ROAD_ADDRESS", length = 255, nullable = false)
-    private String roadAddress;//도로명 주소
-    @Column(name = "STREET_ADDRESS",nullable = false)
-    private int streetAddress;//지번 주소
 
+    @Column(name = "ROAD_ADDRESS", nullable = false)
+    private String roadAddress; // 도로명 주소
 
-
-
-
-
-
-
-
+    @Column(name = "STREET_ADDRESS", nullable = false)
+    private int streetAddress; // 지번 주소
 }
