@@ -35,7 +35,7 @@ CREATE TABLE `MARKET`
 (
     `ID`             BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `ID_NUM`         INT          NOT NULL,
-    `NAME`           VARCHAR(255) NOT NULL,
+    `MARKET_NAME`    VARCHAR(255) NOT NULL,
     `MARKET_TYPE`    INT          NOT NULL,
     `ROAD_ADDRESS`   VARCHAR(255) NOT NULL,
     `STREET_ADDRESS` VARCHAR(255) NOT NULL,
@@ -288,3 +288,7 @@ ALTER TABLE
     `MARKET_PURCHASE_REQUEST`
     ADD CONSTRAINT `market_purchase_request_market_id_foreign`
         FOREIGN KEY (`MARKET_ID`) REFERENCES `MARKET` (`ID`);
+
+
+
+-- commit --
