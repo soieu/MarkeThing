@@ -1,6 +1,14 @@
-package com.example.demo.entity;
+package com.example.demo.siteuser.entity;
 
-import com.example.demo.auth.dto.SignupDto;
+import com.example.demo.community.entity.Community;
+import com.example.demo.entity.Account;
+import com.example.demo.entity.ChatMessage;
+import com.example.demo.entity.ChatRoom;
+import com.example.demo.entity.Comment;
+import com.example.demo.entity.Manner;
+import com.example.demo.entity.MarketPurchaseRequest;
+import com.example.demo.entity.ReplyComment;
+import com.example.demo.entity.RequestSuccess;
 import com.example.demo.type.AuthType;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +30,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -67,6 +76,9 @@ public class SiteUser {
 
     @Column(name = "STATUS", nullable = false)
     private boolean status;
+
+    @Column(name = "MY_LOCATION", nullable = false)
+    private Point myLocation;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "AUTH_TYPE", length = 50, nullable = false)
@@ -116,16 +128,4 @@ public class SiteUser {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDate updatedAt;
-
-
-    public static SiteUser fromDto(SignupDto signupDto){
-        return SiteUser.builder()
-                .email(signupDto.getEmail())
-                .password(signupDto.getPassword())
-                .name(signupDto.getName())
-                .nickname(signupDto.getNickname())
-                .phoneNumber(signupDto.getPhoneNumber())
-                .address(signupDto.getAddress())
-                .build(); //user 테이블 creat
-    }
 }
