@@ -1,6 +1,7 @@
-package com.example.demo.entity;
+package com.example.demo.community.entity;
 
 
+import com.example.demo.siteuser.entity.SiteUser;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;

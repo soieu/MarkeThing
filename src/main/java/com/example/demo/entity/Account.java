@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 
+import com.example.demo.siteuser.entity.SiteUser;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
