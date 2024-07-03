@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 
+import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PostStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
