@@ -9,12 +9,13 @@ import static org.mockito.BDDMockito.given;
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.repository.CommunityRepository;
+import com.example.demo.community.service.impl.CommunityServiceImpl;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -89,7 +90,7 @@ public class CommunityServiceImplTest {
                 .profileImg("profileImg")
                 .status(true)
                 .authType(AuthType.GENERAL)
-                .createdAt(LocalDate.now())
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 

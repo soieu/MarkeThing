@@ -13,6 +13,7 @@ import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.AuthType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -74,7 +75,7 @@ public class CommunityControllerTest {
                 .profileImg("profileImg")
                 .status(true)
                 .authType(AuthType.GENERAL)
-                .createdAt(LocalDate.now())
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 

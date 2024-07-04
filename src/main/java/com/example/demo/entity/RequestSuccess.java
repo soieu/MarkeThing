@@ -3,6 +3,7 @@ package com.example.demo.entity;
 
 import com.example.demo.siteuser.entity.SiteUser;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -46,5 +47,5 @@ public class RequestSuccess {
 
     @CreatedDate
     @Column(name = "CREATED_AT", nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 }

@@ -1,10 +1,11 @@
-package com.example.demo.community.service;
+package com.example.demo.community.service.impl;
 
 import static com.example.demo.exception.type.ErrorCode.EMAIL_NOT_FOUND;
 
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.repository.CommunityRepository;
+import com.example.demo.community.service.CommunityService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
@@ -24,6 +25,7 @@ public class CommunityServiceImpl implements CommunityService {
     public Community create(String email, CommunityRequestDto communityRequestDto) {
         SiteUser siteUser = siteUserRepository.findByEmail(email)
                 .orElseThrow(() -> new MarkethingException(EMAIL_NOT_FOUND));
+        System.out.println("어디까지 올라오는 게요?");
 
         return communityRepository.save(communityRequestDto.toEntity(siteUser));
     }

@@ -2,6 +2,7 @@ package com.example.demo.payment.entity;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +35,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "Payment")
+@Table(name = "PAYMENT")
 public class Payment {
 
     @Id
@@ -105,7 +106,7 @@ public class Payment {
     @Column(name = "RECEIPT_URL")
     private String receiptUrl;
 
-    @Column(name = "CASH_RECEIPT_ISSUE")
+    @Column(name = "CASH_RECEIPT_ISSUED")
     private String cashReceiptIssue;
 
     @Column(name = "BUYER_ADDR",nullable = false)
@@ -116,9 +117,9 @@ public class Payment {
 
     @CreatedDate
     @Column(name = "CREATED_AT",nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 }

@@ -11,6 +11,7 @@ import com.example.demo.entity.ReplyComment;
 import com.example.demo.entity.RequestSuccess;
 import com.example.demo.type.AuthType;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -68,6 +69,9 @@ public class SiteUser {
     @Column(name = "ADDRESS", length = 50, nullable = false)
     private String address;
 
+    @Column(name = "MY_LOCATION", nullable = false)
+    private Point myLocation;
+
     @Column(name = "MANNER_SCORE")
     private Integer mannerScore;
 
@@ -77,12 +81,17 @@ public class SiteUser {
     @Column(name = "STATUS", nullable = false)
     private boolean status;
 
-    @Column(name = "MY_LOCATION", nullable = false)
-    private Point myLocation;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "AUTH_TYPE", length = 50, nullable = false)
     private AuthType authType; //회원의 가입 상태.
+
+    @CreatedDate
+    @Column(name = "CREATED_AT")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "UPDATED_AT")
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "siteUser")
     private List<Community> communities;
@@ -120,12 +129,4 @@ public class SiteUser {
 
     @OneToOne(mappedBy = "agent")
     private ChatRoom agent;
-
-    @CreatedDate
-    @Column(name = "CREATED_AT",nullable = false)
-    private LocalDate createdAt;
-
-    @LastModifiedDate
-    @Column(name = "UPDATED_AT")
-    private LocalDate updatedAt;
 }

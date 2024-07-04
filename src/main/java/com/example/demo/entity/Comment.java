@@ -4,6 +4,7 @@ package com.example.demo.entity;
 import com.example.demo.community.entity.Community;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PostStatus;
+import java.time.LocalDateTime;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -50,9 +51,9 @@ public class Comment {
 
     @CreatedDate
     @Column(name = "CREATED_AT", nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 }
