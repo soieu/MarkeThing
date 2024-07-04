@@ -25,7 +25,6 @@ public class CommunityServiceImpl implements CommunityService {
     public Community create(String email, CommunityRequestDto communityRequestDto) {
         SiteUser siteUser = siteUserRepository.findByEmail(email)
                 .orElseThrow(() -> new MarkethingException(EMAIL_NOT_FOUND));
-        System.out.println("어디까지 올라오는 게요?");
 
         return communityRepository.save(communityRequestDto.toEntity(siteUser));
     }

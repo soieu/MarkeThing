@@ -12,7 +12,6 @@ import com.example.demo.community.service.CommunityService;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.AuthType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -24,9 +23,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(CommunityController.class)
+@WebMvcTest(CommunityApiController.class)
 // @Import(SecurityConfiguration.class) // 로그인 api 작성 후 주석 제거
-public class CommunityControllerTest {
+public class CommunityApiControllerTest {
 
     @MockBean
     private CommunityService communityService;

@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'war'
     id 'org.springframework.boot' version '2.7.15'
     id 'io.spring.dependency-management' version '1.1.5'
 }
@@ -20,7 +21,20 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // 내장된 톰캣 서버 활용
     implementation 'org.springframework.boot:spring-boot-starter-tomcat'
+
+    // 외부 톰캣 서버 사용시 위 라이브러리 삭제 후 주석 해제
+//    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+    // JASPER - 톰캣에서 jsp 컴파일하는 엔진이 포함되어 있지 않기 때문에, jsp 파일 컴파일하기 위한 의존성 추가
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+
+    // 자동 재시작, HTML, CSS, JS 파일 변경될 때 브라우저 자동 새로 고침 등의 기능 제공
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+
 
     // not null 등 Validation 검사를 위해 사용
     implementation 'org.springframework.boot:spring-boot-starter-validation'
