@@ -1,4 +1,4 @@
-package com.example.demo.community.controller;
+package com.example.demo.community.controller.api;
 
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.service.CommunityService;

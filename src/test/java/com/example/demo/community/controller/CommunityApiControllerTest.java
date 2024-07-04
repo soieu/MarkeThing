@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.demo.community.controller.api.CommunityApiController;
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.service.CommunityService;
