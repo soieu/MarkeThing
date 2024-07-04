@@ -1,6 +1,7 @@
 package com.example.demo.community.entity;
 
 
+import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.siteuser.entity.SiteUser;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -61,4 +62,11 @@ public class Community {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime  updatedAt;
+
+    public void update(CommunityRequestDto communityRequestDto) {
+        area = communityRequestDto.getArea();
+        title = communityRequestDto.getTitle();
+        content = communityRequestDto.getContent();
+        postImg = communityRequestDto.getPostImg();
+    }
 }
