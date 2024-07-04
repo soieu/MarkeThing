@@ -42,13 +42,13 @@ public class ChatRoom {
 
     @ManyToOne
     @JoinColumn(name = "REQUEST_ID", nullable = false)
-    private MarketPurchaseRequest purchaseRequest;
+    private MarketPurchaseRequest marketPurchaseRequest;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "REQUESTER_ID", nullable = false)
     private SiteUser requester;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "AGENT_ID", nullable = false)
     private SiteUser agent;
 

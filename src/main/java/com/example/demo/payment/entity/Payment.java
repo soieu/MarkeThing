@@ -44,7 +44,7 @@ public class Payment {
 
     @ManyToOne
     @JoinColumn(name = "ORDER_ID", nullable = false)
-    private MarketPurchaseRequest purchaseRequest;
+    private MarketPurchaseRequest marketPurchaseRequest;
 
     @Column(name = "IMP_UID", nullable = false)
     private String impUid;

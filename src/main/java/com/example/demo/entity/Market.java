@@ -1,12 +1,14 @@
 package com.example.demo.entity;
 
 
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -33,9 +35,6 @@ public class Market {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "market")
-    private MarketPurchaseRequest  purchaseRequest;
-
     @Column(name = "ID_NUM",nullable = false)
     private int idNum;
 
@@ -53,4 +52,7 @@ public class Market {
 
     @Column(name = "STREET_ADDRESS", nullable = false)
     private int streetAddress; // 지번 주소
+
+    @OneToMany(mappedBy = "market")
+    private List<MarketPurchaseRequest> marketPurchaseRequests;
 }

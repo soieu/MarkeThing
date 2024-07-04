@@ -71,21 +71,21 @@ public class MarketPurchaseRequest {
     @Column(name = "MEETUP_ADDRESS",nullable = false)
     private String meetupAddress;
 
-    @OneToOne(mappedBy = "purchaseRequest")
+    @OneToOne(mappedBy = "marketPurchaseRequest")
     private RequestSuccess success;
 
-    @OneToOne
-    @JoinColumn(name = "MARKET_ID")
+    @ManyToOne
+    @JoinColumn(name = "MARKET_ID", nullable = false)
     private Market market;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     private SiteUser siteUser;
 
-    @OneToMany(mappedBy = "purchaseRequest")
+    @OneToMany(mappedBy = "marketPurchaseRequest")
     private List<ChatRoom> chatRooms;
 
-    @OneToMany(mappedBy = "purchaseRequest")
+    @OneToMany(mappedBy = "marketPurchaseRequest")
     private List<Payment> payments;
 
     @Column(name = "MEETUP_LOCATION")

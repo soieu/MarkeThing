@@ -115,18 +115,15 @@ public class SiteUser {
     @OneToMany(mappedBy = "siteUser")
     private List<ChatMessage> chatMessages;
 
-    @OneToOne(mappedBy = "siteUser")
-    private RequestSuccess success;
+    @OneToMany(mappedBy = "siteUser")
+    private List<RequestSuccess> requestSuccesses;
 
     @OneToOne(mappedBy = "siteUser")
     private Account account;
 
-    @OneToOne(mappedBy = "siteUser")
-    private RequestSuccess requestSuccess;
+    @OneToMany(mappedBy = "requester")
+    private List<ChatRoom> requesterChatRooms;
 
-    @OneToOne(mappedBy = "requester")
-    private ChatRoom requester;
-
-    @OneToOne(mappedBy = "agent")
-    private ChatRoom agent;
+    @OneToMany(mappedBy = "agent")
+    private List<ChatRoom> agentChatRooms;
 }
