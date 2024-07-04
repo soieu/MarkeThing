@@ -154,28 +154,20 @@ CREATE TABLE `PAYMENT`
     `ORDER_ID`            BIGINT       NOT NULL,
     `IMP_UID`             VARCHAR(255) NOT NULL,
     `PAYMENT_METHOD`      VARCHAR(255) NULL,
-    `APPLY_NUM`           VARCHAR(255) NULL,
-    `BANK_CODE`           VARCHAR(255) NULL,
     `BANK_NAME`           VARCHAR(255) NULL,
-    `CARD_CODE`           VARCHAR(255) NOT NULL,
     `CARD_NAME`           VARCHAR(255) NULL,
     `CARD_NUMBER`         VARCHAR(255) NULL,
-    `CARD_QUOTE`          BIGINT       NULL,
     `NAME`                VARCHAR(255) NULL,
     `AMOUNT`              BIGINT       NOT NULL,
     `BUYER_NAME`          VARCHAR(255) NULL,
-    `BUYER_EMAIL`         VARCHAR(255) NULL,
-    `BUYER_TEL`           VARCHAR(255) NULL,
     `STATUS`              VARCHAR(255) NOT NULL,
     `STARTED_AT`          TIMESTAMP    NULL,
     `PAID_AT`             TIMESTAMP    NULL,
     `FAILED_AT`           TIMESTAMP    NULL,
     `FAIL_REASON`         VARCHAR(255) NULL,
     `RECEIPT_URL`         VARCHAR(255) NULL,
-    `CASH_RECEIPT_ISSUED` BOOLEAN      NULL,
     `CREATED_AT`          TIMESTAMP    NOT NULL,
-    `UPDATED_AT`          TIMESTAMP    NULL,
-    `BUYER_ADDR`          BIGINT       NOT NULL
+    `UPDATED_AT`          TIMESTAMP    NULL
 );
 
 CREATE TABLE `PAYMENT_CANCEL_DETAIL`

@@ -85,11 +85,14 @@ public class MarketPurchaseRequest {
     @OneToMany(mappedBy = "purchaseRequest")
     private List<ChatRoom> chatRooms;
 
-    @OneToMany(mappedBy = "purchaseRequest")
-    private List<Payment> payments;
+    @OneToOne(mappedBy = "purchaseRequest")
+    private Payment payment;
 
     @Column(name = "MEETUP_LOCATION")
     private Point meetupLocation;
+
+    @Column(name = "ORDER_UID")
+    private String orderUid;
 
     @CreatedDate
     @Column(name = "CREATED_AT",nullable = false)
