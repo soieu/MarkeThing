@@ -5,6 +5,7 @@ import com.example.demo.payment.entity.Payment;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -92,9 +93,9 @@ public class MarketPurchaseRequest {
 
     @CreatedDate
     @Column(name = "CREATED_AT",nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 }

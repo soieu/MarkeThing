@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommunityRequestDto {
 
-    @NotBlank(message = "이메일을 입력해 주세요.")
+    @NotBlank(message = "지역명을 입력해 주세요.")
     private String area;
 
-    @NotBlank(message = "비밀번호를 입력해 주세요.")
+    @NotBlank(message = "타이틀을 입력해 주세요.")
     private String title;
 
-    @NotBlank(message = "이름을 입력해 주세요.")
+    @NotBlank(message = "게시글 내용을 입력해 주세요.")
     private String content;
 
     private String postImg;

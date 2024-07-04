@@ -3,6 +3,7 @@ package com.example.demo.entity;
 
 import com.example.demo.siteuser.entity.SiteUser;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,5 +57,5 @@ public class ChatRoom {
 
     @CreatedDate
     @Column(name = "CREATED_AT",nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 }

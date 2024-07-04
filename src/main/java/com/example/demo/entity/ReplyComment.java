@@ -3,6 +3,7 @@ package com.example.demo.entity;
 
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PostStatus;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -48,9 +49,9 @@ public class ReplyComment {
 
     @CreatedDate
     @Column(name = "CREATED_AT", nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 }

@@ -1,6 +1,7 @@
 package com.example.demo.payment.entity;
 
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +28,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "PAYMENT_CANCEL_DETAIL")
 public class PaymentCancelDetail {
 
     @Id
@@ -43,7 +46,7 @@ public class PaymentCancelDetail {
     private int amount;
 
     @Column(name = "CANCELED_AT", nullable = false)
-    private String canceledAt;
+    private LocalDateTime canceledAt;
 
     @Column(name = "REASON", nullable = false)
     private String reason;
