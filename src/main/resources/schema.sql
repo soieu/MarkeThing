@@ -214,10 +214,7 @@ ALTER TABLE
     ADD CONSTRAINT `comment_user_id_foreign`
         FOREIGN KEY (`USER_ID`) REFERENCES `SITE_USER` (`ID`);
 
-ALTER TABLE
-    `CHAT_MESSAGE`
-    ADD CONSTRAINT `chat_message_sender_id_foreign`
-        FOREIGN KEY (`SENDER_ID`) REFERENCES `SITE_USER` (`ID`);
+
 
 ALTER TABLE
     `MANNER`
@@ -274,10 +271,6 @@ ALTER TABLE
     ADD CONSTRAINT `payment_cancel_detail_payment_id_foreign`
         FOREIGN KEY (`PAYMENT_ID`) REFERENCES `PAYMENT` (`ID`);
 
-ALTER TABLE
-    `CHAT_MESSAGE`
-    ADD CONSTRAINT `chat_message_room_id_foreign`
-        FOREIGN KEY (`ROOM_ID`) REFERENCES `CHATROOM` (`ID`);
 
 ALTER TABLE
     `COMMENT`
