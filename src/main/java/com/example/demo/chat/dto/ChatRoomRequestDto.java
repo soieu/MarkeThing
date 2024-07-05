@@ -13,11 +13,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ChatRoomRequestDto {
     public ChatRoom toEntity(SiteUser requester
-            ,SiteUser agent,MarketPurchaseRequest request) {//일단 이렇게 사용을 함
+            ,SiteUser agent,MarketPurchaseRequest marketPurchaseRequest) {//일단 이렇게 사용을 함
         return ChatRoom.builder()
                 .requester(requester)
                 .agent(agent)
-                .purchaseRequest(request)
+                .marketPurchaseRequest(marketPurchaseRequest)
                 .build();
     }
 

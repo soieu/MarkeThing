@@ -46,7 +46,7 @@ public class Comment {
     @Column(name = "STATUS", length = 50, nullable = false)
     private PostStatus postStatus;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReplyComment> replyComments;
 
     @CreatedDate
