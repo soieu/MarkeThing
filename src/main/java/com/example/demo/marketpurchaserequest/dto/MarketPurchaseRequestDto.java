@@ -17,7 +17,6 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 
 @Getter
-@Setter
 public class MarketPurchaseRequestDto {
 
     @NotBlank
