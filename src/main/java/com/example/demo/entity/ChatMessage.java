@@ -49,6 +49,6 @@ public class ChatMessage {
     private String content;
 
     @CreatedDate
-    @Column(name = "CREATED_AT",nullable = false)
+    @Column(name = "CREATED_AT", nullable = false)
     private LocalDate createdAt;
 }

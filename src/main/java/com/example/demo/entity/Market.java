@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -53,6 +54,6 @@ public class Market {
     @Column(name = "STREET_ADDRESS", nullable = false)
     private int streetAddress; // 지번 주소
 
-    @OneToMany(mappedBy = "market")
+    @OneToMany(mappedBy = "market", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MarketPurchaseRequest> marketPurchaseRequests;
 }

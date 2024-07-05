@@ -4,6 +4,7 @@ package com.example.demo.payment.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -112,7 +113,7 @@ public class Payment {
     @Column(name = "BUYER_ADDR",nullable = false)
     private Long buyerAddr;
 
-    @OneToMany(mappedBy = "payment")
+    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentCancelDetail> paymentCancelDetails;
 
     @CreatedDate
