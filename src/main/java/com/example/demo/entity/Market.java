@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 
+import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -34,7 +35,7 @@ public class Market {
     private Long id;
 
     @OneToOne(mappedBy = "market")
-    private MarketPurchaseRequest  purchaseRequest;
+    private MarketPurchaseRequest purchaseRequest;
 
     @Column(name = "ID_NUM",nullable = false)
     private int idNum;
@@ -52,5 +53,5 @@ public class Market {
     private String roadAddress; // 도로명 주소
 
     @Column(name = "STREET_ADDRESS", nullable = false)
-    private int streetAddress; // 지번 주소
+    private String streetAddress; // 지번 주소 int --> String
 }
