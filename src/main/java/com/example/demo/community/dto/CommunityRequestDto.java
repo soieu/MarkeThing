@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommunityRequestDto {
-
     @NotBlank(message = "지역명을 입력해 주세요.")
     private String area;
 

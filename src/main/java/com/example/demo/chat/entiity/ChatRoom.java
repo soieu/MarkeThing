@@ -36,7 +36,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "CHATROOM")
 public class ChatRoom {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -52,8 +51,6 @@ public class ChatRoom {
     @ManyToOne
     @JoinColumn(name = "AGENT_ID", nullable = false)
     private SiteUser agent;
-
-;
 
     @CreatedDate
     @Column(name = "CREATED_AT", nullable = false)

@@ -32,18 +32,18 @@ public class ChatRoomService {
 
     @Transactional
     public ChatRoom createChatRoom(Long requestId, Long requesterId, Long agentId) {
-
-
         SiteUser requester = siteUserRepository.findById(requesterId)
                 .orElseThrow(()-> new MarkethingException(USER_NOT_FOUND));
+
         SiteUser agent = siteUserRepository.findById(agentId)
                 .orElseThrow(() -> new MarkethingException(USER_NOT_FOUND));
+
         MarketPurchaseRequest request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new MarkethingException(REQUEST_NOT_FOUND));
 
         ChatRoomRequestDto chatRoomRequestDto = new ChatRoomRequestDto();
         ChatRoom chatRoom = chatRoomRequestDto.toEntity(requester, agent, request);
+
         return chatRoomRepository.save(chatRoom);
     }
-
 }
