@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import com.example.demo.entity.MarketPurchaseRequest;
+import com.example.demo.type.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -106,4 +107,7 @@ public class Payment {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+    public void changePaymentBySuccess() {
+    }
 }
