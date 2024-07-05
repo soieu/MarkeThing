@@ -2,7 +2,7 @@ package com.example.demo.marketpurchaserequest.entity;
 
 
 import com.example.demo.chat.entiity.ChatRoom;
-import com.example.demo.entity.Market;
+import com.example.demo.market.entity.Market;
 import com.example.demo.entity.RequestSuccess;
 import com.example.demo.payment.entity.Payment;
 import com.example.demo.siteuser.entity.SiteUser;
@@ -10,6 +10,7 @@ import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -63,7 +64,7 @@ public class MarketPurchaseRequest {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", length = 50, nullable = false)
-    private PurchaseRequestStatus status;
+    private PurchaseRequestStatus purchaseRequestStatus;
 
     @Column(name = "MEETUP_TIME",nullable = false)
     private LocalDate meetupTime;
@@ -74,21 +75,21 @@ public class MarketPurchaseRequest {
     @Column(name = "MEETUP_ADDRESS",nullable = false)
     private String meetupAddress;
 
-    @OneToOne(mappedBy = "purchaseRequest")
+    @OneToOne(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private RequestSuccess success;
 
-    @OneToOne
-    @JoinColumn(name = "MARKET_ID")
+    @ManyToOne
+    @JoinColumn(name = "MARKET_ID", nullable = false)
     private Market market;
 
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
     private SiteUser siteUser;
 
-    @OneToMany(mappedBy = "purchaseRequest")
+    @OneToMany(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatRoom> chatRooms;
 
-    @OneToMany(mappedBy = "purchaseRequest")
+    @OneToMany(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> payments;
 
     @Column(name = "MEETUP_LOCATION")
