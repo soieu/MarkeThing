@@ -38,6 +38,12 @@ public class Payment {
     @JoinColumn(name = "ORDER_ID", nullable = false)
     private MarketPurchaseRequest purchaseRequest;
 
+    @Column(name = "IMP_UID", nullable = false)
+    private String impUid;
+
+    @Column(name="MERCHANT_UID")
+    private String merchant_uid;
+
     @Column(name = "PAYMENT_METHOD")
     private String paymentMethod;
 
@@ -77,6 +83,7 @@ public class Payment {
 
     @Column(name = "RECEIPT_URL")
     private String receiptUrl;
+
 
     @OneToOne(mappedBy = "payment")
     private PaymentCancelDetail paymentCancelDetail;
