@@ -56,6 +56,26 @@ public class CommunityApiControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    public void editCommunityTest() throws Exception {
+        // given
+        CommunityRequestDto editCommunityRequestDto = getEditCommunityRequestDto();
+        Community editCommunity = editCommunityRequestDto.toEntity(getSiteUser());
+
+        String content = objectMapper.writeValueAsString(editCommunityRequestDto);
+
+        given(communityService.edit(eq("mockEmail@gmail.com"), eq(editCommunityRequestDto)
+                , eq(1L)))
+                .willReturn(editCommunity);
+
+        //when & then
+        mockMvc.perform(post("/api/communities/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)) // requestBody에 들어가는 인자 저장
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
     private static SiteUser getSiteUser() {
         GeometryFactory geometryFactory = new GeometryFactory();
         double longitude = 126.97796919; // 경도
@@ -86,6 +106,15 @@ public class CommunityApiControllerTest {
                 .title("title")
                 .content("content")
                 .postImg("postImg")
+                .build();
+    }
+    private static CommunityRequestDto getEditCommunityRequestDto() {
+        return CommunityRequestDto
+                .builder()
+                .area("newArea")
+                .title("newTitle")
+                .content("newContent")
+                .postImg("newPostImg")
                 .build();
     }
 }

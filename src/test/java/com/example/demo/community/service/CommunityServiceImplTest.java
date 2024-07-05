@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 import com.example.demo.community.dto.CommunityRequestDto;
@@ -71,6 +73,29 @@ public class CommunityServiceImplTest {
         assertEquals(exception.getErrorCode(), ErrorCode.EMAIL_NOT_FOUND);
     }
 
+    @Test
+    void editSuccess() {
+        // given
+        SiteUser siteUser = getSiteUser();
+        CommunityRequestDto communityRequestDto = getCommunityRequestDto();
+        CommunityRequestDto editCommunityRequestDto = getEditCommunityRequestDto();
+        Community community = communityRequestDto.toEntity(siteUser);
+
+        given(siteUserRepository.findByEmail(siteUser.getEmail()))
+                .willReturn(Optional.of(siteUser));
+        given(communityRepository.findById(eq(1L)))
+                .willReturn(Optional.of(community));
+
+        // when
+        Community result = communityService.edit(siteUser.getEmail(), editCommunityRequestDto, 1L);
+
+        // then
+        assertThat(result.getArea()).isEqualTo(editCommunityRequestDto.getArea());
+        assertThat(result.getContent()).isEqualTo(editCommunityRequestDto.getContent());
+        assertThat(result.getTitle()).isEqualTo(editCommunityRequestDto.getTitle());
+        assertThat(result.getPostImg()).isEqualTo(editCommunityRequestDto.getPostImg());
+    }
+
     private static SiteUser getSiteUser() {
         GeometryFactory geometryFactory = new GeometryFactory();
         double longitude = 126.97796919; // 경도
@@ -101,6 +126,16 @@ public class CommunityServiceImplTest {
                 .title("title")
                 .content("content")
                 .postImg("postImg")
+                .build();
+    }
+
+    private static CommunityRequestDto getEditCommunityRequestDto() {
+        return CommunityRequestDto
+                .builder()
+                .area("newArea")
+                .title("newTitle")
+                .content("newContent")
+                .postImg("newPostImg")
                 .build();
     }
 }
