@@ -71,7 +71,7 @@ public class MarketPurchaseRequest {
     @Column(name = "MEETUP_ADDRESS",nullable = false)
     private String meetupAddress;
 
-    @OneToOne(mappedBy = "purchaseRequest")
+    @OneToOne(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private RequestSuccess success;
 
     @OneToOne
@@ -82,11 +82,11 @@ public class MarketPurchaseRequest {
     @JoinColumn(name = "USER_ID", nullable = false)
     private SiteUser siteUser;
 
-    @OneToMany(mappedBy = "purchaseRequest")
+    @OneToMany(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatRoom> chatRooms;
 
-    @OneToOne(mappedBy = "purchaseRequest")
-    private Payment payment;
+    @OneToMany(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Payment> payments;
 
     @Column(name = "MEETUP_LOCATION")
     private Point meetupLocation;

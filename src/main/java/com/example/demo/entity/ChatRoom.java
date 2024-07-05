@@ -5,6 +5,7 @@ import com.example.demo.siteuser.entity.SiteUser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -42,20 +43,20 @@ public class ChatRoom {
 
     @ManyToOne
     @JoinColumn(name = "REQUEST_ID", nullable = false)
-    private MarketPurchaseRequest purchaseRequest;
+    private MarketPurchaseRequest marketPurchaseRequest;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "REQUESTER_ID", nullable = false)
     private SiteUser requester;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "AGENT_ID", nullable = false)
     private SiteUser agent;
 
-    @OneToMany(mappedBy = "chatRoom")
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> chatMessages;
 
     @CreatedDate
-    @Column(name = "CREATED_AT",nullable = false)
+    @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 }

@@ -15,11 +15,13 @@ public enum ErrorCode {
     LAT_AND_LON_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "위경도를 찾을 수 없는 주소입니다."),
     REGISTRATION_INFO_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "가입 정보가 없습니다."),
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 채팅방입니다."),
+    COMMUNITY_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"커뮤니티를 찾을 수 없습니다."),
 
     // UNAUTHORIZED
     LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED.value(), "로그인이 필요한 서비스입니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED.value(), "엑세스 토큰이 만료되었습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED.value(), "유효하지 않은 엑세스 토큰입니다."),
+    UNAUTHORIZED_USER(HttpStatus.UNAUTHORIZED.value(), "해당 서비스 이용에 권한이 없는 사용자입니다."),
 
     // BAD_REQUEST
     INVALID_SESSION(HttpStatus.BAD_REQUEST.value(), "유효하지 않은 세션입니다."),
