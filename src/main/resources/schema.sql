@@ -152,7 +152,6 @@ CREATE TABLE `PAYMENT`
 (
     `ID`                  BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `ORDER_ID`            BIGINT       NOT NULL,
-    `IMP_UID`             VARCHAR(255) NOT NULL,
     `PAYMENT_METHOD`      VARCHAR(255) NULL,
     `BANK_NAME`           VARCHAR(255) NULL,
     `CARD_NAME`           VARCHAR(255) NULL,

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import com.example.demo.entity.MarketPurchaseRequest;
+import com.example.demo.type.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,9 +38,6 @@ public class Payment {
     @JoinColumn(name = "ORDER_ID", nullable = false)
     private MarketPurchaseRequest purchaseRequest;
 
-    @Column(name = "IMP_UID", nullable = false)
-    private String impUid;
-
     @Column(name = "PAYMENT_METHOD")
     private String paymentMethod;
 
@@ -61,8 +59,9 @@ public class Payment {
     @Column(name = "BUYER_NAME")
     private String buyerName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "STATUS",nullable = false)
-    private String status;
+    private PaymentStatus status;
 
     @Column(name = "STARTED_AT")
     private LocalDate startedAt;
@@ -79,7 +78,6 @@ public class Payment {
     @Column(name = "RECEIPT_URL")
     private String receiptUrl;
 
-
     @OneToOne(mappedBy = "payment")
     private PaymentCancelDetail paymentCancelDetail;
 
@@ -90,4 +88,8 @@ public class Payment {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+    public void changePaymentBySuccess() {
+        this.status = PaymentStatus.OK;
+    }
 }

@@ -63,7 +63,7 @@ public class MarketPurchaseRequest {
     private PurchaseRequestStatus status;
 
     @Column(name = "MEETUP_TIME",nullable = false)
-    private LocalDate meetupTime;
+    private LocalDateTime meetupTime;
 
     @Column(name = "MEETUP_DATE")
     private LocalDate meetupDate;
