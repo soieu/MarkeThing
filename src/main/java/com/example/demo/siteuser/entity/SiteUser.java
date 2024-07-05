@@ -93,13 +93,13 @@ public class SiteUser {
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "siteUser")
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Community> communities;
 
-    @OneToMany(mappedBy = "siteUser")
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "siteUser")
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReplyComment> replyComments;
 
     @OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -109,24 +109,21 @@ public class SiteUser {
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Manner> requesters;
 
-    @OneToMany(mappedBy = "siteUser")
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MarketPurchaseRequest> purchaseRequests;
 
-    @OneToMany(mappedBy = "siteUser")
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> chatMessages;
 
-    @OneToOne(mappedBy = "siteUser")
-    private RequestSuccess success;
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RequestSuccess> requestSuccesses;
 
-    @OneToOne(mappedBy = "siteUser")
+    @OneToOne(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Account account;
 
-    @OneToOne(mappedBy = "siteUser")
-    private RequestSuccess requestSuccess;
+    @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatRoom> requesterChatRooms;
 
-    @OneToOne(mappedBy = "requester")
-    private ChatRoom requester;
-
-    @OneToOne(mappedBy = "agent")
-    private ChatRoom agent;
+    @OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatRoom> agentChatRooms;
 }

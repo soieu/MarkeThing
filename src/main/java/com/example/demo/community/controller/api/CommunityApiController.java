@@ -3,6 +3,7 @@ package com.example.demo.community.controller.api;
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.service.CommunityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,12 @@ public class CommunityApiController {
     , @PathVariable Long communityId) {
         String email = "mockEmail@gmail.com";
         communityService.edit(email, communityRequestDto, communityId);
+    }
+
+    @DeleteMapping("/{communityId}")
+    public void deleteCommunity(@PathVariable Long communityId) {
+        String email = "mockEmail@gmail.com";
+        communityService.delete(email, communityId);
     }
 
 }

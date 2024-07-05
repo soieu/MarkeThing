@@ -40,13 +40,25 @@ public class CommunityServiceImpl implements CommunityService {
         var community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new MarkethingException(COMMUNITY_NOT_FOUND));
 
-        validateAuthorizationOfUpdate(siteUser, community);
+        validateAuthorization(siteUser, community);
         community.update(communityRequestDto);
 
         return community;
     }
 
-    private static void validateAuthorizationOfUpdate(SiteUser siteUser, Community community) {
+    @Override
+    public void delete(String email, Long communityId) {
+        var siteUser = siteUserRepository.findByEmail(email)
+                .orElseThrow(() -> new MarkethingException(EMAIL_NOT_FOUND));
+
+        var community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new MarkethingException(COMMUNITY_NOT_FOUND));
+
+        validateAuthorization(siteUser, community);
+        communityRepository.delete(community);
+    }
+
+    private static void validateAuthorization(SiteUser siteUser, Community community) {
         if(!siteUser.equals(community.getSiteUser())) {
             throw new MarkethingException(UNAUTHORIZED_USER);
         }

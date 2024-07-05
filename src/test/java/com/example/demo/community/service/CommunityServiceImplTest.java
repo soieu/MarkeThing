@@ -7,6 +7,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
@@ -94,6 +96,92 @@ public class CommunityServiceImplTest {
         assertThat(result.getContent()).isEqualTo(editCommunityRequestDto.getContent());
         assertThat(result.getTitle()).isEqualTo(editCommunityRequestDto.getTitle());
         assertThat(result.getPostImg()).isEqualTo(editCommunityRequestDto.getPostImg());
+    }
+
+    @Test
+    void editFailedByEmailNotFound() {
+        // given
+        given(siteUserRepository.findByEmail("mockEmail@gmail.com"))
+                .willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> communityService.edit("mockEmail@gmail.com", getCommunityRequestDto(), 1L));
+
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.EMAIL_NOT_FOUND);
+    }
+
+    @Test
+    void editFailedByCommunityNotFound() {
+        // given
+        SiteUser siteUser = getSiteUser();
+
+        given(siteUserRepository.findByEmail(siteUser.getEmail()))
+                .willReturn(Optional.of(siteUser));
+        given(communityRepository.findById(eq(1L)))
+                .willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> communityService.edit("mockEmail@gmail.com", getCommunityRequestDto(), 1L));
+
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.COMMUNITY_NOT_FOUND);
+    }
+
+    @Test
+    void deleteSuccess() {
+        // given
+        String email = "test@example.com";
+        Long communityId = 1L;
+        SiteUser siteUser = getSiteUser();
+        CommunityRequestDto communityRequestDto = getCommunityRequestDto();
+        Community community = communityRequestDto.toEntity(siteUser);
+        given(siteUserRepository.findByEmail(email))
+                .willReturn(Optional.of(siteUser));
+        given(communityRepository.findById(communityId))
+                .willReturn(Optional.of(community));
+
+        // when
+        communityService.delete(email, communityId);
+
+        // then
+        verify(siteUserRepository, times(1)).findByEmail(email);
+        verify(communityRepository, times(1)).findById(communityId);
+        verify(communityRepository, times(1)).delete(community);
+    }
+
+    @Test
+    void deleteFailedByEmailNotFound() {
+        // given
+        given(siteUserRepository.findByEmail("mockEmail@gmail.com"))
+                .willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> communityService.delete("mockEmail@gmail.com", 1L));
+
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.EMAIL_NOT_FOUND);
+    }
+
+    @Test
+    void deleteFailedByCommunityNotFound() {
+        // given
+        SiteUser siteUser = getSiteUser();
+
+        given(siteUserRepository.findByEmail(siteUser.getEmail()))
+                .willReturn(Optional.of(siteUser));
+        given(communityRepository.findById(eq(1L)))
+                .willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> communityService.delete("mockEmail@gmail.com", 1L));
+
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.COMMUNITY_NOT_FOUND);
     }
 
     private static SiteUser getSiteUser() {
