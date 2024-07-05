@@ -48,7 +48,7 @@ public class Market {
     private int type;
 
     @Column(name = "LOCATION", nullable = false)
-    private Point point;
+    private Point location;
 
     @Column(name = "ROAD_ADDRESS", nullable = false)
     private String roadAddress; // 도로명 주소
