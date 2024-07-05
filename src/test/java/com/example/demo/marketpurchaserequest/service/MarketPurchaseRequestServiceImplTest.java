@@ -1,9 +1,12 @@
 package com.example.demo.marketpurchaserequest.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import com.example.demo.exception.MarkethingException;
+import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.market.entity.Market;
 import com.example.demo.market.repository.MarketRepository;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
@@ -62,6 +65,20 @@ public class MarketPurchaseRequestServiceImplTest {
         MarketPurchaseRequest findMarketPurchaseRequest = marketPurchaseRequestRepository.findById(newMarketPurchaseRequest.getId()).orElse(null);
 
         assertEquals(marketPurchaseRequest.getId(),findMarketPurchaseRequest.getId());
+
+    }
+
+    @Test
+    void createFailedByUserNotFound(){
+        // given
+        given(siteUserRepository.findById(any())).willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> marketPurchaseRequestServiceImpl.createMarketPurchaseRequest(getMarketPurchaseRequestDto(getSiteUser(), getMarket())));
+
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
 
     }
 
