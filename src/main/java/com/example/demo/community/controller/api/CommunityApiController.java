@@ -32,10 +32,9 @@ public class CommunityApiController {
     }
 
     @DeleteMapping("/{communityId}")
-    public void deleteCommunity(@RequestBody CommunityRequestDto communityRequestDto
-            , @PathVariable Long communityId) {
+    public void deleteCommunity(@PathVariable Long communityId) {
         String email = "mockEmail@gmail.com";
-        communityService.edit(email, communityRequestDto, communityId);
+        communityService.delete(email, communityId);
     }
 
 }
