@@ -30,18 +30,4 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
         Market market = marketRepository.findById(marketPurchaseRequestDto.getMarketId()).orElseThrow(()-> new MarkethingException(ErrorCode.MARKET_NOT_FOUND));
         return marketPurchaseRequestRepository.save(marketPurchaseRequestDto.toEntity(siteUser,market));
     }
-
-
-//    @Override
-//    @Transactional
-//    public MarketPurchaseRequest createMarketPurchaseRequest(
-//            MarketPurchaseRequest marketPurchaseRequest) {
-//        SiteUser siteUser = siteUserRepository.findById(siteUserId).orElseThrow(() -> new MarkethingException(
-//                ErrorCode.USER_NOT_FOUND));
-//        Market market = marketRepository.findById(marketId).orElseThrow(()->new MarkethingException(ErrorCode.MARKET_NOT_FOUND));
-////        marketPurchaseRequest.setUser(siteUser);
-////        marketPurchaseRequest.setMarket(market);
-//        return marketPurchaseRequestRepository.save(marketPurchaseRequest);
-//
-//    }
 }

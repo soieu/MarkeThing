@@ -20,27 +20,27 @@ import org.locationtech.jts.geom.PrecisionModel;
 @Setter
 public class MarketPurchaseRequestDto {
 
-    @NotBlank(message = "[required] 제목을 입력하세요.")
+    @NotBlank
     private String title;
 
-    @NotBlank(message = "[required] 내용을 입력하세요.")
+    @NotBlank
     private String content;
 
     private String postImg;
 
-    @NotEmpty(message = "[required] 수수료를 입력하세요.")
+    @NotEmpty
     private int fee;
 
-    @NotEmpty(message = "[required] 의뢰글 상태 입력하세요.")
+    @NotEmpty
     private PurchaseRequestStatus status;
 
-    @NotEmpty(message = "[required] 만나는 시간을 입력하세요.")
+    @NotEmpty
     private LocalDate meetupTime;
 
-    @NotEmpty(message = "[required] 만나는 날짜 입력하세요.")
+    @NotEmpty
     private LocalDate meetupDate;
 
-    @NotBlank(message = "[required] 만날 주소를 입력하세요.")
+    @NotBlank
     private String meetupAddress;
 
     private Double latitude;
