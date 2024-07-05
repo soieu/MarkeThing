@@ -4,6 +4,7 @@ import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.market.entity.Market;
 import com.example.demo.market.repository.MarketRepository;
+import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
 import com.example.demo.marketpurchaserequest.service.MarketPurchaseRequestService;
@@ -24,13 +25,23 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
     @Override
     @Transactional
     public MarketPurchaseRequest createMarketPurchaseRequest(
-            MarketPurchaseRequest marketPurchaseRequest, Long siteUserId, Long marketId) {
-        SiteUser siteUser = siteUserRepository.findById(siteUserId).orElseThrow(() -> new MarkethingException(
-                ErrorCode.USER_NOT_FOUND));
-        Market market = marketRepository.findById(marketId).orElseThrow(()->new MarkethingException(ErrorCode.MARKET_NOT_FOUND));
-        marketPurchaseRequest.setMarket(market);
-        marketPurchaseRequest.setUser(siteUser);
-        return marketPurchaseRequestRepository.save(marketPurchaseRequest);
-
+            MarketPurchaseRequestDto marketPurchaseRequestDto) {
+        SiteUser siteUser = siteUserRepository.findById(marketPurchaseRequestDto.getUserId()).orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
+        Market market = marketRepository.findById(marketPurchaseRequestDto.getMarketId()).orElseThrow(()-> new MarkethingException(ErrorCode.MARKET_NOT_FOUND));
+        return marketPurchaseRequestRepository.save(marketPurchaseRequestDto.toEntity(siteUser,market));
     }
+
+
+//    @Override
+//    @Transactional
+//    public MarketPurchaseRequest createMarketPurchaseRequest(
+//            MarketPurchaseRequest marketPurchaseRequest) {
+//        SiteUser siteUser = siteUserRepository.findById(siteUserId).orElseThrow(() -> new MarkethingException(
+//                ErrorCode.USER_NOT_FOUND));
+//        Market market = marketRepository.findById(marketId).orElseThrow(()->new MarkethingException(ErrorCode.MARKET_NOT_FOUND));
+////        marketPurchaseRequest.setUser(siteUser);
+////        marketPurchaseRequest.setMarket(market);
+//        return marketPurchaseRequestRepository.save(marketPurchaseRequest);
+//
+//    }
 }

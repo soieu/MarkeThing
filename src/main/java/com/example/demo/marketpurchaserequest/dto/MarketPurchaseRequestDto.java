@@ -1,6 +1,8 @@
 package com.example.demo.marketpurchaserequest.dto;
 
+import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
+import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -71,7 +73,7 @@ public class MarketPurchaseRequestDto {
         return geometryFactory.createPoint(new Coordinate(latitude, longitude));
     }
 
-    public MarketPurchaseRequest toEntity() {
+    public MarketPurchaseRequest toEntity(SiteUser siteUser, Market market) {
         return MarketPurchaseRequest.builder()
                 .title(title)
                 .content(content)
@@ -82,6 +84,8 @@ public class MarketPurchaseRequestDto {
                 .meetupAddress(meetupAddress)
                 .meetupLocation(getPoint(longitude, longitude))
                 .createdAt(LocalDateTime.now())
+                .siteUser(siteUser)
+                .market(market)
                 .build();
 
     }
