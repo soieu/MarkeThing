@@ -1,7 +1,7 @@
 package com.example.demo.csv.service;
 
 
-import com.example.demo.entity.Market;
+import com.example.demo.market.entity.Market;
 import com.example.demo.market.repository.MarketRepository;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +16,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.yaml.snakeyaml.error.Mark;
 
 @Service
 @RequiredArgsConstructor
