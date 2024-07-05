@@ -34,7 +34,11 @@ dependencies {
     // 자동 재시작, HTML, CSS, JS 파일 변경될 때 브라우저 자동 새로 고침 등의 기능 제공
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+    // 몽고 디비 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
+    // 웹 소켓 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
     // not null 등 Validation 검사를 위해 사용
     implementation 'org.springframework.boot:spring-boot-starter-validation'
