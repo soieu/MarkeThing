@@ -15,6 +15,7 @@ public enum ErrorCode {
     LAT_AND_LON_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "위경도를 찾을 수 없는 주소입니다."),
     REGISTRATION_INFO_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "가입 정보가 없습니다."),
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 채팅방입니다."),
+    REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 의뢰글 입니다,"),
 
     // UNAUTHORIZED
     LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED.value(), "로그인이 필요한 서비스입니다."),
