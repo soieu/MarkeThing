@@ -1,8 +1,12 @@
-package com.example.demo.entity;
+package com.example.demo.chat.entiity;
 
 
+import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.siteuser.entity.SiteUser;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -11,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,26 +34,25 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "CHAT_MESSAGE")
-
-public class ChatMessage {
-
+@Table(name = "CHATROOM")
+public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ROOM_ID", nullable = false)
-    private ChatRoom chatRoom;
+    @JoinColumn(name = "REQUEST_ID", nullable = false)
+    private MarketPurchaseRequest marketPurchaseRequest;
 
     @ManyToOne
-    @JoinColumn(name = "SENDER_ID", nullable = false)
-    private SiteUser siteUser;
+    @JoinColumn(name = "REQUESTER_ID", nullable = false)
+    private SiteUser requester;
 
-    @Column(name = "CONTENT", length = 1023, nullable = false)
-    private String content;
+    @ManyToOne
+    @JoinColumn(name = "AGENT_ID", nullable = false)
+    private SiteUser agent;
 
     @CreatedDate
     @Column(name = "CREATED_AT", nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 }

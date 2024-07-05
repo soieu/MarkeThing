@@ -1,6 +1,9 @@
-package com.example.demo.entity;
+package com.example.demo.marketpurchaserequest.entity;
 
 
+import com.example.demo.chat.entiity.ChatRoom;
+import com.example.demo.market.entity.Market;
+import com.example.demo.entity.RequestSuccess;
 import com.example.demo.payment.entity.Payment;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PurchaseRequestStatus;
@@ -61,7 +64,7 @@ public class MarketPurchaseRequest {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", length = 50, nullable = false)
-    private PurchaseRequestStatus status;
+    private PurchaseRequestStatus purchaseRequestStatus;
 
     @Column(name = "MEETUP_TIME",nullable = false)
     private LocalDate meetupTime;

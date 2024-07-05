@@ -1,16 +1,15 @@
 package com.example.demo.siteuser.entity;
 
+import com.example.demo.chat.entiity.ChatMessage;
 import com.example.demo.community.entity.Community;
 import com.example.demo.entity.Account;
-import com.example.demo.entity.ChatMessage;
-import com.example.demo.entity.ChatRoom;
+import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.entity.Comment;
 import com.example.demo.entity.Manner;
-import com.example.demo.entity.MarketPurchaseRequest;
 import com.example.demo.entity.ReplyComment;
 import com.example.demo.entity.RequestSuccess;
+import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.type.AuthType;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -21,6 +20,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -112,8 +112,6 @@ public class SiteUser {
     @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MarketPurchaseRequest> purchaseRequests;
 
-    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChatMessage> chatMessages;
 
     @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RequestSuccess> requestSuccesses;
@@ -126,4 +124,5 @@ public class SiteUser {
 
     @OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatRoom> agentChatRooms;
+
 }

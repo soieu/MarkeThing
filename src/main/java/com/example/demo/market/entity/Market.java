@@ -1,19 +1,16 @@
-package com.example.demo.entity;
+package com.example.demo.market.entity;
 
 
-import com.example.demo.siteuser.entity.SiteUser;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import java.util.List;
 import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -23,7 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedDate;
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -34,29 +31,31 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "CHATROOM")
-public class ChatRoom {
+@Table(name = "MARKET")
+public class Market {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "REQUEST_ID", nullable = false)
-    private MarketPurchaseRequest marketPurchaseRequest;
+    @Column(name = "ID_NUM",nullable = false)
+    private int idNum;
 
-    @ManyToOne
-    @JoinColumn(name = "REQUESTER_ID", nullable = false)
-    private SiteUser requester;
+    @Column(name = "MARKET_NAME", nullable = false)
+    private String marketName;
 
-    @ManyToOne
-    @JoinColumn(name = "AGENT_ID", nullable = false)
-    private SiteUser agent;
+    @Column(name = "MARKET_TYPE",nullable = false)
+    private int type;
 
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChatMessage> chatMessages;
+    @Column(name = "LOCATION", nullable = false)
+    private Point location;
 
-    @CreatedDate
-    @Column(name = "CREATED_AT", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "ROAD_ADDRESS", nullable = false)
+    private String roadAddress; // 도로명 주소
+
+    @Column(name = "STREET_ADDRESS", nullable = false)
+    private String streetAddress; // 지번 주소
+
+    @OneToMany(mappedBy = "market", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MarketPurchaseRequest> marketPurchaseRequests;
 }
