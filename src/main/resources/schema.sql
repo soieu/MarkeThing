@@ -280,12 +280,6 @@ ALTER TABLE
             ON DELETE CASCADE;
 
 ALTER TABLE
-    `CHAT_MESSAGE`
-    ADD CONSTRAINT `chat_message_room_id_foreign`
-        FOREIGN KEY (`ROOM_ID`) REFERENCES `CHATROOM` (`ID`)
-            ON DELETE CASCADE;
-
-ALTER TABLE
     `COMMENT`
     ADD CONSTRAINT `comment_post_id_foreign`
         FOREIGN KEY (`POST_ID`) REFERENCES `COMMUNITY` (`ID`)

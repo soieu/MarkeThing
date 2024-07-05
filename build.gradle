@@ -3,6 +3,7 @@ plugins {
     id 'war'
     id 'org.springframework.boot' version '2.7.15'
     id 'io.spring.dependency-management' version '1.1.5'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.example'
@@ -48,6 +49,9 @@ dependencies {
   
     implementation 'org.hibernate:hibernate-spatial'
 
+    //querydsl
+    implementation 'com.querydsl:querydsl-jpa:5.0.0'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jpa'
 
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
@@ -72,4 +76,21 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// querydsl
+def querydslDir = "$buildDir/generated/querydsl"
+
+sourceSets {
+    main.java.srcDir querydslDir
+}
+compileQuerydsl{
+    options.annotationProcessorPath = configurations.querydsl
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
 }
