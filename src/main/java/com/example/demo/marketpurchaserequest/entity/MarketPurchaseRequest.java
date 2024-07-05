@@ -102,4 +102,13 @@ public class MarketPurchaseRequest {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+    public void setUser(SiteUser siteUser) {
+        this.siteUser = siteUser;
+        siteUser.getPurchaseRequests().add(this);
+    }
+    public void setMarket(Market market) {
+        this.market = market;
+        market.getMarketPurchaseRequests().add(this);
+    }
 }

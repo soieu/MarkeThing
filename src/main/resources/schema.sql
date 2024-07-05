@@ -279,11 +279,11 @@ ALTER TABLE
         FOREIGN KEY (`PAYMENT_ID`) REFERENCES `PAYMENT` (`ID`)
             ON DELETE CASCADE;
 
-ALTER TABLE
-    `CHAT_MESSAGE`
-    ADD CONSTRAINT `chat_message_room_id_foreign`
-        FOREIGN KEY (`ROOM_ID`) REFERENCES `CHATROOM` (`ID`)
-            ON DELETE CASCADE;
+-- ALTER TABLE
+--     `CHAT_MESSAGE`
+--     ADD CONSTRAINT `chat_message_room_id_foreign`
+--         FOREIGN KEY (`ROOM_ID`) REFERENCES `CHATROOM` (`ID`)
+--             ON DELETE CASCADE;
 
 ALTER TABLE
     `COMMENT`
