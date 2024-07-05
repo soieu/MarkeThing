@@ -3,14 +3,12 @@ package com.example.demo.marketpurchaserequest.dto;
 import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.siteuser.entity.SiteUser;
-import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -19,27 +17,24 @@ import org.locationtech.jts.geom.PrecisionModel;
 @Getter
 public class MarketPurchaseRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "제목을 입력하세요.")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "내용을 입력하세요.")
     private String content;
 
     private String postImg;
 
-    @NotEmpty
+    @NotEmpty(message = "수수료를 입력하세요.")
     private int fee;
 
-    @NotEmpty
-    private PurchaseRequestStatus status;
-
-    @NotEmpty
+    @NotEmpty(message = "약속 시간을 입력하세요.")
     private LocalDate meetupTime;
 
-    @NotEmpty
+    @NotEmpty(message = "약속 날짜 입력하세요.")
     private LocalDate meetupDate;
 
-    @NotBlank
+    @NotBlank(message = "약속 주소를 입력하세요.")
     private String meetupAddress;
 
     private Double latitude;
@@ -50,13 +45,12 @@ public class MarketPurchaseRequestDto {
     private Long marketId;
 
     @Builder
-    public MarketPurchaseRequestDto(String title, String content, String postImg, int fee, PurchaseRequestStatus status,
+    public MarketPurchaseRequestDto(String title, String content, String postImg, int fee,
             LocalDate meetupTime, LocalDate meetupDate, String meetupAddress, double latitude, double longitude, Long userId, Long marketId) {
         this.title = title;
         this.content = content;
         this.postImg = postImg;
         this.fee = fee;
-        this.status = status;
         this.meetupTime = meetupTime;
         this.meetupDate = meetupDate;
         this.meetupAddress = meetupAddress;
