@@ -1,6 +1,9 @@
-package com.example.demo.entity;
+package com.example.demo.marketpurchaserequest.entity;
 
 
+import com.example.demo.chat.entiity.ChatRoom;
+import com.example.demo.entity.Market;
+import com.example.demo.entity.RequestSuccess;
 import com.example.demo.payment.entity.Payment;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PurchaseRequestStatus;
