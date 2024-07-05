@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.example.demo.entity.MarketPurchaseRequest;
+import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
