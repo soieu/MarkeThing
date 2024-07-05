@@ -311,3 +311,4 @@ ALTER TABLE
     ADD CONSTRAINT `market_purchase_request_market_id_foreign`
         FOREIGN KEY (`MARKET_ID`) REFERENCES `MARKET` (`ID`)
             ON DELETE CASCADE;
+
