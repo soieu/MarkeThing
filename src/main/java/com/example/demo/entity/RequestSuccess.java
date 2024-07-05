@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -40,9 +41,9 @@ public class RequestSuccess {
 
     @OneToOne
     @JoinColumn(name = "REQUEST_ID", nullable = false)
-    private MarketPurchaseRequest purchaseRequest;
+    private MarketPurchaseRequest marketPurchaseRequest;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "SITE_USER_ID", nullable = false)
     private SiteUser siteUser;
 
