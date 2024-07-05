@@ -17,6 +17,7 @@ public enum ErrorCode {
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 채팅방입니다."),
     COMMUNITY_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"커뮤니티를 찾을 수 없습니다."),
     REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 의뢰글 입니다,"),
+    MARKET_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"시장을 찾을 수 없습니다."),
 
     // UNAUTHORIZED
     LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED.value(), "로그인이 필요한 서비스입니다."),

@@ -102,4 +102,5 @@ public class MarketPurchaseRequest {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
 }
