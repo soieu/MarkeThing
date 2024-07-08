@@ -3,7 +3,7 @@ package com.example.demo.chat.controller;
 import com.example.demo.chat.controller.api.ChatRoomApiController;
 import com.example.demo.chat.dto.ChatRoomRequestDto;
 import com.example.demo.chat.entiity.ChatRoom;
-import com.example.demo.chat.service.ChatRoomService;
+import com.example.demo.chat.service.impl.ChatRoomServiceImpl;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.AuthType;
@@ -34,7 +34,7 @@ public class ChatApiControllerTest {
     @MockBean
     private MappingMongoConverter mappingMongoConverter;
     @MockBean
-    private ChatRoomService chatRoomService;
+    private ChatRoomServiceImpl chatRoomServiceImpl;
     @Autowired
     private ObjectMapper objectMapper;
     // objectMapper가 무엇일까?
@@ -52,7 +52,7 @@ public class ChatApiControllerTest {
         // 입력되는 json 데이터를 String 형으로 변환해줌
 
 
-        given(chatRoomService.createChatRoom(eq(chatRoomRequestDto))).willReturn(chatRoom);
+        given(chatRoomServiceImpl.createChatRoom(eq(chatRoomRequestDto))).willReturn(chatRoom);
 
         mockMvc.perform(post("/api/rooms") //api 연결
                         .contentType(MediaType.APPLICATION_JSON) //json 객체를 지정

@@ -5,15 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.BDDMockito.given;
 
 import com.example.demo.chat.dto.ChatRoomRequestDto;
 import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.chat.repository.ChatRoomRepository;
-import com.example.demo.community.entity.Community;
-import com.example.demo.community.repository.CommunityRepository;
-import com.example.demo.community.service.impl.CommunityServiceImpl;
+import com.example.demo.chat.service.impl.ChatRoomServiceImpl;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
@@ -52,7 +49,7 @@ public class ChatServiceTest {
     private ChatRoomRepository chatRoomRepository;
 
     @InjectMocks
-    private ChatRoomService chatRoomService;
+    private ChatRoomServiceImpl chatRoomServiceImpl;
 
     @Test
     void createSuccess() {
@@ -74,7 +71,7 @@ public class ChatServiceTest {
                 .willReturn(chatRoom);
 
         // when
-        ChatRoom result = chatRoomService.createChatRoom(chatRoomRequestDto);
+        ChatRoom result = chatRoomServiceImpl.createChatRoom(chatRoomRequestDto);
 
         // then
         assertThat(result.getAgent()).isEqualTo(agent);
@@ -90,7 +87,7 @@ public class ChatServiceTest {
 
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
-                () -> chatRoomService.createChatRoom(requestDto));
+                () -> chatRoomServiceImpl.createChatRoom(requestDto));
 
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);

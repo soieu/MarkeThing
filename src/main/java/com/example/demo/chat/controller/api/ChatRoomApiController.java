@@ -2,7 +2,7 @@ package com.example.demo.chat.controller.api;
 
 
 import com.example.demo.chat.dto.ChatRoomRequestDto;
-import com.example.demo.chat.service.ChatRoomService;
+import com.example.demo.chat.service.impl.ChatRoomServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class ChatRoomApiController {
-    private final ChatRoomService chatRoomService;
+    private final ChatRoomServiceImpl chatRoomServiceImpl;
     //    @GetMapping("/")
 //    public ResponseEntity<?> goChatRoom() {
 //        List<ChatRoom> chatRooms = chatRepository.findAllRoom();
@@ -21,7 +21,7 @@ public class ChatRoomApiController {
 //    }
     @PostMapping("api/rooms")
     public void createRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
-        chatRoomService.createChatRoom(chatRoomRequestDto);
+        chatRoomServiceImpl.createChatRoom(chatRoomRequestDto);
     }//생성을 함.
 
 //    @GetMapping("/userlist")
