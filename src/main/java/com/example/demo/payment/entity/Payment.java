@@ -115,4 +115,8 @@ public class Payment {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+    public void changePaymentBySuccess(String impUid) {
+
+    }
 }
