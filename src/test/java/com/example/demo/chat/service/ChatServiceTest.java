@@ -38,19 +38,14 @@ public class ChatServiceTest {
 
     @MockBean
     private MappingMongoConverter mappingMongoConverter;
-
     @Mock
     private SiteUserRepository siteUserRepository;
-
     @Mock
     private MarketPurchaseRequestRepository requestRepository;
-
     @Mock
     private ChatRoomRepository chatRoomRepository;
-
     @InjectMocks
     private ChatRoomServiceImpl chatRoomServiceImpl;
-
     @Test
     void createSuccess() {
         ChatRoomRequestDto chatRoomRequestDto = getChatRoomRequestDto();
@@ -100,10 +95,6 @@ public class ChatServiceTest {
                 .agentId(2L)
                 .build();
     }
-
-
-
-
     public static MarketPurchaseRequest getRequest(){
         GeometryFactory geometryFactory = new GeometryFactory();
         double longitude = 126.9722919; // 경도
@@ -124,7 +115,6 @@ public class ChatServiceTest {
                 .createdAt(LocalDateTime.now())
                 .build();
     }
-
     private static SiteUser getRequester() {
         GeometryFactory geometryFactory = new GeometryFactory();
         double longitude = 126.9722919; // 경도
@@ -147,9 +137,6 @@ public class ChatServiceTest {
                 .createdAt(LocalDateTime.now())
                 .build();
     }
-
-
-
     private static SiteUser getAgent() {
         GeometryFactory geometryFactory = new GeometryFactory();
         double longitude = 126.97796919; // 경도
@@ -172,5 +159,4 @@ public class ChatServiceTest {
                 .createdAt(LocalDateTime.now())
                 .build();
     }
-
 }
