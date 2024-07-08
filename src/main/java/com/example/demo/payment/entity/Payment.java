@@ -4,19 +4,10 @@ package com.example.demo.payment.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
+import com.example.demo.type.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,7 +34,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "ORDER_ID", nullable = false)
     private MarketPurchaseRequest marketPurchaseRequest;
 
@@ -89,8 +80,9 @@ public class Payment {
     @Column(name = "BUYER_TEL")
     private String buyerTel;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "STATUS",nullable = false)
-    private String status;
+    private PaymentStatus status;
 
     @Column(name = "STARTED_AT")
     private LocalDate startedAt;
@@ -113,8 +105,8 @@ public class Payment {
     @Column(name = "BUYER_ADDR",nullable = false)
     private Long buyerAddr;
 
-    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PaymentCancelDetail> paymentCancelDetails;
+    @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PaymentCancelDetail paymentCancelDetails;
 
     @CreatedDate
     @Column(name = "CREATED_AT",nullable = false)
