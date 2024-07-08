@@ -24,9 +24,9 @@ public class MarketPurchaseRequestApiController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/requests/{id}")
-    public ResponseEntity deleteMarketPurchaseRequest(@PathVariable Long id) {
-        marketPurchaseRequestService.deleteMarketPurchaseRequest(id);
+    @DeleteMapping("/requests/{requestId}")
+    public ResponseEntity deleteMarketPurchaseRequest(@PathVariable Long requestId) {
+        marketPurchaseRequestService.deleteMarketPurchaseRequest(requestId);
         return ResponseEntity.noContent().build();
     }
 }
