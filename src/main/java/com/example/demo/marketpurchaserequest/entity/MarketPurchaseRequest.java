@@ -89,8 +89,8 @@ public class MarketPurchaseRequest {
     @OneToMany(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatRoom> chatRooms;
 
-    @OneToMany(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Payment> payments;
+    @OneToOne(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Payment payment;
 
     @Column(name = "MEETUP_LOCATION")
     private Point meetupLocation;
