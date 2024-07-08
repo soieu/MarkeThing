@@ -11,10 +11,10 @@ public class RequestPayDto {
     private String orderUid;
     private String itemName;
     private String buyerName;
-    private Long paymentPrice;
+    private int paymentPrice;
 
     @Builder
-    public RequestPayDto(String orderUid, String itemName, String buyerName, Long paymentPrice) {
+    public RequestPayDto(String orderUid, String itemName, String buyerName, int paymentPrice) {
         this.orderUid = orderUid;
         this.itemName = itemName;
         this.buyerName = buyerName;

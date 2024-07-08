@@ -25,6 +25,4 @@ public class PaymentApiController {
 
         log.info("결제 응답={}", response.getResponse().toString());
     }
-
-
 }

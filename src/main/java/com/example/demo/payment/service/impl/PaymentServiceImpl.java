@@ -1,4 +1,4 @@
-package com.example.demo.payment.service;
+package com.example.demo.payment.service.impl;
 
 import com.example.demo.exception.MarkethingException;
 
@@ -7,6 +7,7 @@ import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRe
 import com.example.demo.payment.dto.PaymentCallbackRequest;
 import com.example.demo.payment.dto.RequestPayDto;
 import com.example.demo.payment.repository.PaymentRepository;
+import com.example.demo.payment.service.PaymentService;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
@@ -62,25 +63,20 @@ public class PaymentServiceImpl implements PaymentService {
                 throw new MarkethingException(PAYMENT_INCOMPLETE);
             }
 
-            // DB에 저장된 결제 금액
-            Long amount = marketPurchaseRequest.getPayment().getAmount();
-            // 실 결제 금액
+            int amount = marketPurchaseRequest.getPayment().getAmount();
             int iamportPrice = iamportResponse.getResponse().getAmount().intValue();
 
-            // 결제 금액 검증
             if(iamportPrice != amount) {
-                // 주문, 결제 삭제
                 marketPurchaseRequestRepository.delete(marketPurchaseRequest);
                 paymentRepository.delete(marketPurchaseRequest.getPayment());
 
-                // 결제금액 위변조로 의심되는 결제금액을 취소(아임포트)
                 iamportClient.cancelPaymentByImpUid(new CancelData(iamportResponse.getResponse().getImpUid(), true, new BigDecimal(iamportPrice)));
 
                 throw new MarkethingException(SUSPECT_PAYMENT_FORGERY);
             }
 
             // 결제 상태 변경
-            marketPurchaseRequest.getPayment().changePaymentBySuccess(iamportResponse.getResponse().getImpUid());
+            marketPurchaseRequest.getPayment().changePaymentBySuccess();
 
             return iamportResponse;
 
