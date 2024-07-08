@@ -53,7 +53,7 @@ public class SiteUser {
     @Column(name = "EMAIL", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "PASSWORD", length = 50, nullable = false)
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
 
     @Column(name = "NAME", length = 50, nullable = false)
