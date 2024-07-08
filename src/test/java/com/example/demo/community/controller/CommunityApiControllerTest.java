@@ -22,13 +22,16 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
 
 @WebMvcTest(CommunityApiController.class)
 // @Import(SecurityConfiguration.class) // 로그인 api 작성 후 주석 제거
 public class CommunityApiControllerTest {
-
+    @MockBean
+    private MappingMongoConverter mappingMongoConverter;
     @MockBean
     private CommunityService communityService;
 
@@ -50,8 +53,8 @@ public class CommunityApiControllerTest {
                 .willReturn(community);
 
         //when & then
-        mockMvc.perform(post("/api/communities")
-                .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/api/communities") //api 연결
+                .contentType(MediaType.APPLICATION_JSON) //json 객체를 지정
                 .content(content)) // requestBody에 들어가는 인자 저장
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -69,7 +72,7 @@ public class CommunityApiControllerTest {
                 , eq(1L)))
                 .willReturn(editCommunity);
 
-        //when & then
+        //when & then 언제 어떤 경과과
         mockMvc.perform(post("/api/communities/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)) // requestBody에 들어가는 인자 저장
