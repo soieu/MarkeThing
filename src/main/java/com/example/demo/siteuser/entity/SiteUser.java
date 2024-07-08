@@ -2,8 +2,8 @@ package com.example.demo.siteuser.entity;
 
 import com.example.demo.chat.entiity.ChatMessage;
 import com.example.demo.community.entity.Community;
-import com.example.demo.entity.Account;
 import com.example.demo.chat.entiity.ChatRoom;
+import com.example.demo.entity.Account;
 import com.example.demo.entity.Comment;
 import com.example.demo.entity.Manner;
 import com.example.demo.entity.ReplyComment;
@@ -111,7 +111,6 @@ public class SiteUser {
 
     @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MarketPurchaseRequest> purchaseRequests;
-
 
     @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RequestSuccess> requestSuccesses;
