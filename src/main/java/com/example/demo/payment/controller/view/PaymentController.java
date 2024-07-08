@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PaymentController {
     @GetMapping("/payment/success")
     public String successPaymentPage() {
-        return "success-payment";
+        return "success_payment";
     }
 
     @GetMapping("/payment/fail")
     public String failPaymentPage() {
-        return "fail-payment";
+        return "fail_payment";
     }
 }

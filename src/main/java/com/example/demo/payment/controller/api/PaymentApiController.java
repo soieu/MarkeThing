@@ -22,7 +22,5 @@ public class PaymentApiController {
     @PostMapping
     public void validationPayment(@RequestBody PaymentCallbackRequest request) {
         IamportResponse<Payment> response = paymentService.paymentByCallback(request);
-
-        log.info("결제 응답={}", response.getResponse().toString());
     }
 }

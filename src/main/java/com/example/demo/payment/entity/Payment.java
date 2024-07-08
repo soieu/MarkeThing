@@ -118,4 +118,5 @@ public class Payment {
     public void changePaymentBySuccess() {
             status = PaymentStatus.OK;
     }
+    public void changePaymentByFail() {status = PaymentStatus.CANCEL;}
 }

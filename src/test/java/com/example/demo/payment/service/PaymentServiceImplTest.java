@@ -60,7 +60,7 @@ public class PaymentServiceImplTest {
         given(payment.getStatus()).willReturn("paid");
         given(payment.getAmount()).willReturn(new BigDecimal(10000));
         given(payment.getImpUid()).willReturn("imp123");
-        given(marketPurchaseRequestRepository.findRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
+        given(marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
         given(marketPurchaseRequest.getPayment()).willReturn(entityPayment);
         given(entityPayment.getAmount()).willReturn(10000);
 
@@ -71,6 +71,7 @@ public class PaymentServiceImplTest {
         assertNotNull(result);
         then(entityPayment).should().changePaymentBySuccess();
     }
+
 
     @Test
     void testPaymentByCallback_PaymentIncomplete() throws IamportResponseException, IOException {
@@ -84,12 +85,11 @@ public class PaymentServiceImplTest {
         given(iamportClient.paymentByImpUid(anyString())).willReturn(iamportResponse);
         given(iamportResponse.getResponse()).willReturn(payment);
         given(payment.getStatus()).willReturn("ready");
-        given(marketPurchaseRequestRepository.findRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
+        given(marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
         given(marketPurchaseRequest.getPayment()).willReturn(entityPayment);
 
         // When & Then
         assertThrows(MarkethingException.class, () -> paymentService.paymentByCallback(request));
-        then(marketPurchaseRequestRepository).should().delete(marketPurchaseRequest);
         then(paymentRepository).should().delete(entityPayment);
     }
 
@@ -107,13 +107,12 @@ public class PaymentServiceImplTest {
         given(payment.getStatus()).willReturn("paid");
         given(payment.getAmount()).willReturn(new BigDecimal(10000));
         given(payment.getImpUid()).willReturn("imp123");
-        given(marketPurchaseRequestRepository.findRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
+        given(marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
         given(marketPurchaseRequest.getPayment()).willReturn(entityPayment);
         given(entityPayment.getAmount()).willReturn(9000);
 
         // When & Then
         assertThrows(MarkethingException.class, () -> paymentService.paymentByCallback(request));
-        then(marketPurchaseRequestRepository).should().delete(marketPurchaseRequest);
         then(paymentRepository).should().delete(entityPayment);
         then(iamportClient).should().cancelPaymentByImpUid(any(CancelData.class));
     }
@@ -122,7 +121,7 @@ public class PaymentServiceImplTest {
     void testPaymentByCallback_OrderNotExist() throws IamportResponseException, IOException {
         // Given
         PaymentCallbackRequest request = new PaymentCallbackRequest("order123", "imp123");
-        given(marketPurchaseRequestRepository.findRequestAndPayment(anyString())).willReturn(Optional.empty());
+        given(marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(anyString())).willReturn(Optional.empty());
 
         // When & Then
         assertThrows(MarkethingException.class, () -> paymentService.paymentByCallback(request));

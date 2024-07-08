@@ -13,22 +13,15 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ChatMessageRequestDto {
 
-    private Long roomId;
-    private Long senderId; // 발신자 하이디
+    private Long chatRoomId;
+    private Long senderId; // 발신자 아이디
     private String content; // 내용
-//
-//    private String chatRoomId; // 채팅 룸의 아이디
-//    private String senderId; //발신자의 아이디
-//    private String message; // 채팅의 내용
 
     public ChatMessage toEntity() {//일단 이렇게 사용을 함
         return ChatMessage.builder()
-                .chatRoomId(roomId)
+                .chatRoomId(chatRoomId)
                 .senderId(senderId)
                 .content(content)
                 .build();
     }
-
-
-
 }
