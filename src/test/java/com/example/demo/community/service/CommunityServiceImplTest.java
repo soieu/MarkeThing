@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -12,8 +11,9 @@ import static org.mockito.Mockito.verify;
 
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
-import com.example.demo.community.repository.CommunityRepository;
+import com.example.demo.community.repository.CommunityRepositoryCommunity;
 import com.example.demo.community.service.impl.CommunityServiceImpl;
+import com.example.demo.community.type.AreaType;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.siteuser.entity.SiteUser;
@@ -34,7 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class CommunityServiceImplTest {
 
     @Mock
-    private CommunityRepository communityRepository;
+    private CommunityRepositoryCommunity communityRepository;
 
     @Mock
     private SiteUserRepository siteUserRepository;
@@ -210,7 +210,7 @@ public class CommunityServiceImplTest {
     private static CommunityRequestDto getCommunityRequestDto() {
         return CommunityRequestDto
                 .builder()
-                .area("area")
+                .area(AreaType.SEOUL)
                 .title("title")
                 .content("content")
                 .postImg("postImg")
@@ -220,7 +220,7 @@ public class CommunityServiceImplTest {
     private static CommunityRequestDto getEditCommunityRequestDto() {
         return CommunityRequestDto
                 .builder()
-                .area("newArea")
+                .area(AreaType.GANGWON)
                 .title("newTitle")
                 .content("newContent")
                 .postImg("newPostImg")

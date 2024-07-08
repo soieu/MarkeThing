@@ -1,14 +1,21 @@
 package com.example.demo.community.controller.api;
 
+import com.example.demo.common.filter.dto.CommunityFilterRequestDto;
+import com.example.demo.community.dto.CommunityPreviewDto;
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.service.CommunityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,5 +41,24 @@ public class CommunityApiController {
     public void deleteCommunity(@PathVariable Long communityId) {
         String email = "mockEmail@gmail.com";
         communityService.delete(email, communityId);
+    }
+
+    @PostMapping("/list")
+    public ResponseEntity<Page<CommunityPreviewDto>> getCommunityList(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required = false, defaultValue = "date") String sort,
+            @RequestBody(required = false) CommunityFilterRequestDto communityFilterRequestDto) {
+
+        Sort sortOrder = Sort.unsorted(); // 특별한 정렬 조건 없음
+        if("date".equals(sort)) {
+            sortOrder = Sort.by("createdAt").descending();
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
+        var result = communityService.getCommunityByFilter(
+                communityFilterRequestDto.getFilter(), pageRequest);
+
+        return ResponseEntity.ok(result);
     }
 }

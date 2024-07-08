@@ -15,5 +15,5 @@ import lombok.NoArgsConstructor;
 public class CommunityFilterRequestDto {
 
     @JsonProperty("filtersForCommunity")
-    private CommunityFilterDto communityFilterDto;
+    private CommunityFilterDto filter;
 }

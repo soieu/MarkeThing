@@ -11,7 +11,9 @@ import com.example.demo.community.controller.api.CommunityApiController;
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.service.CommunityService;
+import com.example.demo.community.type.AreaType;
 import com.example.demo.siteuser.entity.SiteUser;
+import com.example.demo.siteuser.service.SiteUserService;
 import com.example.demo.type.AuthType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
@@ -22,6 +24,7 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,6 +34,9 @@ public class CommunityApiControllerTest {
 
     @MockBean
     private CommunityService communityService;
+
+    @MockBean
+    private MappingMongoConverter mappingMongoConverter;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -49,7 +55,7 @@ public class CommunityApiControllerTest {
         given(communityService.create(eq("mockEmail@gmail.com"), eq(communityRequestDto)))
                 .willReturn(community);
 
-        //when & then
+        // when & then
         mockMvc.perform(post("/api/communities")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content)) // requestBody에 들어가는 인자 저장
@@ -113,7 +119,7 @@ public class CommunityApiControllerTest {
     private static CommunityRequestDto getCommunityRequestDto() {
         return CommunityRequestDto
                 .builder()
-                .area("area")
+                .area(AreaType.SEOUL)
                 .title("title")
                 .content("content")
                 .postImg("postImg")
@@ -122,7 +128,7 @@ public class CommunityApiControllerTest {
     private static CommunityRequestDto getEditCommunityRequestDto() {
         return CommunityRequestDto
                 .builder()
-                .area("newArea")
+                .area(AreaType.GANGWON)
                 .title("newTitle")
                 .content("newContent")
                 .postImg("newPostImg")
