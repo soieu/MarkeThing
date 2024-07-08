@@ -2,6 +2,9 @@ package com.example.demo.marketpurchaserequest.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -70,22 +73,23 @@ public class MarketPurchaseRequestApiControllerTest {
             .location(geometryFactory.createPoint(new Coordinate(37.75402359, 128.8986233)))
             .build();
 
+    private final MarketPurchaseRequestDto marketPurchaseRequestDto = MarketPurchaseRequestDto.builder()
+            .title("test request")
+            .content("3 apples")
+            .fee(15000)
+            .meetupTime(LocalDate.now())
+            .meetupDate(LocalDate.now())
+            .meetupAddress("서울시")
+            .latitude(37.5509)
+            .longitude(127.0506)
+            .userId(siteUser.getId())
+            .marketId(market.getId())
+            .build();
+
+
     @Test
     void createMarketPurchaseRequest() throws Exception {
         // given
-        MarketPurchaseRequestDto marketPurchaseRequestDto = MarketPurchaseRequestDto.builder()
-                .title("test request")
-                .content("3 apples")
-                .fee(15000)
-                .meetupTime(LocalDate.now())
-                .meetupDate(LocalDate.now())
-                .meetupAddress("서울시")
-                .latitude(37.5509)
-                .longitude(127.0506)
-                .userId(siteUser.getId())
-                .marketId(market.getId())
-                .build();
-
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,market);
 
         given(marketPurchaseRequestService.createMarketPurchaseRequest(any())).willReturn(marketPurchaseRequest);
@@ -98,5 +102,18 @@ public class MarketPurchaseRequestApiControllerTest {
         // then
         resultActions.andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteMarketPurchaseRequest() throws Exception {
+        // given
+        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,market);
+
+        given(marketPurchaseRequestService.createMarketPurchaseRequest(any())).willReturn(marketPurchaseRequest);
+        doNothing().when(marketPurchaseRequestService).deleteMarketPurchaseRequest(
+                marketPurchaseRequest.getId());
+        // when & then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/requests/1"))
+                .andExpect(status().isNoContent()).andDo(print());
     }
 }
