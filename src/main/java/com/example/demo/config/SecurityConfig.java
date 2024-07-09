@@ -52,7 +52,7 @@ public class SecurityConfig {
     http
       .authorizeHttpRequests((auth) -> auth
         .requestMatchers(
-          new AntPathRequestMatcher("/"),
+          new AntPathRequestMatcher("/**"),
           new AntPathRequestMatcher("/login"),
           new AntPathRequestMatcher("/api/users/signUp")
         ).permitAll()
