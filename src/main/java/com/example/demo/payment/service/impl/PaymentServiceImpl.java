@@ -4,12 +4,11 @@ import com.example.demo.exception.MarkethingException;
 
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
-import com.example.demo.payment.dto.CancelPaymentRequest;
-import com.example.demo.payment.dto.PaymentCallbackRequest;
+import com.example.demo.payment.dto.CancelPaymentRequestDto;
+import com.example.demo.payment.dto.PaymentCallbackRequestDto;
 import com.example.demo.payment.dto.RequestPayDto;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.PaymentService;
-import com.example.demo.type.PaymentStatus;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
@@ -35,7 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final MarketPurchaseRequestRepository marketPurchaseRequestRepository;
 
     @Override
-    public RequestPayDto findRequestDto(String orderUid) {
+    public RequestPayDto findRequestDto(Long orderUid) {
 
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestRepository.findById(Long.valueOf(orderUid))
                 .orElseThrow(() -> new MarkethingException(ORDER_NOT_EXIST));
@@ -49,7 +48,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public IamportResponse<Payment> paymentByCallback(PaymentCallbackRequest request) {
+    public IamportResponse<Payment> paymentByCallback(PaymentCallbackRequestDto request) {
         try {
             // 결제 단건 조회(아임포트)
             IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(request.getPaymentUid());
@@ -87,10 +86,10 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public IamportResponse<Payment> cancelPayment(String paymentId, CancelPaymentRequest request) {
+    public IamportResponse<Payment> cancelPayment(Long paymentId, CancelPaymentRequestDto request) {
         try {
             // 결제 정보 조회
-            com.example.demo.payment.entity.Payment payment = paymentRepository.findById(Long.valueOf(paymentId))
+            com.example.demo.payment.entity.Payment payment = paymentRepository.findById(paymentId)
                     .orElseThrow(() -> new MarkethingException(PAYMENT_NOT_FOUND));
 
             // 아임포트 결제 취소 요청
@@ -99,7 +98,7 @@ public class PaymentServiceImpl implements PaymentService {
             IamportResponse<Payment> response = iamportClient.cancelPaymentByImpUid(cancelData);
 
             // 결제 취소 실패시 예외 발생
-            if (!response.getResponse().getStatus().equals("cancelled")) {
+            if (!"cancelled".equals(response.getResponse().getStatus())) {
                 throw new MarkethingException(PAYMENT_CANCEL_INCOMPLETE);
             }
 
@@ -113,4 +112,6 @@ public class PaymentServiceImpl implements PaymentService {
             throw new MarkethingException(IAMPORT_ERROR);
         }
     }
+
+
 }
