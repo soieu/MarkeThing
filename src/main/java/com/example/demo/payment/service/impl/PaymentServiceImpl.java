@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static com.example.demo.exception.type.ErrorCode.*;
 
@@ -35,7 +36,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public RequestPayDto findRequestDto(String orderUid) {
 
-        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestRepository.findMarketPurchaseRequestAndPaymentAndSiteUser(orderUid)
+        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestRepository.findById(Long.valueOf(orderUid))
                 .orElseThrow(() -> new MarkethingException(ORDER_NOT_EXIST));
 
         return RequestPayDto.builder()
@@ -52,22 +53,20 @@ public class PaymentServiceImpl implements PaymentService {
             // 결제 단건 조회(아임포트)
             IamportResponse<Payment> iamportResponse = iamportClient.paymentByImpUid(request.getPaymentUid());
             // 주문내역 조회
-            MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(request.getOrderUid())
-                    .orElseThrow(() -> new MarkethingException(ORDER_NOT_EXIST));
+            Optional<MarketPurchaseRequest> marketPurchaseRequest = Optional.ofNullable(marketPurchaseRequestRepository.findById(Long.valueOf(request.getOrderUid())).orElseThrow(() -> new MarkethingException(ORDER_NOT_EXIST)));
 
             // 결제 완료가 아니면
             if(!iamportResponse.getResponse().getStatus().equals("paid")) {
-                // 주문, 결제 삭제
-                paymentRepository.delete(marketPurchaseRequest.getPayment());
+                paymentRepository.delete(marketPurchaseRequest.get().getPayment());
 
                 throw new MarkethingException(PAYMENT_INCOMPLETE);
             }
 
-            int amount = marketPurchaseRequest.getPayment().getAmount();
+            int amount = marketPurchaseRequest.get().getPayment().getAmount();
             int iamportPrice = iamportResponse.getResponse().getAmount().intValue();
 
             if(iamportPrice != amount) {
-                paymentRepository.delete(marketPurchaseRequest.getPayment());
+                paymentRepository.delete(marketPurchaseRequest.get().getPayment());
 
                 iamportClient.cancelPaymentByImpUid(new CancelData(iamportResponse.getResponse().getImpUid(), true, new BigDecimal(iamportPrice)));
 
@@ -75,13 +74,13 @@ public class PaymentServiceImpl implements PaymentService {
             }
 
             // 결제 상태 변경
-            marketPurchaseRequest.getPayment().changePaymentBySuccess();
+            marketPurchaseRequest.get().getPayment().changePaymentBySuccess();
 
             return iamportResponse;
 
         } catch (IamportResponseException e) {
             throw new MarkethingException(IAMPORT_ERROR);
-        } catch (IOException e) {s
+        } catch (IOException e) {
             throw new MarkethingException(ORDER_NOT_EXIST);
         }
     }

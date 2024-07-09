@@ -10,6 +10,7 @@ import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -102,5 +103,7 @@ public class MarketPurchaseRequest {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+
 
 }

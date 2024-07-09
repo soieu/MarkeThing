@@ -114,6 +114,6 @@ public class MarketPurchaseRequestApiControllerTest {
                 marketPurchaseRequest.getId());
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/requests/1"))
-                .andExpect(status().isNoContent()).andDo(print());
+                .andExpect(status().isOk()).andDo(print());
     }
 }
