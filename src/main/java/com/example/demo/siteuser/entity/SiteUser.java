@@ -1,8 +1,8 @@
 package com.example.demo.siteuser.entity;
 
+import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.community.entity.Community;
 import com.example.demo.entity.Account;
-import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.entity.Comment;
 import com.example.demo.entity.Manner;
 import com.example.demo.entity.ReplyComment;
@@ -19,7 +19,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -43,7 +42,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@Table(name= "SITE_USER")
+@Table(name = "SITE_USER")
 public class SiteUser {
 
     @Id
