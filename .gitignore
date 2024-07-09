@@ -41,4 +41,4 @@ out/
 .vscode/
 
 ### macOS ###
-*/.DS_Store
+.DS_Store
