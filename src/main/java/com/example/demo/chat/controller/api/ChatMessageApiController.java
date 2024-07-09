@@ -26,6 +26,6 @@ public class ChatMessageApiController {
         headerAccessor.getSessionAttributes().put("chatRoomId", requestDto.getChatRoomId());
         chatMessageService.sendMessage(requestDto);
 
-        template.convertAndSend("/sub/chat/room/" + requestDto.getChatRoomId(), requestDto); // 이제 보내지는 것이겠죠?
+        template.convertAndSend("/sub/chat/room/" + requestDto.getChatRoomId(), requestDto); 
     }
 }

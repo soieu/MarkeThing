@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface SiteUserRepository extends JpaRepository<SiteUser, Long> {
 
     Optional<SiteUser> findByEmail(String email);
+
+  boolean existsByEmail(String email);
 }
