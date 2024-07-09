@@ -1,7 +1,7 @@
 package com.example.demo.payment.controller.api;
 
-import com.example.demo.payment.dto.CancelPaymentRequest;
-import com.example.demo.payment.dto.PaymentCallbackRequest;
+import com.example.demo.payment.dto.CancelPaymentRequestDto;
+import com.example.demo.payment.dto.PaymentCallbackRequestDto;
 import com.example.demo.payment.service.PaymentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siot.IamportRestClient.response.IamportResponse;
@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,10 +36,10 @@ public class PaymentApiControllerTest {
     @Test
     public void testValidationPayment() throws Exception {
         // Given
-        PaymentCallbackRequest request = new PaymentCallbackRequest("123" , "!23");
+        PaymentCallbackRequestDto request = new PaymentCallbackRequestDto();
 
         IamportResponse<Payment> response = new IamportResponse<>();
-        Mockito.when(paymentService.paymentByCallback(Mockito.any(PaymentCallbackRequest.class))).thenReturn(response);
+        Mockito.when(paymentService.paymentByCallback(Mockito.any(PaymentCallbackRequestDto.class))).thenReturn(response);
 
         // When
         mockMvc.perform(post("/api/payments")
@@ -50,12 +52,11 @@ public class PaymentApiControllerTest {
     @Test
     public void testCancelPayment() throws Exception {
         // Given
-        String paymentId = "testPaymentId";
-        CancelPaymentRequest request = new CancelPaymentRequest();
-        // request에 필요한 필드를 설정하세요
+        Long paymentId = 1234L;
+        CancelPaymentRequestDto request = new CancelPaymentRequestDto();
 
         IamportResponse<Payment> response = new IamportResponse<>();
-        Mockito.when(paymentService.cancelPayment(Mockito.eq(paymentId), Mockito.any(CancelPaymentRequest.class))).thenReturn(response);
+        Mockito.when(paymentService.cancelPayment(Mockito.eq(paymentId), Mockito.any(CancelPaymentRequestDto.class))).thenReturn(response);
 
         // When
         mockMvc.perform(post("/api/payments/{paymentId}/cancel", paymentId)

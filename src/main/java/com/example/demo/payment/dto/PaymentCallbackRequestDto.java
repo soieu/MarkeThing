@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class PaymentCallbackRequest {
-    private String paymentUid; // 결제 고유 번호
-    private String orderUid; // 주문 고유 번호
+public class PaymentCallbackRequestDto {
+    private Long paymentUid; // 결제 고유 번호
+    private Long orderUid; // 주문 고유 번호
 }

@@ -3,8 +3,8 @@ package com.example.demo.payment.service;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
-import com.example.demo.payment.dto.CancelPaymentRequest;
-import com.example.demo.payment.dto.PaymentCallbackRequest;
+import com.example.demo.payment.dto.CancelPaymentRequestDto;
+import com.example.demo.payment.dto.PaymentCallbackRequestDto;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.impl.PaymentServiceImpl;
 import com.siot.IamportRestClient.IamportClient;
@@ -50,7 +50,7 @@ public class PaymentServiceImplTest {
     @Test
     void testPaymentByCallback_SuccessfulPayment() throws IamportResponseException, IOException {
         // Given
-        PaymentCallbackRequest request = new PaymentCallbackRequest("123", "123");
+        PaymentCallbackRequestDto request = new PaymentCallbackRequestDto();
         IamportResponse<Payment> iamportResponse = mock(IamportResponse.class);
         Payment payment = mock(Payment.class);
         MarketPurchaseRequest marketPurchaseRequest = mock(MarketPurchaseRequest.class);
@@ -77,7 +77,7 @@ public class PaymentServiceImplTest {
     @Test
     void testPaymentByCallback_PaymentIncomplete() throws IamportResponseException, IOException {
         // Given
-        PaymentCallbackRequest request = new PaymentCallbackRequest("123", "123");
+        PaymentCallbackRequestDto request = new PaymentCallbackRequestDto();
         IamportResponse<Payment> iamportResponse = mock(IamportResponse.class);
         Payment payment = mock(Payment.class);
         MarketPurchaseRequest marketPurchaseRequest = mock(MarketPurchaseRequest.class);
@@ -97,7 +97,7 @@ public class PaymentServiceImplTest {
     @Test
     void testPaymentByCallback_AmountMismatch() throws IamportResponseException, IOException {
         // Given
-        PaymentCallbackRequest request = new PaymentCallbackRequest("123", "123");
+        PaymentCallbackRequestDto request = new PaymentCallbackRequestDto();
         IamportResponse<Payment> iamportResponse = mock(IamportResponse.class);
         Payment payment = mock(Payment.class);
         MarketPurchaseRequest marketPurchaseRequest = mock(MarketPurchaseRequest.class);
@@ -121,7 +121,7 @@ public class PaymentServiceImplTest {
     @Test
     void testPaymentByCallback_OrderNotExist() throws IamportResponseException, IOException {
         // Given
-        PaymentCallbackRequest request = new PaymentCallbackRequest("123", "123");
+        PaymentCallbackRequestDto request = new PaymentCallbackRequestDto();
         given(marketPurchaseRequestRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // When & Then
@@ -131,10 +131,10 @@ public class PaymentServiceImplTest {
     @Test
     void testCancelPayment_PaymentNotFound() {
         // Given
-        String paymentId = "1";
-        CancelPaymentRequest request = new CancelPaymentRequest(1000, "TestCancel");
+        Long paymentId = 1L;
+        CancelPaymentRequestDto request = new CancelPaymentRequestDto();
 
-        when(paymentRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(paymentRepository.findById(1L)).thenReturn(Optional.empty());
 
         // When
         Exception exception = assertThrows(MarkethingException.class, () -> {
@@ -149,16 +149,16 @@ public class PaymentServiceImplTest {
     @Test
     void testCancelPayment_IamportError() throws IamportResponseException, IOException {
         // Given
-        String paymentId = "1";
-        CancelPaymentRequest request = new CancelPaymentRequest(1000, "Test Cancel");
+        Long paymentId = 1L;
+        CancelPaymentRequestDto request = new CancelPaymentRequestDto();
 
         com.example.demo.payment.entity.Payment mockPayment = mock(com.example.demo.payment.entity.Payment.class);
 
-        when(paymentRepository.findById(anyLong())).thenReturn(Optional.of(mockPayment));
+        when(paymentRepository.findById(1L)).thenReturn(Optional.of(mockPayment));
         when(iamportClient.cancelPaymentByImpUid(any(CancelData.class))).thenThrow(IamportResponseException.class);
 
         // When
-        Exception exception = assertThrows(MarkethingException.class, () -> {
+        Exception exception = assertThrows(MarkethingException.class, () ->  {
             paymentService.cancelPayment(paymentId, request);
         });
 

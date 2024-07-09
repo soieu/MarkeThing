@@ -1,7 +1,7 @@
 package com.example.demo.payment.controller.view;
 
-import com.example.demo.payment.dto.CancelPaymentRequest;
-import com.example.demo.payment.dto.PaymentCallbackRequest;
+import com.example.demo.payment.dto.CancelPaymentRequestDto;
+import com.example.demo.payment.dto.PaymentCallbackRequestDto;
 import com.example.demo.payment.dto.RequestPayDto;
 import com.example.demo.payment.service.PaymentService;
 import com.siot.IamportRestClient.response.IamportResponse;
