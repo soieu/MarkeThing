@@ -15,6 +15,6 @@ public interface CommunityService {
 
     void delete(String email, Long communityId);
 
-    Page<CommunityPreviewDto> getCommunityByFilter(CommunityFilterDto communityFilterDto,
+    Page<CommunityPreviewDto> getCommunitiesByFilter(CommunityFilterDto communityFilterDto,
             Pageable pageable);
 }

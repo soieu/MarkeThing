@@ -8,7 +8,7 @@ import com.example.demo.common.filter.dto.CommunityFilterDto;
 import com.example.demo.community.dto.CommunityPreviewDto;
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
-import com.example.demo.community.repository.CommunityRepositoryCommunity;
+import com.example.demo.community.repository.CommunityRepository;
 import com.example.demo.community.service.CommunityService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.siteuser.entity.SiteUser;
@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommunityServiceImpl implements CommunityService {
 
-    private final CommunityRepositoryCommunity communityRepository;
+    private final CommunityRepository communityRepository;
     private final SiteUserRepository siteUserRepository;
 
     @Override
@@ -63,7 +63,7 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
-    public Page<CommunityPreviewDto> getCommunityByFilter(CommunityFilterDto communityFilterDto,
+    public Page<CommunityPreviewDto> getCommunitiesByFilter(CommunityFilterDto communityFilterDto,
             Pageable pageable) {
         if(communityFilterDto.getAreas().isEmpty()) {
             return communityRepository.findAll(pageable)

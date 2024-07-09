@@ -56,7 +56,8 @@ public class CommunityApiController {
         }
 
         PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
-        var result = communityService.getCommunityByFilter(
+
+        var result = communityService.getCommunitiesByFilter(
                 communityFilterRequestDto.getFilter(), pageRequest);
 
         return ResponseEntity.ok(result);
