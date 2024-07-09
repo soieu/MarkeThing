@@ -4,6 +4,7 @@ import com.example.demo.exception.MarkethingException;
 
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
+import com.example.demo.payment.dto.CancelPaymentRequest;
 import com.example.demo.payment.dto.PaymentCallbackRequest;
 import com.example.demo.payment.dto.RequestPayDto;
 import com.example.demo.payment.repository.PaymentRepository;
@@ -85,6 +86,31 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
+    @Override
+    public IamportResponse<Payment> cancelPayment(String paymentId, CancelPaymentRequest request) {
+        try {
+            // 결제 정보 조회
+            com.example.demo.payment.entity.Payment payment = paymentRepository.findById(Long.valueOf(paymentId))
+                    .orElseThrow(() -> new MarkethingException(PAYMENT_NOT_FOUND));
 
+            // 아임포트 결제 취소 요청
+            CancelData cancelData = new CancelData(payment.getImpUid(), true, new BigDecimal(request.getAmount()));
+            cancelData.setReason(request.getReason());
+            IamportResponse<Payment> response = iamportClient.cancelPaymentByImpUid(cancelData);
 
+            // 결제 취소 실패시 예외 발생
+            if (!response.getResponse().getStatus().equals("cancelled")) {
+                throw new MarkethingException(PAYMENT_CANCEL_INCOMPLETE);
+            }
+
+            // 결제 상태 변경
+            payment.changePaymentByCancel();
+            paymentRepository.save(payment);
+
+            return response;
+        } catch (IamportResponseException | IOException e) {
+            // 결제 취소 실패
+            throw new MarkethingException(IAMPORT_ERROR);
+        }
+    }
 }

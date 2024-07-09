@@ -40,6 +40,8 @@ public enum ErrorCode {
     SUSPECT_PAYMENT_FORGERY(HttpStatus.BAD_REQUEST.value(), "결제 위변조가 의심됩니다."),
     ORDER_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "없는 주문정보입니다."),
     PAYMENT_INCOMPLETE(HttpStatus.BAD_REQUEST.value(), "결제가 완료되지 않았습니다."),
+    PAYMENT_CANCEL_INCOMPLETE(HttpStatus.BAD_REQUEST.value(), "결제취소가 완료되지 않았습니다."),
+    PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "없는 결제정보입니다."),
 
     // INTERNAL_SERVER_ERROR
     SMS_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR.value(), "sms 문자 전송에 실패했습니다."),
