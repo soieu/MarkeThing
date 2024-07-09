@@ -9,9 +9,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.example.demo.common.filter.dto.CommunityFilterDto;
+import com.example.demo.community.dto.CommunityPreviewDto;
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
-import com.example.demo.community.repository.CommunityRepositoryCommunity;
+import com.example.demo.community.repository.CommunityRepository;
 import com.example.demo.community.service.impl.CommunityServiceImpl;
 import com.example.demo.community.type.AreaType;
 import com.example.demo.exception.MarkethingException;
@@ -20,6 +22,8 @@ import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,12 +33,16 @@ import org.locationtech.jts.geom.Point;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 @ExtendWith(MockitoExtension.class)
 public class CommunityServiceImplTest {
 
     @Mock
-    private CommunityRepositoryCommunity communityRepository;
+    private CommunityRepository communityRepository;
 
     @Mock
     private SiteUserRepository siteUserRepository;
@@ -182,6 +190,47 @@ public class CommunityServiceImplTest {
 
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.COMMUNITY_NOT_FOUND);
+    }
+
+    @Test
+    void getCommunitiesByFilter() {
+        // given
+        CommunityFilterDto communityFilterDto = getFilterDto();
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+
+        SiteUser siteUser = getSiteUser();
+        CommunityRequestDto communityRequestDto = getCommunityRequestDto();
+        Community community = communityRequestDto.toEntity(siteUser);
+        List<Community> communities = new ArrayList<>();
+        communities.add(community);
+
+        PageImpl<Community> communityPage
+                = new PageImpl<>(communities, pageRequest, communities.size());
+
+        given(communityRepository.findAllByFilter(communityFilterDto, pageRequest))
+                .willReturn(communityPage);
+
+        // when
+        var result = communityService.getCommunitiesByFilter(communityFilterDto, pageRequest);
+
+        // then
+        assertThat(result.getContent().get(0).getArea()).isEqualTo(community.getArea());
+        assertThat(result.getContent().get(0).getTitle()).isEqualTo(community.getTitle());
+    }
+
+    private static CommunityPreviewDto getCommunityPreviewDto() {
+        return CommunityPreviewDto.builder()
+                .area(AreaType.SEOUL)
+                .title("title")
+                .build();
+    }
+
+    private static CommunityFilterDto getFilterDto() {
+        List<AreaType> areaTypes = new ArrayList<>();
+        areaTypes.add(AreaType.SEOUL);
+        return CommunityFilterDto.builder()
+                .areas(areaTypes)
+                .build();
     }
 
     private static SiteUser getSiteUser() {
