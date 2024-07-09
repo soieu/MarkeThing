@@ -25,7 +25,7 @@ public class PaymentApiController {
         IamportResponse<Payment> response = paymentService.paymentByCallback(request);
     }
 
-    @PostMapping("/payments/{paymentId}/cancel")
+    @PostMapping("/{paymentId}/cancel")
     public void cancelPayment(@PathVariable String paymentId,
                               @RequestBody CancelPaymentRequest request) {
         IamportResponse<Payment> response = paymentService.cancelPayment(paymentId, request);

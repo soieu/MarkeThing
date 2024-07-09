@@ -1,82 +1,94 @@
 package com.example.demo.payment.controller.api;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import com.example.demo.exception.MarkethingException;
+import com.example.demo.payment.dto.CancelPaymentRequest;
 import com.example.demo.payment.dto.PaymentCallbackRequest;
 import com.example.demo.payment.service.PaymentService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.slf4j.LoggerFactory;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static com.example.demo.exception.type.ErrorCode.ORDER_NOT_EXIST;
-import static org.mockito.BDDMockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
+@SpringBootTest
+@AutoConfigureMockMvc
 public class PaymentApiControllerTest {
 
-    @InjectMocks
-    private PaymentApiController paymentApiController;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private PaymentService paymentService;
 
-    private ListAppender<ILoggingEvent> logAppender;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-
-        Logger logger = (Logger) LoggerFactory.getLogger(PaymentApiController.class);
-        logAppender = new ListAppender<>();
-        logAppender.start();
-        logger.addAppender(logAppender);
-    }
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
-    void testValidationPayment_Success() throws Exception {
+    public void testValidationPayment() throws Exception {
         // Given
-        PaymentCallbackRequest request = new PaymentCallbackRequest("order123", "imp123");
-        IamportResponse<Payment> mockResponse = mock(IamportResponse.class);
-        Payment mockPayment = mock(Payment.class);
+        PaymentCallbackRequest request = new PaymentCallbackRequest("123" , "!23");
 
-        given(paymentService.paymentByCallback(any(PaymentCallbackRequest.class))).willReturn(mockResponse);
-        given(mockResponse.getResponse()).willReturn(mockPayment);
-        given(mockPayment.toString()).willReturn("MockPaymentString");
+        IamportResponse<Payment> response = new IamportResponse<>();
+        Mockito.when(paymentService.paymentByCallback(Mockito.any(PaymentCallbackRequest.class))).thenReturn(response);
 
         // When
-        paymentApiController.validationPayment(request);
-
-        // Then
-        then(paymentService).should().paymentByCallback(request);
-
-        // Log verification
-        List<ILoggingEvent> logsList = logAppender.list;
-        assertTrue(logsList.stream()
-                .anyMatch(event -> event.getFormattedMessage().contains("결제 응답=MockPaymentString")));
+        mockMvc.perform(post("/api/payments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                // Then
+                .andExpect(status().isOk());
     }
 
     @Test
-    void testValidationPayment_PaymentServiceThrowsException() {
+    public void testCancelPayment() throws Exception {
         // Given
-        PaymentCallbackRequest request = new PaymentCallbackRequest("order123", "imp123");
-        given(paymentService.paymentByCallback(any(PaymentCallbackRequest.class)))
-                .willThrow(new MarkethingException(ORDER_NOT_EXIST));
+        String paymentId = "testPaymentId";
+        CancelPaymentRequest request = new CancelPaymentRequest();
+        // request에 필요한 필드를 설정하세요
 
-        // When & Then
-        assertThrows(MarkethingException.class, () -> paymentApiController.validationPayment(request));
-        then(paymentService).should().paymentByCallback(request);
+        IamportResponse<Payment> response = new IamportResponse<>();
+        Mockito.when(paymentService.cancelPayment(Mockito.eq(paymentId), Mockito.any(CancelPaymentRequest.class))).thenReturn(response);
 
-        // Log verification
-        List<ILoggingEvent> logsList = logAppender.list;
-        assertTrue(logsList.isEmpty());
+        // When
+        mockMvc.perform(post("/api/payments/{paymentId}/cancel", paymentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                // Then
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testValidationPaymentWithBadRequest() throws Exception {
+        // Given
+        String invalidJson = "{ invalid json }";
+
+        // When
+        mockMvc.perform(post("/api/payments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJson))
+                // Then
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testCancelPaymentWithBadRequest() throws Exception {
+        // Given
+        String paymentId = "testPaymentId";
+        String invalidJson = "{ invalid json }";
+
+        // When
+        mockMvc.perform(post("/api/payments/{paymentId}/cancel", paymentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJson))
+                // Then
+                .andExpect(status().isBadRequest());
     }
 }
