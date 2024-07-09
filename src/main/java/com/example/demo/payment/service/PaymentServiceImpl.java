@@ -80,7 +80,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
 
             // 결제 상태 변경
-            marketPurchaseRequest.getPayment().changePaymentBySuccess(iamportResponse.getResponse().getImpUid());
+            marketPurchaseRequest.getPayment().changePaymentBySuccess();
 
             return iamportResponse;
 
