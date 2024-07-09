@@ -53,11 +53,11 @@ public class CommunityServiceImplTest {
     @Test
     void createSuccess() {
         // given
-        SiteUser siteUser = getSiteUser();
-        CommunityRequestDto communityRequestDto = getCommunityRequestDto();
-        Community community = communityRequestDto.toEntity(siteUser);
+        SiteUser siteUser = getSiteUser(); // 사용자를 지정함
+        CommunityRequestDto communityRequestDto = getCommunityRequestDto(); // dto도!
+        Community community = communityRequestDto.toEntity(siteUser); //dto로 부터 community를 찾겠지
 
-        given(siteUserRepository.findByEmail(siteUser.getEmail()))
+        given(siteUserRepository.findByEmail(siteUser.getEmail())) //
                 .willReturn(Optional.of(siteUser));
         given(communityRepository.save(any(Community.class)))
                 .willReturn(community);
@@ -71,14 +71,9 @@ public class CommunityServiceImplTest {
 
     @Test
     void createFailedByEmailNotFound() {
-        // given
-        given(siteUserRepository.findByEmail("mockEmail@gmail.com"))
-                .willReturn(Optional.empty());
-
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
                 () -> communityService.create("mockEmail@gmail.com", getCommunityRequestDto()));
-
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.EMAIL_NOT_FOUND);
     }

@@ -17,6 +17,7 @@ public enum ErrorCode {
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 채팅방입니다."),
     COMMUNITY_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"커뮤니티를 찾을 수 없습니다."),
     REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 의뢰글 입니다,"),
+    MARKET_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"시장을 찾을 수 없습니다."),
 
     // UNAUTHORIZED
     LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED.value(), "로그인이 필요한 서비스입니다."),
@@ -36,9 +37,13 @@ public enum ErrorCode {
     KAKAO_USER_INFO_FAIL(HttpStatus.BAD_REQUEST.value(),"카카오 사용자 정보 조회에 실패했습니다."),
     PHONE_AUTH_NUM_EXPIRED(HttpStatus.BAD_REQUEST.value(), "휴대폰 인증 번호가 만료되었습니다."),
     PHONE_AUTH_NUM_DOESNT_MATCH(HttpStatus.BAD_REQUEST.value(), "휴대폰 인증 번호가 일치하지 않습니다."),
+    SUSPECT_PAYMENT_FORGERY(HttpStatus.BAD_REQUEST.value(), "결제 위변조가 의심됩니다."),
+    ORDER_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "없는 주문정보입니다."),
+    PAYMENT_INCOMPLETE(HttpStatus.BAD_REQUEST.value(), "결제가 완료되지 않았습니다."),
 
     // INTERNAL_SERVER_ERROR
     SMS_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR.value(), "sms 문자 전송에 실패했습니다."),
+    IAMPORT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "아임포트 API 호출을 실패했습니다."),
     ;
 
     private final int code;

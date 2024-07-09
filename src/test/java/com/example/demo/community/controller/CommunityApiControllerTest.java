@@ -39,10 +39,12 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+
 @WebMvcTest(CommunityApiController.class)
 // @Import(SecurityConfiguration.class) // 로그인 api 작성 후 주석 제거
 public class CommunityApiControllerTest {
-
+    @MockBean
+    private MappingMongoConverter mappingMongoConverter;
     @MockBean
     private CommunityService communityService;
 
