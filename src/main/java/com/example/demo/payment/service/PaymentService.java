@@ -14,5 +14,5 @@ public interface PaymentService {
     IamportResponse<Payment> paymentByCallback(PaymentCallbackRequest request);
 
     // 결제 취소
-     IamportResponse<Payment> cancelPayment(String paymentId, CancelPaymentRequest request);
+    IamportResponse<Payment> cancelPayment(String paymentId, CancelPaymentRequest request);
 }
