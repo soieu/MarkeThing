@@ -5,8 +5,9 @@ import static com.example.demo.exception.type.ErrorCode.EMAIL_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.UNAUTHORIZED_USER;
 
 import com.example.demo.common.filter.dto.CommunityFilterDto;
-import com.example.demo.community.dto.CommunityPreviewDto;
-import com.example.demo.community.dto.CommunityRequestDto;
+import com.example.demo.community.dto.community.CommunityDetailDto;
+import com.example.demo.community.dto.community.CommunityPreviewDto;
+import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.repository.CommunityRepository;
 import com.example.demo.community.service.CommunityService;
@@ -71,6 +72,14 @@ public class CommunityServiceImpl implements CommunityService {
         }
         return communityRepository.findAllByFilter(communityFilterDto, pageable)
                 .map(CommunityPreviewDto::fromEntity);
+    }
+
+    @Override
+    public CommunityDetailDto getCommunityDetail(Long communityId) {
+        var community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new MarkethingException(COMMUNITY_NOT_FOUND));
+
+        return CommunityDetailDto.fromEntity(community);
     }
 
     private static void validateAuthorization(SiteUser siteUser, Community community) {

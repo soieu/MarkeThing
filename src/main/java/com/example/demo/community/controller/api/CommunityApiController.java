@@ -1,8 +1,9 @@
 package com.example.demo.community.controller.api;
 
 import com.example.demo.common.filter.dto.CommunityFilterRequestDto;
-import com.example.demo.community.dto.CommunityPreviewDto;
-import com.example.demo.community.dto.CommunityRequestDto;
+import com.example.demo.community.dto.community.CommunityDetailDto;
+import com.example.demo.community.dto.community.CommunityPreviewDto;
+import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.service.CommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,5 +63,10 @@ public class CommunityApiController {
                 communityFilterRequestDto.getFilter(), pageRequest);
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{communityId}")
+    public CommunityDetailDto getCommunityDetail(@PathVariable Long communityId) {
+        return communityService.getCommunityDetail(communityId);
     }
 }

@@ -1,10 +1,12 @@
 package com.example.demo.community.entity;
 
 
-import com.example.demo.community.dto.CommunityRequestDto;
+import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.type.AreaType;
 import com.example.demo.siteuser.entity.SiteUser;
 import java.time.LocalDateTime;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -15,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -66,6 +69,9 @@ public class Community {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime  updatedAt;
+
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 
     public void update(CommunityRequestDto communityRequestDto) {
         area = communityRequestDto.getArea();
