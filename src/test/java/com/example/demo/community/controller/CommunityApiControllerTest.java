@@ -3,7 +3,6 @@ package com.example.demo.community.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,13 +42,11 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(CommunityApiController.class)
 // @Import(SecurityConfiguration.class) // 로그인 api 작성 후 주석 제거
 public class CommunityApiControllerTest {
+
     @MockBean
     private MappingMongoConverter mappingMongoConverter;
     @MockBean
     private CommunityService communityService;
-
-    @MockBean
-    private MappingMongoConverter mappingMongoConverter;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -70,8 +67,8 @@ public class CommunityApiControllerTest {
 
         // when & then
         mockMvc.perform(post("/api/communities")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content)) // requestBody에 들어가는 인자 저장
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)) // requestBody에 들어가는 인자 저장
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -119,8 +116,9 @@ public class CommunityApiControllerTest {
         Page<CommunityPreviewDto> pages
                 = new PageImpl<>(communityPreviewDtos, pageRequest, communityPreviewDtos.size());
 
-        given(communityService.getCommunitiesByFilter(any(), any())) // 컨트롤러 내 서비스 단의 인자를 잡지 못래 any()로 대체
-        .willReturn(pages);
+        given(communityService.getCommunitiesByFilter(any(),
+                any())) // 컨트롤러 내 서비스 단의 인자를 잡지 못래 any()로 대체
+                .willReturn(pages);
 
         //when & then
         mockMvc.perform(post("/api/communities/list")
@@ -130,7 +128,8 @@ public class CommunityApiControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)) // requestBody에 들어가는 인자 저장
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].area").value(communityPreviewDto.getArea().toString()))
+                .andExpect(jsonPath("$.content[0].area").value(
+                        communityPreviewDto.getArea().toString()))
                 .andExpect(jsonPath("$.content[0].title").value(communityPreviewDto.getTitle()))
                 .andDo(print());
     }
@@ -188,6 +187,7 @@ public class CommunityApiControllerTest {
                 .postImg("postImg")
                 .build();
     }
+
     private static CommunityRequestDto getEditCommunityRequestDto() {
         return CommunityRequestDto
                 .builder()
