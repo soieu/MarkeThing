@@ -3,6 +3,7 @@ package com.example.demo.payment.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.*;
 
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
@@ -68,7 +69,7 @@ public class Payment {
     private String name;
 
     @Column(name = "AMOUNT", nullable = false)
-    private int amount;
+    private Long amount;
 
     @Column(name = "BUYER_NAME")
     private String buyerName;
@@ -115,8 +116,7 @@ public class Payment {
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
 
-    public void changePaymentBySuccess() {
-            status = PaymentStatus.OK;
+    public void changePaymentBySuccess(String impUid) {
+
     }
-    public void changePaymentByCancel() {status = PaymentStatus.CANCEL;}
 }

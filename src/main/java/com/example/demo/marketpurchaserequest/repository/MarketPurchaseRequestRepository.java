@@ -8,6 +8,16 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface MarketPurchaseRequestRepository extends JpaRepository<MarketPurchaseRequest,
-        Long> {
+public interface MarketPurchaseRequestRepository extends JpaRepository<MarketPurchaseRequest,Long> {
+    @Query("select m from MarketPurchaseRequest m" +
+            " left join fetch m.payment p" +
+            " left join fetch m.siteUser s" +
+            " where m.id = :id")
+    Optional<MarketPurchaseRequest> findRequestAndPaymentAndMember(String id);
+
+    @Query("select m from MarketPurchaseRequest m" +
+            " left join fetch m.payment p" +
+            " where m.id = :id")
+    Optional<MarketPurchaseRequest> findRequestAndPayment(String id);
+
 }
