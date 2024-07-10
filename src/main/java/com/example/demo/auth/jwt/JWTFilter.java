@@ -2,6 +2,8 @@ package com.example.demo.auth.jwt;
 
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
+import com.example.demo.siteuser.entity.SiteUser;
+import com.example.demo.siteuser.repository.SiteUserRepository;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -12,6 +14,11 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -42,6 +49,7 @@ public class JWTFilter extends OncePerRequestFilter {
             // 토큰 소멸 시간 검증
             if (jwtUtil.isExpired(token)) {
                 throw new MarkethingException(ErrorCode.TOKEN_EXPIRED);
+
             } else {
                 chain.doFilter(request, response);
             }

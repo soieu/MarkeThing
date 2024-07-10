@@ -2,18 +2,21 @@ package com.example.demo.siteuser.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
+import com.example.demo.siteuser.dto.SiteUserResponseDto;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.siteuser.service.impl.SiteUserServiceImpl;
 import com.example.demo.type.AuthType;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Coordinate;
@@ -34,7 +37,8 @@ public class SiteUserServiceTest {
     private static final GeometryFactory geometryFactory = new GeometryFactory();
 
     @Test
-    void success_delete_site_user() throws Exception {
+    @DisplayName("회원 삭제 성공 테스트")
+    void successDeleteSiteUser() throws Exception {
         // given
         SiteUser siteUser = getSiteUser();
         lenient().when(siteUserRepository.findByEmail(siteUser.getEmail())).thenReturn(
@@ -46,7 +50,8 @@ public class SiteUserServiceTest {
     }
 
     @Test
-    void fail_delete_site_user() throws Exception {
+    @DisplayName("회원 삭제 실패 테스트 - USER NOT FOUND")
+    void failDeleteSiteUser() throws Exception {
         // given
         SiteUser siteUser = getSiteUser();
         lenient().when(siteUserRepository.findByEmail(siteUser.getEmail())).thenReturn(
@@ -54,6 +59,31 @@ public class SiteUserServiceTest {
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
                 () -> siteUserServiceImpl.deleteSiteUser(siteUser.getEmail()));
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("내 정보 보여주기 성공 테스트")
+    void successGetMyInformation() throws Exception {
+        // given
+        SiteUser siteUser = getSiteUser();
+        given(siteUserRepository.findByEmail(siteUser.getEmail())).willReturn(Optional.of(siteUser));
+        // when
+        SiteUserResponseDto find = siteUserServiceImpl.getMyInformation(siteUser.getEmail());
+        // then
+        assertEquals(find.getEmail(), siteUser.getEmail());
+        assertEquals(find.getName(), siteUser.getName());
+    }
+
+    @Test
+    @DisplayName("내 정보 보여주기 실패 테스트 - USER NOT FOUND")
+    void failGetMyInformation() throws Exception {
+        SiteUser siteUser = getSiteUser();
+        given(siteUserRepository.findByEmail(siteUser.getEmail())).willReturn(Optional.empty());
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> siteUserServiceImpl.getMyInformation(siteUser.getEmail()));
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
