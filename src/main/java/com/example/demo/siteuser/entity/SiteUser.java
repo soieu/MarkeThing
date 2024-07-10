@@ -43,7 +43,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
