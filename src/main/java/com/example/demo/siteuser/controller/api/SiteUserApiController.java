@@ -17,7 +17,7 @@ public class SiteUserApiController {
     @DeleteMapping()
     public void deleteSiteUser() {
         // TODO: 로그인 된 USER 정보 입력 받아서 삭제하는 걸로 수정 필요!
-        Long userId = 1L;
-        siteUserService.deleteSiteUser(userId);
+        String email = "mockEmail@gmail.com";
+        siteUserService.deleteSiteUser(email);
     }
 }
