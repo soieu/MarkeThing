@@ -27,7 +27,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "PAYMENT")
-public class Payment {
+public class Pay {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -104,7 +104,7 @@ public class Payment {
     @Column(name = "BUYER_ADDR",nullable = false)
     private Long buyerAddr;
 
-    @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "pay", cascade = CascadeType.ALL, orphanRemoval = true)
     private PaymentCancelDetail paymentCancelDetails;
 
     @CreatedDate

@@ -5,6 +5,7 @@ import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
 import com.example.demo.payment.dto.CancelPaymentRequestDto;
 import com.example.demo.payment.dto.PaymentCallbackRequestDto;
+import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.impl.PaymentServiceImpl;
 import com.siot.IamportRestClient.IamportClient;
@@ -28,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
-public class PaymentServiceImplTest {
+public class PayServiceImplTest {
 
     @InjectMocks
     private PaymentServiceImpl paymentService;
@@ -54,7 +55,7 @@ public class PaymentServiceImplTest {
         IamportResponse<Payment> iamportResponse = mock(IamportResponse.class);
         Payment payment = mock(Payment.class);
         MarketPurchaseRequest marketPurchaseRequest = mock(MarketPurchaseRequest.class);
-        com.example.demo.payment.entity.Payment entityPayment = mock(com.example.demo.payment.entity.Payment.class);
+        Pay entityPay = mock(Pay.class);
 
         given(iamportClient.paymentByImpUid(anyString())).willReturn(iamportResponse);
         given(iamportResponse.getResponse()).willReturn(payment);
@@ -66,15 +67,15 @@ public class PaymentServiceImplTest {
 =======
         given(marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
 >>>>>>> parent of bce456f (update: JPA 관련 수정)
-        given(marketPurchaseRequest.getPayment()).willReturn(entityPayment);
-        given(entityPayment.getAmount()).willReturn(10000);
+        given(marketPurchaseRequest.getPay()).willReturn(entityPay);
+        given(entityPay.getAmount()).willReturn(10000);
 
         // When
         IamportResponse<Payment> result = paymentService.paymentByCallback(request);
 
         // Then
         assertNotNull(result);
-        then(entityPayment).should().changePaymentBySuccess();
+        then(entityPay).should().changePaymentBySuccess();
     }
 
 
@@ -85,7 +86,7 @@ public class PaymentServiceImplTest {
         IamportResponse<Payment> iamportResponse = mock(IamportResponse.class);
         Payment payment = mock(Payment.class);
         MarketPurchaseRequest marketPurchaseRequest = mock(MarketPurchaseRequest.class);
-        com.example.demo.payment.entity.Payment entityPayment = mock(com.example.demo.payment.entity.Payment.class);
+        Pay entityPay = mock(Pay.class);
 
         given(iamportClient.paymentByImpUid(anyString())).willReturn(iamportResponse);
         given(iamportResponse.getResponse()).willReturn(payment);
@@ -95,11 +96,11 @@ public class PaymentServiceImplTest {
 =======
         given(marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
 >>>>>>> parent of bce456f (update: JPA 관련 수정)
-        given(marketPurchaseRequest.getPayment()).willReturn(entityPayment);
+        given(marketPurchaseRequest.getPay()).willReturn(entityPay);
 
         // When & Then
         assertThrows(MarkethingException.class, () -> paymentService.paymentByCallback(request));
-        then(paymentRepository).should().delete(entityPayment);
+        then(paymentRepository).should().delete(entityPay);
     }
 
     @Test
@@ -109,7 +110,7 @@ public class PaymentServiceImplTest {
         IamportResponse<Payment> iamportResponse = mock(IamportResponse.class);
         Payment payment = mock(Payment.class);
         MarketPurchaseRequest marketPurchaseRequest = mock(MarketPurchaseRequest.class);
-        com.example.demo.payment.entity.Payment entityPayment = mock(com.example.demo.payment.entity.Payment.class);
+        Pay entityPay = mock(Pay.class);
 
         given(iamportClient.paymentByImpUid(anyString())).willReturn(iamportResponse);
         given(iamportResponse.getResponse()).willReturn(payment);
@@ -121,12 +122,12 @@ public class PaymentServiceImplTest {
 =======
         given(marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
 >>>>>>> parent of bce456f (update: JPA 관련 수정)
-        given(marketPurchaseRequest.getPayment()).willReturn(entityPayment);
-        given(entityPayment.getAmount()).willReturn(9000);
+        given(marketPurchaseRequest.getPay()).willReturn(entityPay);
+        given(entityPay.getAmount()).willReturn(9000);
 
         // When & Then
         assertThrows(MarkethingException.class, () -> paymentService.paymentByCallback(request));
-        then(paymentRepository).should().delete(entityPayment);
+        then(paymentRepository).should().delete(entityPay);
         then(iamportClient).should().cancelPaymentByImpUid(any(CancelData.class));
     }
 
@@ -160,7 +161,7 @@ public class PaymentServiceImplTest {
 
         // Then
         assertNotNull(exception);
-        verify(paymentRepository, never()).save(any(com.example.demo.payment.entity.Payment.class));
+        verify(paymentRepository, never()).save(any(Pay.class));
     }
 
     @Test
@@ -169,9 +170,9 @@ public class PaymentServiceImplTest {
         Long paymentId = 1L;
         CancelPaymentRequestDto request = new CancelPaymentRequestDto();
 
-        com.example.demo.payment.entity.Payment mockPayment = mock(com.example.demo.payment.entity.Payment.class);
+        Pay mockPay = mock(Pay.class);
 
-        when(paymentRepository.findById(1L)).thenReturn(Optional.of(mockPayment));
+        when(paymentRepository.findById(1L)).thenReturn(Optional.of(mockPay));
         when(iamportClient.cancelPaymentByImpUid(any(CancelData.class))).thenThrow(IamportResponseException.class);
 
         // When
@@ -181,6 +182,6 @@ public class PaymentServiceImplTest {
 
         // Then
         assertNotNull(exception);
-        verify(paymentRepository, never()).save(any(com.example.demo.payment.entity.Payment.class));
+        verify(paymentRepository, never()).save(any(Pay.class));
     }
 }

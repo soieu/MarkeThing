@@ -29,7 +29,7 @@ public class PaymentCancelDetail {
 
     @OneToOne
     @JoinColumn(name = "PAYMENT_ID", nullable = false)
-    private Payment payment;
+    private Pay pay;
 
     @Column(name = "PG_TID", nullable = false)
     private Long pgTid;

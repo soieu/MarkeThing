@@ -1,12 +1,12 @@
 package com.example.demo.payment.service.impl;
 
 import com.example.demo.exception.MarkethingException;
-
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
 import com.example.demo.payment.dto.CancelPaymentRequestDto;
 import com.example.demo.payment.dto.PaymentCallbackRequestDto;
 import com.example.demo.payment.dto.RequestPayDto;
+import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.PaymentService;
 import com.siot.IamportRestClient.IamportClient;
@@ -14,10 +14,10 @@ import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -40,7 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         return RequestPayDto.builder()
                 .buyerName(marketPurchaseRequest.getSiteUser().getName())
-                .paymentPrice((long) marketPurchaseRequest.getPayment().getAmount())
+                .paymentPrice((long) marketPurchaseRequest.getPay().getAmount())
                 .itemName(marketPurchaseRequest.getTitle())
                 .orderUid(String.valueOf(marketPurchaseRequest.getId()))
                 .build();
@@ -58,16 +58,16 @@ public class PaymentServiceImpl implements PaymentService {
             // 결제 완료가 아니면
             if(!iamportResponse.getResponse().getStatus().equals("paid")) {
                 // 주문, 결제 삭제
-                paymentRepository.delete(marketPurchaseRequest.getPayment());
+                paymentRepository.delete(marketPurchaseRequest.getPay());
 
                 throw new MarkethingException(PAYMENT_INCOMPLETE);
             }
 
-            int amount = marketPurchaseRequest.getPayment().getAmount();
+            int amount = marketPurchaseRequest.getPay().getAmount();
             int iamportPrice = iamportResponse.getResponse().getAmount().intValue();
 
             if(iamportPrice != amount) {
-                paymentRepository.delete(marketPurchaseRequest.getPayment());
+                paymentRepository.delete(marketPurchaseRequest.getPay());
 
                 iamportClient.cancelPaymentByImpUid(new CancelData(iamportResponse.getResponse().getImpUid(), true, new BigDecimal(iamportPrice)));
 
@@ -75,7 +75,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
 
             // 결제 상태 변경
-            marketPurchaseRequest.getPayment().changePaymentBySuccess();
+            marketPurchaseRequest.getPay().changePaymentBySuccess();
 
             return iamportResponse;
 
@@ -90,11 +90,11 @@ public class PaymentServiceImpl implements PaymentService {
     public IamportResponse<Payment> cancelPayment(Long paymentId, CancelPaymentRequestDto request) {
         try {
             // 결제 정보 조회
-            com.example.demo.payment.entity.Payment payment = paymentRepository.findById(paymentId)
+            Pay pay = paymentRepository.findById(paymentId)
                     .orElseThrow(() -> new MarkethingException(PAYMENT_NOT_FOUND));
 
             // 아임포트 결제 취소 요청
-            CancelData cancelData = new CancelData(payment.getImpUid(), true, new BigDecimal(request.getAmount()));
+            CancelData cancelData = new CancelData(pay.getImpUid(), true, new BigDecimal(request.getAmount()));
             cancelData.setReason(request.getReason());
             IamportResponse<Payment> response = iamportClient.cancelPaymentByImpUid(cancelData);
 
@@ -104,8 +104,8 @@ public class PaymentServiceImpl implements PaymentService {
             }
 
             // 결제 상태 변경
-            payment.changePaymentByCancel();
-            paymentRepository.save(payment);
+            pay.changePaymentByCancel();
+            paymentRepository.save(pay);
 
             return response;
         } catch (IamportResponseException | IOException e) {
