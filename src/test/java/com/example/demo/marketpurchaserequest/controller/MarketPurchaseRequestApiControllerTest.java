@@ -3,6 +3,7 @@ package com.example.demo.marketpurchaserequest.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,6 +26,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -88,6 +90,7 @@ public class MarketPurchaseRequestApiControllerTest {
 
     @Test
     @DisplayName("시장 의뢰글 등록 테스트")
+    @WithMockUser
     void createMarketPurchaseRequest() throws Exception {
         // given
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,market);
@@ -96,7 +99,7 @@ public class MarketPurchaseRequestApiControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/requests")
+                .post("/api/requests").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(marketPurchaseRequestDto)));
         // then
@@ -106,15 +109,16 @@ public class MarketPurchaseRequestApiControllerTest {
 
     @Test
     @DisplayName("시장 의뢰글 삭제 테스트")
+    @WithMockUser
     void deleteMarketPurchaseRequest() throws Exception {
         // given
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,market);
 
-        given(marketPurchaseRequestService.createMarketPurchaseRequest(any())).willReturn(marketPurchaseRequest);
+        given(marketPurchaseRequestService.createMarketPurchaseRequest(marketPurchaseRequestDto)).willReturn(marketPurchaseRequest);
         doNothing().when(marketPurchaseRequestService).deleteMarketPurchaseRequest(
                 marketPurchaseRequest.getId());
         // when & then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/requests/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/requests/1").with(csrf()))
                 .andExpect(status().isOk()).andDo(print());
     }
 }
