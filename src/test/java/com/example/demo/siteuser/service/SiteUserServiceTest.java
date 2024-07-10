@@ -1,9 +1,13 @@
 package com.example.demo.siteuser.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.example.demo.exception.MarkethingException;
+import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.siteuser.service.impl.SiteUserServiceImpl;
@@ -33,13 +37,27 @@ public class SiteUserServiceTest {
     void success_delete_site_user() throws Exception {
         // given
         SiteUser siteUser = getSiteUser();
-        lenient().when(siteUserRepository.findById(siteUser.getId())).thenReturn(
+        lenient().when(siteUserRepository.findByEmail(siteUser.getEmail())).thenReturn(
                 Optional.of(siteUser));
         // when
-        siteUserServiceImpl.deleteSiteUser(siteUser.getId());
+        siteUserServiceImpl.deleteSiteUser(siteUser.getEmail());
         // then
-        verify(siteUserRepository,times(1)).deleteById(siteUser.getId());
+        verify(siteUserRepository,times(1)).delete(siteUser);
     }
+
+    @Test
+    void fail_delete_site_user() throws Exception {
+        // given
+        SiteUser siteUser = getSiteUser();
+        lenient().when(siteUserRepository.findByEmail(siteUser.getEmail())).thenReturn(
+                Optional.empty());
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> siteUserServiceImpl.deleteSiteUser(siteUser.getEmail()));
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
+    }
+
 
     private static SiteUser getSiteUser() {
         return SiteUser.builder()

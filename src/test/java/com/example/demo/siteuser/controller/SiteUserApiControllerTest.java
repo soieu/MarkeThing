@@ -42,6 +42,7 @@ public class SiteUserApiControllerTest {
 
     private final SiteUser siteUser = SiteUser.builder()
             .id(1L)
+            .email("mockEmail@gmail.com")
             .password("password")
             .name("name")
             .nickname("nickname")
@@ -59,7 +60,7 @@ public class SiteUserApiControllerTest {
     @WithMockUser
     void deleteSiteUser() throws Exception {
         // given
-        doNothing().when(siteUserService).deleteSiteUser(siteUser.getId());
+        doNothing().when(siteUserService).deleteSiteUser(siteUser.getEmail());
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/users").with(csrf()))
                 .andExpect(status().isOk()).andDo(print());
