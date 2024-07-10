@@ -69,12 +69,16 @@ public class CommunityServiceImplTest {
     }
 
     @Test
-    void createFailedByEmailNotFound() {
+    void createFailedByUserNotFound() {
+        // given
+        given(siteUserRepository.findByEmail("mockEmail@gmail.com"))
+                .willReturn(Optional.empty());
+
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
                 () -> communityService.create("mockEmail@gmail.com", getCommunityRequestDto()));
         // then
-        assertEquals(exception.getErrorCode(), ErrorCode.EMAIL_NOT_FOUND);
+        assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
 
     @Test
@@ -101,7 +105,7 @@ public class CommunityServiceImplTest {
     }
 
     @Test
-    void editFailedByEmailNotFound() {
+    void editFailedByUserNotFound() {
         // given
         given(siteUserRepository.findByEmail("mockEmail@gmail.com"))
                 .willReturn(Optional.empty());
@@ -111,7 +115,7 @@ public class CommunityServiceImplTest {
                 () -> communityService.edit("mockEmail@gmail.com", getCommunityRequestDto(), 1L));
 
         // then
-        assertEquals(exception.getErrorCode(), ErrorCode.EMAIL_NOT_FOUND);
+        assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
 
     @Test
@@ -155,7 +159,7 @@ public class CommunityServiceImplTest {
     }
 
     @Test
-    void deleteFailedByEmailNotFound() {
+    void deleteFailedByUserNotFound() {
         // given
         given(siteUserRepository.findByEmail("mockEmail@gmail.com"))
                 .willReturn(Optional.empty());
@@ -165,7 +169,7 @@ public class CommunityServiceImplTest {
                 () -> communityService.delete("mockEmail@gmail.com", 1L));
 
         // then
-        assertEquals(exception.getErrorCode(), ErrorCode.EMAIL_NOT_FOUND);
+        assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
 
     @Test
