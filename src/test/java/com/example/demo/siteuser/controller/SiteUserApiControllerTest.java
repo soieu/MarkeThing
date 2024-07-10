@@ -3,11 +3,11 @@ package com.example.demo.siteuser.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.demo.config.SecurityConfig;
 import com.example.demo.siteuser.controller.api.SiteUserApiController;
 import com.example.demo.siteuser.dto.SiteUserResponseDto;
 import com.example.demo.siteuser.entity.SiteUser;
@@ -22,12 +22,14 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(controllers = SiteUserApiController.class)
+@Import(SecurityConfig.class)
 public class SiteUserApiControllerTest {
 
     @MockBean
@@ -67,7 +69,7 @@ public class SiteUserApiControllerTest {
         // given
         doNothing().when(siteUserService).deleteSiteUser(siteUser.getEmail());
         // when & then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users").with(csrf()))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users"))
                 .andExpect(status().isOk()).andDo(print());
     }
 
