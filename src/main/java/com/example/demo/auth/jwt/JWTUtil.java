@@ -57,7 +57,6 @@ public class JWTUtil {
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = siteUserRepository.findByEmail(this.getUserEmail(token))
                 .orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, "");
     }
-
 }

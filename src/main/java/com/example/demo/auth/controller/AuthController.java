@@ -1,9 +1,12 @@
 package com.example.demo.auth.controller;
 
+import com.example.demo.auth.dto.PhoneNumberRequestDto;
 import com.example.demo.auth.dto.SignupDto;
+import com.example.demo.auth.dto.StringResponseDto;
 import com.example.demo.auth.service.AuthService;
 import com.example.demo.auth.service.PhoneAuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,12 +26,9 @@ public class AuthController {
         authService.signUp(signupDto);
     }
 
-
-
-//  @PostMapping("/phone/sendCode")
+//  @PostMapping("/auth/pass")
 //  public ResponseEntity<StringResponseDto> sendCode(@RequestBody PhoneNumberRequestDto phoneNumberRequestDto) {
-//
+//        var result = phoneAuthService.verifyCode(authCode)
+//        return null;
 //  }
-
-
 }

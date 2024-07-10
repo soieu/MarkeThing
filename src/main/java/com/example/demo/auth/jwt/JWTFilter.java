@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -33,7 +36,6 @@ public class JWTFilter extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-
             chain.doFilter(request, response);
 
             return;
@@ -46,7 +48,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
             // 토큰 소멸 시간 검증
             if (jwtUtil.isExpired(token)) {
-                throw new AuthenticationServiceException("token expired");
+                throw new MarkethingException(ErrorCode.TOKEN_EXPIRED);
+
             } else {
                 chain.doFilter(request, response);
             }
