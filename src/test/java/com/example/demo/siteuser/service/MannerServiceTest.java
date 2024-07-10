@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 import com.example.demo.entity.Manner;
 import com.example.demo.exception.MarkethingException;
@@ -30,7 +32,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class MannerServiceTest {
 
     @InjectMocks
@@ -72,7 +73,7 @@ public class MannerServiceTest {
         MannerRequestDto mannerRequestDto = getMannerRequestDto();
         Manner manner = mannerRequestDto.toEntity(requester, agent);
         // mocking
-        given(mannerRepository.save(any(Manner.class))).willReturn(manner);
+        lenient().when(mannerRepository.save(any(Manner.class))).thenReturn(manner);
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
                 ()->managerServiceImpl.createManner(mannerRequestDto,requester.getEmail(),agent.getId()));
