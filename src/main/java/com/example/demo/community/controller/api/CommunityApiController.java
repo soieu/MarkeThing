@@ -1,8 +1,9 @@
 package com.example.demo.community.controller.api;
 
 import com.example.demo.common.filter.dto.CommunityFilterRequestDto;
-import com.example.demo.community.dto.CommunityPreviewDto;
-import com.example.demo.community.dto.CommunityRequestDto;
+import com.example.demo.community.dto.community.CommunityDetailDto;
+import com.example.demo.community.dto.community.CommunityPreviewDto;
+import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.service.CommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,11 +52,7 @@ public class CommunityApiController {
             @RequestParam(required = false, defaultValue = "date") String sort,
             @RequestBody(required = false) CommunityFilterRequestDto communityFilterRequestDto) {
 
-        Sort sortOrder = Sort.unsorted(); // 특별한 정렬 조건 없음
-        if("date".equals(sort)) {
-            sortOrder = Sort.by("createdAt").descending();
-        }
-
+        Sort sortOrder = communityService.confirmSortOrder(sort);
         PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
 
         var result = communityService.getCommunitiesByFilter(
@@ -62,4 +60,23 @@ public class CommunityApiController {
 
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/{communityId}")
+    public ResponseEntity<CommunityDetailDto> getCommunityDetail(@PathVariable Long communityId) {
+        return ResponseEntity.ok(communityService.getCommunityDetail(communityId));
+    }
+
+    @GetMapping("/list/myList")
+    public ResponseEntity<Page<CommunityPreviewDto>> getMyCommunityList(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required = false, defaultValue = "date") String sort) {
+
+        String email = "mockEmail@gmail.com";
+        Sort sortOrder = communityService.confirmSortOrder(sort);
+        PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
+
+        return ResponseEntity.ok(communityService.getMyCommunities(email, pageRequest));
+    }
+
 }

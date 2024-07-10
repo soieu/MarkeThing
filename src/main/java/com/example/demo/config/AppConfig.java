@@ -16,9 +16,9 @@ import org.springframework.context.annotation.PropertySource;
 @Getter
 @ToString
 public class AppConfig {
-    @Value("${secret.imp_key}")
+    @Value("${iamport.imp_key}")
     String apiKey;
-    @Value("${secret.imp_secret}")
+    @Value("${iamport.imp_secret}")
     String secretKey = "REST API Secret를 입력합니다.";
 
     @Bean

@@ -1,6 +1,7 @@
 package com.example.demo.payment.controller.api;
 
-import com.example.demo.payment.dto.PaymentCallbackRequest;
+import com.example.demo.payment.dto.CancelPaymentRequestDto;
+import com.example.demo.payment.dto.PaymentCallbackRequestDto;
 import com.example.demo.payment.service.PaymentService;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
@@ -20,7 +21,13 @@ public class PaymentApiController {
     private final PaymentService paymentService;
 
     @PostMapping
-    public void validationPayment(@RequestBody PaymentCallbackRequest request) {
+    public void validationPayment(@RequestBody PaymentCallbackRequestDto request) {
         IamportResponse<Payment> response = paymentService.paymentByCallback(request);
+    }
+
+    @PostMapping("/{paymentId}/cancel")
+    public void cancelPayment(@PathVariable Long paymentId,
+                              @RequestBody CancelPaymentRequestDto request) {
+        IamportResponse<Payment> response = paymentService.cancelPayment(paymentId, request);
     }
 }
