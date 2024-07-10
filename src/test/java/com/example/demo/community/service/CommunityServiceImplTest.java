@@ -192,16 +192,14 @@ public class CommunityServiceImplTest {
         CommunityFilterDto communityFilterDto = getFilterDto();
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
 
-        SiteUser siteUser = getSiteUser();
-        CommunityRequestDto communityRequestDto = getCommunityRequestDto();
-        Community community = communityRequestDto.toEntity(siteUser);
+        Community community = getCommunity();
         List<Community> communities = new ArrayList<>();
         communities.add(community);
 
         PageImpl<Community> communityPage
                 = new PageImpl<>(communities, pageRequest, communities.size());
 
-        given(communityRepository.findAllByFilter(communityFilterDto, pageRequest))
+        given(communityRepository.findAllByFilter(any(), any()))
                 .willReturn(communityPage);
 
         // when
@@ -225,6 +223,29 @@ public class CommunityServiceImplTest {
         //then
         assertThat(result.getArea()).isEqualTo(community.getArea());
         assertThat(result.getContent()).isEqualTo(community.getContent());
+    }
+
+    @Test
+    void getMyCommunities() {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+
+        Community community = getCommunity();
+        List<Community> communities = new ArrayList<>();
+        communities.add(community);
+
+        PageImpl<Community> communityPage
+                = new PageImpl<>(communities, pageRequest, communities.size());
+
+        given(communityRepository.findAllBySiteUser_email(eq("mockEmail@gmail.com"), any()))
+                .willReturn(communityPage);
+
+        // when
+        var result = communityService.getMyCommunities("mockEmail@gmail.com", pageRequest);
+
+        // then
+        assertThat(result.getContent().get(0).getArea()).isEqualTo(community.getArea());
+        assertThat(result.getContent().get(0).getTitle()).isEqualTo(community.getTitle());
     }
 
     private static Community getCommunity() {

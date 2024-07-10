@@ -120,6 +120,10 @@ public class CommunityApiControllerTest {
         Page<CommunityPreviewDto> pages
                 = new PageImpl<>(communityPreviewDtos, pageRequest, communityPreviewDtos.size());
 
+
+        given(communityService.confirmSortOrder(eq("date")))
+                .willReturn(Sort.by("createdAt").descending());
+
         given(communityService.getCommunitiesByFilter(any(),
                 any())) // 컨트롤러 내 서비스 단의 인자를 잡지 못래 any()로 대체
                 .willReturn(pages);
@@ -155,6 +159,37 @@ public class CommunityApiControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    public void getMyCommunityListTest() throws Exception {
+        //given
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+        List<CommunityPreviewDto> communityPreviewDtos = new ArrayList<>();
+        CommunityPreviewDto communityPreviewDto = getCommunityPreviewDto();
+        communityPreviewDtos.add(communityPreviewDto);
+
+        Page<CommunityPreviewDto> pages
+                = new PageImpl<>(communityPreviewDtos, pageRequest, communityPreviewDtos.size());
+
+        given(communityService.confirmSortOrder(eq("date")))
+                .willReturn(Sort.by("createdAt").descending());
+
+        given(communityService.getMyCommunities(eq("mockEmail@gmail.com"),
+                any())) // 컨트롤러 내 서비스 단의 인자를 잡지 못래 any()로 대체
+                .willReturn(pages);
+
+        //when & then
+        mockMvc.perform(get("/api/communities/list/myList")
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(5))
+                        .param("sort", "date")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].area").value(
+                        communityPreviewDto.getArea().toString()))
+                .andExpect(jsonPath("$.content[0].title").value(communityPreviewDto.getTitle()))
+                .andDo(print());
+    }
+
     private static Community getCommunity() {
         return Community.builder()
                 .siteUser(getSiteUser())
@@ -170,6 +205,8 @@ public class CommunityApiControllerTest {
 
     private static CommunityPreviewDto getCommunityPreviewDto() {
         return CommunityPreviewDto.builder()
+                .id(1L)
+                .nickname("nickname")
                 .area(AreaType.SEOUL)
                 .title("title")
                 .build();

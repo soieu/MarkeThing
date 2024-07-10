@@ -7,6 +7,7 @@ import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 public interface CommunityService {
 
@@ -20,4 +21,8 @@ public interface CommunityService {
             Pageable pageable);
 
     CommunityDetailDto getCommunityDetail(Long communityId);
+
+    Page<CommunityPreviewDto> getMyCommunities(String email, Pageable pageable);
+
+    Sort confirmSortOrder(String sort);
 }
