@@ -27,7 +27,6 @@ public class SiteUserServiceImpl implements SiteUserService {
     @Override
     public SiteUserResponseDto getMyInformation(String email) {
         SiteUser siteUser = getSiteUserByEmail(email);
-        return new SiteUserResponseDto(siteUser.getEmail(), siteUser.getName(), siteUser.getPhoneNumber(),
-                siteUser.getAddress(), siteUser.getMannerScore(), siteUser.getProfileImg());
+        return SiteUserResponseDto.fromEntity(siteUser);
     }
 }
