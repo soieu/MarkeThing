@@ -61,7 +61,11 @@ public class PaymentServiceImplTest {
         given(payment.getStatus()).willReturn("paid");
         given(payment.getAmount()).willReturn(new BigDecimal(10000));
         given(payment.getImpUid()).willReturn("imp123");
+<<<<<<< HEAD
         given(marketPurchaseRequestRepository.findById(anyLong())).willReturn(Optional.of(marketPurchaseRequest));
+=======
+        given(marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
+>>>>>>> parent of bce456f (update: JPA 관련 수정)
         given(marketPurchaseRequest.getPayment()).willReturn(entityPayment);
         given(entityPayment.getAmount()).willReturn(10000);
 
@@ -86,7 +90,11 @@ public class PaymentServiceImplTest {
         given(iamportClient.paymentByImpUid(anyString())).willReturn(iamportResponse);
         given(iamportResponse.getResponse()).willReturn(payment);
         given(payment.getStatus()).willReturn("ready");
+<<<<<<< HEAD
         given(marketPurchaseRequestRepository.findById(anyLong())).willReturn(Optional.of(marketPurchaseRequest));
+=======
+        given(marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
+>>>>>>> parent of bce456f (update: JPA 관련 수정)
         given(marketPurchaseRequest.getPayment()).willReturn(entityPayment);
 
         // When & Then
@@ -108,7 +116,11 @@ public class PaymentServiceImplTest {
         given(payment.getStatus()).willReturn("paid");
         given(payment.getAmount()).willReturn(new BigDecimal(10000));
         given(payment.getImpUid()).willReturn("imp123");
+<<<<<<< HEAD
         given(marketPurchaseRequestRepository.findById(anyLong())).willReturn(Optional.of(marketPurchaseRequest));
+=======
+        given(marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(anyString())).willReturn(Optional.of(marketPurchaseRequest));
+>>>>>>> parent of bce456f (update: JPA 관련 수정)
         given(marketPurchaseRequest.getPayment()).willReturn(entityPayment);
         given(entityPayment.getAmount()).willReturn(9000);
 
@@ -121,8 +133,13 @@ public class PaymentServiceImplTest {
     @Test
     void testPaymentByCallback_OrderNotExist() throws IamportResponseException, IOException {
         // Given
+<<<<<<< HEAD
         PaymentCallbackRequestDto request = new PaymentCallbackRequestDto();
         given(marketPurchaseRequestRepository.findById(anyLong())).willReturn(Optional.empty());
+=======
+        PaymentCallbackRequest request = new PaymentCallbackRequest("order123", "imp123");
+        given(marketPurchaseRequestRepository.findMarketPurchaseRequestAndPayment(anyString())).willReturn(Optional.empty());
+>>>>>>> parent of bce456f (update: JPA 관련 수정)
 
         // When & Then
         assertThrows(MarkethingException.class, () -> paymentService.paymentByCallback(request));

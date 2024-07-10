@@ -20,6 +20,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequiredArgsConstructor
 public class PaymentController {
+    @GetMapping("/payment/success")
+    public String successPaymentPage() {
+        return "success_payment";
+    }
 
+    @GetMapping("/payment/fail")
+    public String failPaymentPage() {
+        return "fail_payment";
+    }
 }
