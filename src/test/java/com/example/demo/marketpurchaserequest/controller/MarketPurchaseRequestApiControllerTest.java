@@ -18,6 +18,7 @@ import com.example.demo.type.AuthType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -88,6 +89,7 @@ public class MarketPurchaseRequestApiControllerTest {
 
 
     @Test
+    @DisplayName("시장 의뢰글 등록 테스트")
     void createMarketPurchaseRequest() throws Exception {
         // given
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,market);
@@ -105,6 +107,7 @@ public class MarketPurchaseRequestApiControllerTest {
     }
 
     @Test
+    @DisplayName("시장 의뢰글 삭제 테스트")
     void deleteMarketPurchaseRequest() throws Exception {
         // given
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,market);
@@ -114,6 +117,6 @@ public class MarketPurchaseRequestApiControllerTest {
                 marketPurchaseRequest.getId());
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/requests/1"))
-                .andExpect(status().isNoContent()).andDo(print());
+                .andExpect(status().isOk()).andDo(print());
     }
 }

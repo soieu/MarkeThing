@@ -22,6 +22,7 @@ import com.example.demo.type.AuthType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Coordinate;
@@ -48,6 +49,7 @@ public class MarketPurchaseRequestServiceImplTest {
     private static final GeometryFactory geometryFactory = new GeometryFactory();
 
     @Test
+    @DisplayName("시장 의뢰글 등록 성공 테스트")
     void createMarketPurchaseRequest() throws Exception {
         //given
         Market market = getMarket();
@@ -72,6 +74,7 @@ public class MarketPurchaseRequestServiceImplTest {
     }
 
     @Test
+    @DisplayName("시장 의뢰글 등록 실패 테스트 - USER NOT FOUND")
     void createFailedByUserNotFound() throws Exception {
         // given
         given(siteUserRepository.findById(any())).willReturn(Optional.empty());
@@ -85,6 +88,7 @@ public class MarketPurchaseRequestServiceImplTest {
     }
 
     @Test
+    @DisplayName("시장 의뢰글 삭제 성공 테스트")
     void deleteMarketPurchaseRequest() throws Exception {
         //given
         Market market = getMarket();
@@ -103,6 +107,7 @@ public class MarketPurchaseRequestServiceImplTest {
     }
 
     @Test
+    @DisplayName("시장 의뢰글 삭제 실패 테스트 - USER NOT FOUND")
     void deleteFailedByRequestNotFound() throws Exception {
         // given
         given(marketPurchaseRequestRepository.findById(any())).willReturn(Optional.empty());
