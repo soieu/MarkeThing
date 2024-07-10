@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface MarketPurchaseRequestRepository extends JpaRepository<MarketPurchaseRequest,
-        Long> {
+public interface MarketPurchaseRequestRepository extends JpaRepository<MarketPurchaseRequest
+        ,Long> {
 }
