@@ -72,7 +72,7 @@ public class SiteUserApiControllerTest {
     }
 
     @Test
-    @DisplayName("내 정보 보기 테스트")
+    @DisplayName("내 정보 조회 테스트")
     @WithMockUser
     void getMyInformation() throws Exception {
         // given
