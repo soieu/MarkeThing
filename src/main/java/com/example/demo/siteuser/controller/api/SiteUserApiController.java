@@ -1,14 +1,12 @@
 package com.example.demo.siteuser.controller.api;
 
 import com.example.demo.siteuser.dto.SiteUserResponseDto;
-import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.service.SiteUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
