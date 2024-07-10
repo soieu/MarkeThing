@@ -10,8 +10,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.example.demo.common.filter.dto.CommunityFilterDto;
-import com.example.demo.community.dto.CommunityPreviewDto;
-import com.example.demo.community.dto.CommunityRequestDto;
+import com.example.demo.community.dto.community.CommunityPreviewDto;
+import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.repository.CommunityRepository;
 import com.example.demo.community.service.impl.CommunityServiceImpl;
@@ -33,7 +33,6 @@ import org.locationtech.jts.geom.Point;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -213,10 +212,31 @@ public class CommunityServiceImplTest {
         assertThat(result.getContent().get(0).getTitle()).isEqualTo(community.getTitle());
     }
 
-    private static CommunityPreviewDto getCommunityPreviewDto() {
-        return CommunityPreviewDto.builder()
+    @Test
+    void getCommunityDetail() {
+        // given
+        Community community = getCommunity();
+        given(communityRepository.findById(eq(community.getId())))
+        .willReturn(Optional.of(community));
+
+        // when
+        var result = communityService.getCommunityDetail(community.getId());
+
+        //then
+        assertThat(result.getArea()).isEqualTo(community.getArea());
+        assertThat(result.getContent()).isEqualTo(community.getContent());
+    }
+
+    private static Community getCommunity() {
+        return Community.builder()
+                .siteUser(getSiteUser())
+                .id(1L)
                 .area(AreaType.SEOUL)
                 .title("title")
+                .content("content")
+                .postImg("postImg")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 

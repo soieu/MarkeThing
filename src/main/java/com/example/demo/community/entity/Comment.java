@@ -1,7 +1,6 @@
-package com.example.demo.entity;
+package com.example.demo.community.entity;
 
 
-import com.example.demo.community.entity.Community;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PostStatus;
 import java.time.LocalDateTime;
@@ -13,7 +12,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
