@@ -3,6 +3,7 @@ package com.example.demo.community.service.impl;
 import static com.example.demo.exception.type.ErrorCode.COMMUNITY_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.EMAIL_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.UNAUTHORIZED_USER;
+import static com.example.demo.exception.type.ErrorCode.USER_NOT_FOUND;
 
 import com.example.demo.common.filter.dto.CommunityFilterDto;
 import com.example.demo.community.dto.community.CommunityDetailDto;
@@ -32,7 +33,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Transactional
     public Community create(String email, CommunityRequestDto communityRequestDto) {
         var siteUser = siteUserRepository.findByEmail(email)
-                .orElseThrow(() -> new MarkethingException(EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new MarkethingException(USER_NOT_FOUND));
 
         return communityRepository.save(communityRequestDto.toEntity(siteUser));
     }
@@ -41,7 +42,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Transactional
     public Community edit(String email, CommunityRequestDto communityRequestDto, Long communityId) {
         var siteUser = siteUserRepository.findByEmail(email)
-                .orElseThrow(() -> new MarkethingException(EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new MarkethingException(USER_NOT_FOUND));
 
         var community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new MarkethingException(COMMUNITY_NOT_FOUND));
@@ -53,9 +54,10 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
+    @Transactional
     public void delete(String email, Long communityId) {
         var siteUser = siteUserRepository.findByEmail(email)
-                .orElseThrow(() -> new MarkethingException(EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new MarkethingException(USER_NOT_FOUND));
 
         var community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new MarkethingException(COMMUNITY_NOT_FOUND));

@@ -49,6 +49,7 @@ public class CommunityApiControllerTest {
 
     @MockBean
     private MappingMongoConverter mappingMongoConverter;
+
     @MockBean
     private CommunityService communityService;
 
