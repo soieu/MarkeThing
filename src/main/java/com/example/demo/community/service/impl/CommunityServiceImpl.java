@@ -53,6 +53,7 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
+    @Transactional
     public void delete(String email, Long communityId) {
         var siteUser = siteUserRepository.findByEmail(email)
                 .orElseThrow(() -> new MarkethingException(EMAIL_NOT_FOUND));
