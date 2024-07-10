@@ -14,9 +14,12 @@ import com.example.demo.community.service.CommunityService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,6 +83,21 @@ public class CommunityServiceImpl implements CommunityService {
                 .orElseThrow(() -> new MarkethingException(COMMUNITY_NOT_FOUND));
 
         return CommunityDetailDto.fromEntity(community);
+    }
+
+    @Override
+    public Page<CommunityPreviewDto> getMyCommunities(String email, Pageable pageable) {
+        return communityRepository.findAllBySiteUser_email(email, pageable)
+                .map(CommunityPreviewDto::fromEntity);
+    }
+
+    @Override
+    public Sort confirmSortOrder(String sort) {
+        Sort sortOrder = Sort.unsorted();
+        if("date".equals(sort)) {
+            sortOrder = Sort.by("createdAt").descending();
+        }
+        return sortOrder;
     }
 
     private static void validateAuthorization(SiteUser siteUser, Community community) {

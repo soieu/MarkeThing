@@ -52,11 +52,7 @@ public class CommunityApiController {
             @RequestParam(required = false, defaultValue = "date") String sort,
             @RequestBody(required = false) CommunityFilterRequestDto communityFilterRequestDto) {
 
-        Sort sortOrder = Sort.unsorted(); // 특별한 정렬 조건 없음
-        if("date".equals(sort)) {
-            sortOrder = Sort.by("createdAt").descending();
-        }
-
+        Sort sortOrder = communityService.confirmSortOrder(sort);
         PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
 
         var result = communityService.getCommunitiesByFilter(
@@ -66,7 +62,21 @@ public class CommunityApiController {
     }
 
     @GetMapping("/{communityId}")
-    public CommunityDetailDto getCommunityDetail(@PathVariable Long communityId) {
-        return communityService.getCommunityDetail(communityId);
+    public ResponseEntity<CommunityDetailDto> getCommunityDetail(@PathVariable Long communityId) {
+        return ResponseEntity.ok(communityService.getCommunityDetail(communityId));
     }
+
+    @GetMapping("/list/myList")
+    public ResponseEntity<Page<CommunityPreviewDto>> getMyCommunityList(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required = false, defaultValue = "date") String sort) {
+
+        String email = "mockEmail@gmail.com";
+        Sort sortOrder = communityService.confirmSortOrder(sort);
+        PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
+
+        return ResponseEntity.ok(communityService.getMyCommunities(email, pageRequest));
+    }
+
 }
