@@ -8,6 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class PaymentCallbackRequestDto {
     private Long paymentUid; // 결제 고유 번호
     private Long orderUid; // 주문 고유 번호
