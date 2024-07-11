@@ -4,6 +4,7 @@ import com.example.demo.community.dto.comment.CommentRequestDto;
 import com.example.demo.community.service.CommentService;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,11 @@ public class CommentApiController {
         commentService.edit(email, commentId, commentRequestDto);
     }
 
+    @DeleteMapping("/comments/{commentId}")
+    public void deleteComment(@PathVariable Long commentId, Principal principal) {
 
+        var email = principal.getName();
+        commentService.delete(email, commentId);
+    }
 
 }

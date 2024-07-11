@@ -43,6 +43,18 @@ public class CommentServiceImpl implements CommentService {
         return comment;
     }
 
+    @Override
+    @Transactional
+    public Comment delete(String email, Long commentId) {
+        var comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new MarkethingException(ErrorCode.COMMENT_NOT_FOUND));
+
+        validateAuthorization(email, comment);
+
+        comment.delete();
+        return comment;
+    }
+
     private static void validateAuthorization(String email, Comment comment) {
         if(!email.equals(comment.getSiteUser().getEmail())) {
             throw new MarkethingException(ErrorCode.UNAUTHORIZED_USER);
