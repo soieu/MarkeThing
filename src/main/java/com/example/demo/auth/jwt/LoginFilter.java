@@ -1,20 +1,15 @@
 package com.example.demo.auth.jwt;
 
 import com.example.demo.siteuser.entity.SiteUser;
-import java.util.Collection;
-import java.util.Iterator;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.example.demo.auth.service.AuthService;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -37,7 +32,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         System.out.println("userEmail: " + username);
         System.out.println("userEmail: " + password);
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                username, password, null);
+                username, password);
+
 
         return authenticationManager.authenticate(authToken);
     }

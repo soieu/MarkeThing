@@ -5,6 +5,7 @@ import com.example.demo.community.dto.community.CommunityDetailDto;
 import com.example.demo.community.dto.community.CommunityPreviewDto;
 import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.service.CommunityService;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,8 +28,10 @@ public class CommunityApiController {
     private final CommunityService communityService;
     // 회원 가입 기능 구현 완료 후 user 정보 가져오기 위해 Principal 객체 request에 추가
     @PostMapping
-    public void postCommunity(@RequestBody CommunityRequestDto communityRequestDto) {
-        String email = "mockEmail@gmail.com";
+    public void postCommunity(@RequestBody CommunityRequestDto communityRequestDto, Principal principal) {
+//        String email = "mockEmail@gmail.com";
+        var email = principal.getName();
+
         communityService.create(email, communityRequestDto);
     }
 
