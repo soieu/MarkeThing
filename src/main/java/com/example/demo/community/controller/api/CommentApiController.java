@@ -1,7 +1,9 @@
 package com.example.demo.community.controller.api;
 
 import com.example.demo.community.dto.comment.CommentRequestDto;
+import com.example.demo.community.dto.comment.ReplyCommentRequestDto;
 import com.example.demo.community.service.CommentService;
+import com.example.demo.community.service.ReplyCommentService;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/communities")
 public class CommentApiController {
     private final CommentService commentService;
-    // 회원 가입 기능 구현 완료 후 user 정보 가져오기 위해 Principal 객체 request에 추가
+    private final ReplyCommentService replyCommentService;
+
     @PostMapping("{communityId}/comments")
     public void postComment(@RequestBody CommentRequestDto commentRequestDto
             , @PathVariable Long communityId, Principal principal) {
@@ -39,6 +42,14 @@ public class CommentApiController {
 
         var email = principal.getName();
         commentService.delete(email, commentId);
+    }
+
+    @PostMapping("/comments/{commentId}/replyComments")
+    public void postReplyComment(@RequestBody ReplyCommentRequestDto replyCommentRequestDto
+            , @PathVariable Long commentId, Principal principal) {
+
+        var email = principal.getName();
+        replyCommentService.create(email, commentId, replyCommentRequestDto);
     }
 
 }
