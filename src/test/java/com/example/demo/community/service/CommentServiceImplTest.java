@@ -21,6 +21,7 @@ import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
 import com.example.demo.type.PostStatus;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -101,7 +102,48 @@ public class CommentServiceImplTest {
         assertEquals(exception.getErrorCode(), ErrorCode.COMMUNITY_NOT_FOUND);
     }
 
+    @Test
+    void editSuccess() {
+        // given
+        SiteUser siteUser = getSiteUser();
+        Community community = getCommunity();
+        CommentRequestDto commentRequestDto = getCommentRequestDto();
+        CommentRequestDto editedcommentRequestDto = getEditCommentRequestDto();
+        Comment comment = getComment(community, siteUser, commentRequestDto);
+
+        given(commentRepository.findById(community.getId()))
+                .willReturn(Optional.of(comment));
+
+        // when
+        Comment result = commentService.edit(siteUser.getEmail(), comment.getId(), editedcommentRequestDto);
+
+        // then
+        assertThat(result.getContent()).isEqualTo(editedcommentRequestDto.getContent());
+    }
+
+    @Test
+    void editFailedByCommentNotFound() {
+        // given
+        given(commentRepository.findById(1L))
+                .willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> commentService
+                        .edit("mockEmail@gmail.com", 1L, getCommentRequestDto()));
+
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.COMMENT_NOT_FOUND);
+    }
+
     private static CommentRequestDto getCommentRequestDto() {
+        return CommentRequestDto
+                .builder()
+                .content("content")
+                .build();
+    }
+
+    private static CommentRequestDto getEditCommentRequestDto() {
         return CommentRequestDto
                 .builder()
                 .content("content")
