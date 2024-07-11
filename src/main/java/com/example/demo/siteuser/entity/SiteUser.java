@@ -1,10 +1,13 @@
 package com.example.demo.siteuser.entity;
 
 import com.example.demo.chat.entiity.ChatRoom;
+import com.example.demo.community.entity.Comment;
 import com.example.demo.community.entity.Community;
+import com.example.demo.community.entity.ReplyComment;
 import com.example.demo.entity.*;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.payment.entity.Pay;
+import com.example.demo.siteuser.service.MannerConverter;
 import com.example.demo.type.AuthType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,9 +19,12 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -30,7 +36,7 @@ import java.util.List;
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "SITE_USER")
-public class SiteUser {
+public class SiteUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,7 +64,8 @@ public class SiteUser {
     private Point myLocation;
 
     @Column(name = "MANNER_SCORE")
-    private Integer mannerScore;
+    @Convert(converter = MannerConverter.class)
+    private List<String> mannerScore;
 
     @Column(name = "PROFILE_IMG", length = 1023, nullable = false)
     private String profileImg;
@@ -69,6 +76,9 @@ public class SiteUser {
     @Enumerated(EnumType.STRING)
     @Column(name = "AUTH_TYPE", length = 50, nullable = false)
     private AuthType authType; //회원의 가입 상태.
+
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pay> pays;
 
     @CreatedDate
     @Column(name = "CREATED_AT")
@@ -87,15 +97,12 @@ public class SiteUser {
     @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReplyComment> replyComments;
 
-    @OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Manner> agents;
-
-    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Pay> pays;
+    @OneToMany(mappedBy = "taker", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Manner> takers;
 
     // 평가를 한 목록
-    @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Manner> requesters;
+    @OneToMany(mappedBy = "rater", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Manner> raters;
 
     @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MarketPurchaseRequest> purchaseRequests;
@@ -112,4 +119,37 @@ public class SiteUser {
     @OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatRoom> agentChatRooms;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void updateManner(List<String> manner) {
+        this.mannerScore = manner;
+    }
 }

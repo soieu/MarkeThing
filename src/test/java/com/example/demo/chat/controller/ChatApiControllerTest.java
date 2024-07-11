@@ -5,7 +5,6 @@ import com.example.demo.chat.dto.ChatRoomRequestDto;
 import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.chat.service.ChatRoomService;
-import com.example.demo.chat.service.impl.ChatRoomServiceImpl;
 import com.example.demo.config.SecurityConfig;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.siteuser.entity.SiteUser;
