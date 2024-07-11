@@ -3,10 +3,7 @@ package com.example.demo.payment.service;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
-import com.example.demo.payment.dto.CancelPaymentRequestDto;
-import com.example.demo.payment.dto.PayResponseDto;
-import com.example.demo.payment.dto.PaymentCallbackRequestDto;
-import com.example.demo.payment.dto.PaymentListRequestDto;
+import com.example.demo.payment.dto.*;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.impl.PaymentServiceImpl;
@@ -26,14 +23,14 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -221,5 +218,44 @@ public class PayServiceImplTest {
         assertThat(result.get(1).getAmount()).isEqualTo(2000);
 
         verify(paymentRepository).findBySiteUser(siteUserRepository.findById(userId));
+    }
+
+    @Test
+    public void testDetailPayment_PaymentExists() {
+        // Given
+        Long paymentId = 1L;
+        Pay mockPay = Pay.builder()
+                .payMethod("CARD")
+                .bankName("Test Bank")
+                .bankCode("123")
+                .cardCode("456")
+                .cardName("Test Card")
+                .cardNumber("1234-5678-9012-3456")
+                .amount(10000)
+                .marketPurchaseRequest(MarketPurchaseRequest.builder().title("Test Item").build())
+                .paidAt(LocalDate.from(LocalDateTime.now()))
+                .status(PaymentStatus.OK)
+                .failReason(null)
+                .build();
+
+        given(paymentRepository.findById(paymentId)).willReturn(Optional.of(mockPay));
+
+        // When
+        Optional<PayDetailDto> result = paymentService.detailPayment(paymentId);
+
+        // Then
+        assertTrue(result.isPresent());
+        PayDetailDto payDetailDto = result.get();
+
+        assertEquals("CARD", payDetailDto.getPayMethod());
+        assertEquals("Test Bank", payDetailDto.getBankName());
+        assertEquals("123", payDetailDto.getBankCode());
+        assertEquals("456", payDetailDto.getCardCode());
+        assertEquals("Test Card", payDetailDto.getCardName());
+        assertEquals("1234-5678-9012-3456", payDetailDto.getCardNumber());
+        assertEquals(10000, payDetailDto.getAmount());
+        assertEquals("Test Item", payDetailDto.getItemName());
+        assertNotNull(payDetailDto.getPaidAt());
+        assertEquals(PaymentStatus.OK, payDetailDto.getStatus());
     }
 }
