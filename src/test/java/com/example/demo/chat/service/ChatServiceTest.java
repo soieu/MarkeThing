@@ -111,8 +111,8 @@ public class ChatServiceTest {
         ChatMessage message = getChatMessage(); // 일단 1번 방에 있는 메시지가 있다는 것을 가정
 
         when(siteUserRepository.findById(userId)).thenReturn(Optional.of(siteUser));
-        when(chatRoomRepository.findByAgent(siteUser)).thenReturn(Arrays.asList(chatRoom1));
-        when(chatRoomRepository.findByRequester(siteUser)).thenReturn(Arrays.asList(chatRoom2));
+        when(chatRoomRepository.findByAgentId(siteUser.getId())).thenReturn(Arrays.asList(chatRoom1));
+        when(chatRoomRepository.findByRequesterId(siteUser.getId())).thenReturn(Arrays.asList(chatRoom2));
         when(chatMessageRepository.findFirstByChatRoomIdOrderByCreatedAtDesc(chatRoom1.getId())).thenReturn(message);
         // 일단 1번 채팅방에 존재하고 있는 채팅 메시지가 나온다고 가정을 함
 
