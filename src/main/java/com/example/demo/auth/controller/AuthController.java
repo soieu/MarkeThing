@@ -21,7 +21,7 @@ public class AuthController {
     private final PhoneAuthService phoneAuthService;
 
 
-    @PostMapping("/signUp")
+    @PostMapping("/sign-up")
     public void signUp(@RequestBody SignupDto signupDto) {
         authService.signUp(signupDto);
     }

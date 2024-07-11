@@ -8,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -55,7 +57,7 @@ public class JWTUtil {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = siteUserRepository.findByEmail(this.getUserEmail(token))
+        UserDetails userDetails = siteUserRepository.findByEmail(getUserEmail(token))
                 .orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
         return new UsernamePasswordAuthenticationToken(userDetails, "");
     }

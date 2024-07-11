@@ -5,6 +5,7 @@ import com.example.demo.community.dto.community.CommunityDetailDto;
 import com.example.demo.community.dto.community.CommunityPreviewDto;
 import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.service.CommunityService;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,20 +29,24 @@ public class CommunityApiController {
     // 회원 가입 기능 구현 완료 후 user 정보 가져오기 위해 Principal 객체 request에 추가
     @PostMapping
     public void postCommunity(@RequestBody CommunityRequestDto communityRequestDto) {
+
+//        var email = principal.getName();
         String email = "mockEmail@gmail.com";
         communityService.create(email, communityRequestDto);
     }
 
     @PatchMapping("/{communityId}")
-    public void editCommunity(@RequestBody CommunityRequestDto communityRequestDto
-    , @PathVariable Long communityId) {
-        String email = "mockEmail@gmail.com";
+    public void editCommunity(@RequestBody CommunityRequestDto communityRequestDto,
+            @PathVariable Long communityId, Principal principal) {
+
+        var email = principal.getName();
         communityService.edit(email, communityRequestDto, communityId);
     }
 
     @DeleteMapping("/{communityId}")
-    public void deleteCommunity(@PathVariable Long communityId) {
-        String email = "mockEmail@gmail.com";
+    public void deleteCommunity(@PathVariable Long communityId, Principal principal) {
+
+        var email = principal.getName();
         communityService.delete(email, communityId);
     }
 
@@ -70,13 +75,13 @@ public class CommunityApiController {
     public ResponseEntity<Page<CommunityPreviewDto>> getMyCommunityList(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
-            @RequestParam(required = false, defaultValue = "date") String sort) {
+            @RequestParam(required = false, defaultValue = "date") String sort,
+            Principal principal) {
 
-        String email = "mockEmail@gmail.com";
+        var email = principal.getName();
         Sort sortOrder = communityService.confirmSortOrder(sort);
         PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
 
         return ResponseEntity.ok(communityService.getMyCommunities(email, pageRequest));
     }
-
 }

@@ -30,4 +30,18 @@ public class CommentServiceImpl implements CommentService {
 
         return commentRepository.save(commentRequestDto.toEntity(siteUser, community));
     }
+
+    @Override
+    @Transactional
+    public Comment edit(String email, Long commentId, CommentRequestDto commentRequestDto) {
+        var comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new MarkethingException(ErrorCode.COMMENT_NOT_FOUND));
+
+        if(!email.equals(comment.getSiteUser().getEmail())) {
+            throw new MarkethingException(ErrorCode.UNAUTHORIZED_USER);
+        }
+
+        comment.update(commentRequestDto);
+        return comment;
+    }
 }

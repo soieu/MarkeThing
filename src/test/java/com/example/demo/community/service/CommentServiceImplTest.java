@@ -6,18 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
-import com.example.demo.common.filter.dto.CommunityFilterDto;
 import com.example.demo.community.dto.comment.CommentRequestDto;
-import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.entity.Comment;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.repository.CommentRepository;
 import com.example.demo.community.repository.CommunityRepository;
 import com.example.demo.community.service.impl.CommentServiceImpl;
-import com.example.demo.community.service.impl.CommunityServiceImpl;
 import com.example.demo.community.type.AreaType;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
@@ -26,8 +21,6 @@ import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
 import com.example.demo.type.PostStatus;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,9 +30,6 @@ import org.locationtech.jts.geom.Point;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceImplTest {
