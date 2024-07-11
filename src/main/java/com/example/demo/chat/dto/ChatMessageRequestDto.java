@@ -4,7 +4,6 @@ import com.example.demo.chat.entiity.ChatMessage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter

@@ -21,11 +21,8 @@ public class ChatMessageApiController {
 
     @MessageMapping("/sendMessage") // 채팅방에 입장을 하게 되면 생성 --> 메시지를 전송을 하게 됨.
     public void sendMessage(@Payload ChatMessageRequestDto requestDto, SimpMessageHeaderAccessor headerAccessor) {
-        //String userUUID = repository.addUser(chat.getRoomId(), chat.getSender());
-        //headerAccessor.getSessionAttributes().put("userUUID", userUUID);
         headerAccessor.getSessionAttributes().put("chatRoomId", requestDto.getChatRoomId());
         chatMessageService.sendMessage(requestDto);
-
-        template.convertAndSend("/sub/chat/room/" + requestDto.getChatRoomId(), requestDto); 
+        template.convertAndSend("/sub/chat/room/" + requestDto.getChatRoomId(), requestDto);
     }
 }
