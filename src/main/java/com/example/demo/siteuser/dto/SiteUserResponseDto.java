@@ -1,6 +1,7 @@
 package com.example.demo.siteuser.dto;
 
 import com.example.demo.siteuser.entity.SiteUser;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,11 +12,11 @@ public class SiteUserResponseDto {
     private String name;
     private String phoneNumber;
     private String address;
-    private int mannerScore;
+    private List<String> mannerScore;
     private String profileImg;
 
     @Builder
-    public SiteUserResponseDto(String email, String name, String phoneNumber, String address, int mannerScore, String profileImg) {
+    public SiteUserResponseDto(String email, String name, String phoneNumber, String address, List<String> mannerScore, String profileImg) {
         this.email = email;
         this.name = name;
         this.phoneNumber = phoneNumber;
