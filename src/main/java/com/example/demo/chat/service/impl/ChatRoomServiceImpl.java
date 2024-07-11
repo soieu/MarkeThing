@@ -85,7 +85,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                     chatRoom.getId()); // 채팅 메시지에서 가장 최근에 저장된 메시지를 반환을 해줌
             String lastChatMessage = (lastMessage != null) ? lastMessage.getContent() : ""; //아직 저장이 채팅이 없으면 공백처리
             String time = (lastMessage != null) ? getFormattedTime(lastMessage.getCreatedAt()) : "";
-            chatRoomResponseDtos.add(ChatRoomResponseDto.toDto(chatRoom,lastChatMessage,time));
+            chatRoomResponseDtos.add(ChatRoomResponseDto.fromEntity(chatRoom,lastChatMessage,time));
         }
         return chatRoomResponseDtos;
     }
@@ -100,5 +100,4 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         // Format the createdAt to desired format
         return createdAt.format(outputFormatter);
     }
-
 }
