@@ -3,6 +3,7 @@ package com.example.demo.community.controller;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -102,6 +103,26 @@ public class CommentApiControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
+    public void deleteCommentTest() throws Exception {
+        // given
+        Community community = getCommunity();
+        SiteUser siteUser = getSiteUser();
+        Comment deleteComment = getDeletedComment(community, siteUser);
+
+        given(commentService.delete(eq("mockEmail@gmail.com")
+                , eq(community.getId())))
+                .willReturn(deleteComment);
+
+        // when & then
+        mockMvc.perform(delete("/api/communities/comments/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
     private static Comment getUpdatedComment(Community community, SiteUser siteUser,
             CommentRequestDto commentRequestDto) {
         return Comment.builder()
@@ -110,6 +131,17 @@ public class CommentApiControllerTest {
                 .siteUser(siteUser)
                 .content(commentRequestDto.getContent())
                 .postStatus(PostStatus.MODIFY)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static Comment getDeletedComment(Community community, SiteUser siteUser) {
+        return Comment.builder()
+                .id(1L)
+                .community(community)
+                .siteUser(siteUser)
+                .content("delete Content")
+                .postStatus(PostStatus.DELETE)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
