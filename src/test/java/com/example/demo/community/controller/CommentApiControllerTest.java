@@ -12,9 +12,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.demo.auth.jwt.JWTUtil;
 import com.example.demo.community.controller.api.CommentApiController;
 import com.example.demo.community.dto.comment.CommentRequestDto;
+import com.example.demo.community.dto.comment.ReplyCommentRequestDto;
 import com.example.demo.community.entity.Comment;
 import com.example.demo.community.entity.Community;
+import com.example.demo.community.entity.ReplyComment;
 import com.example.demo.community.service.CommentService;
+import com.example.demo.community.service.ReplyCommentService;
 import com.example.demo.community.type.AreaType;
 import com.example.demo.config.SecurityConfig;
 import com.example.demo.siteuser.entity.SiteUser;
@@ -47,6 +50,9 @@ public class CommentApiControllerTest {
 
     @MockBean
     private CommentService commentService;
+
+    @MockBean
+    private ReplyCommentService replyCommentService;
 
     @MockBean
     private JWTUtil jwtUtil;
@@ -121,6 +127,51 @@ public class CommentApiControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
+    public void createReplyCommentTest() throws Exception {
+        // given
+        CommentRequestDto commentRequestDto = getCommentRequestDto();
+        ReplyCommentRequestDto replyCommentRequestDto = getReplyCommentRequestDto();
+        SiteUser siteUser = getSiteUser();
+        Community community = getCommunity();
+        Comment comment = getComment(community, siteUser, commentRequestDto);
+
+        ReplyComment replyComment = getReplyComment(comment, siteUser, replyCommentRequestDto);
+
+        String content = objectMapper.writeValueAsString(commentRequestDto);
+
+        given(replyCommentService.create(eq("mockEmail@gmail.com")
+                , eq(community.getId()) ,eq(replyCommentRequestDto)))
+                .willReturn(replyComment);
+
+        // when & then
+        mockMvc.perform(post("/api/communities/comments/1/replyComments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content).with(csrf()))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    private static ReplyComment getReplyComment(Comment comment, SiteUser siteUser,
+            ReplyCommentRequestDto replyCommentRequestDto) {
+        return ReplyComment.builder()
+                .id(1L)
+                .comment(comment)
+                .siteUser(siteUser)
+                .content(replyCommentRequestDto.getContent())
+                .postStatus(PostStatus.POST)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static ReplyCommentRequestDto getReplyCommentRequestDto() {
+        return ReplyCommentRequestDto
+                .builder()
+                .content("content")
+                .build();
     }
 
     private static Comment getUpdatedComment(Community community, SiteUser siteUser,
