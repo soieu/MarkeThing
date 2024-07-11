@@ -1,6 +1,6 @@
 package com.example.demo.auth.service;
 
-import com.example.demo.auth.dto.*;
+import com.example.demo.auth.dto.SignupDto;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.siteuser.entity.SiteUser;
@@ -10,7 +10,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService implements UserDetailsService {
+public class AuthService {
 
     private final SiteUserRepository siteUserRepository;
     private final PasswordEncoder passwordEncoder;
@@ -43,8 +42,4 @@ public class AuthService implements UserDetailsService {
     }
 
 
-    @Override
-    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-        return siteUserRepository.findByEmail(userEmail).orElseThrow(()-> new MarkethingException(ErrorCode.EMAIL_NOT_FOUND));
-    }
 }

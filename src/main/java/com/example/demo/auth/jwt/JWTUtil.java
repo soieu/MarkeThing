@@ -1,19 +1,14 @@
 package com.example.demo.auth.jwt;
 
-import com.example.demo.exception.MarkethingException;
-import com.example.demo.exception.type.ErrorCode;
-import com.example.demo.siteuser.repository.SiteUserRepository;
+import com.example.demo.auth.service.CustomUserDetailsService;
 import io.jsonwebtoken.Jwts;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +16,14 @@ import org.springframework.stereotype.Component;
 public class JWTUtil {
 
     private final SecretKey secretKey;
-    private SiteUserRepository siteUserRepository;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public JWTUtil(@Value("${spring.jwt.secret}") String secret) {
+    public JWTUtil(@Value("${spring.jwt.secret}") String secret,
+            CustomUserDetailsService customUserDetailsService) {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
                 Jwts.SIG.HS256.key().build().getAlgorithm());
+
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     public String getUserEmail(String token) {
@@ -56,9 +54,10 @@ public class JWTUtil {
                 .compact();
     }
 
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = siteUserRepository.findByEmail(getUserEmail(token))
-                .orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
-        return new UsernamePasswordAuthenticationToken(userDetails, "");
+    public Authentication getAuthentication(String authToken) {
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(getUserEmail(authToken));
+//        UserDetails userDetails = siteUserRepository.findByEmail(this.getUserEmail(authToken))
+//                .orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
+        return new UsernamePasswordAuthenticationToken(userDetails, authToken, userDetails.getAuthorities());
     }
 }
