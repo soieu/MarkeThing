@@ -21,6 +21,7 @@ import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -130,7 +131,7 @@ public class ChatServiceTest {
                 .phoneNumber("010-1234-5678")
                 .address("address")
                 .myLocation(myLocation)
-                .mannerScore(0)
+                .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
                 .status(true)
                 .authType(AuthType.GENERAL)
@@ -152,7 +153,7 @@ public class ChatServiceTest {
                 .phoneNumber("010-1234-5678")
                 .address("address")
                 .myLocation(myLocation)
-                .mannerScore(0)
+                .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
                 .status(true)
                 .authType(AuthType.GENERAL)

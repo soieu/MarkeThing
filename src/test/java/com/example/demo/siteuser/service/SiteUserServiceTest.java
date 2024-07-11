@@ -15,6 +15,7 @@ import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.siteuser.service.impl.SiteUserServiceImpl;
 import com.example.demo.type.AuthType;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -99,7 +100,7 @@ public class SiteUserServiceTest {
                 .phoneNumber("010-1234-5678")
                 .address("address")
                 .myLocation(geometryFactory.createPoint(new Coordinate(37.56600357774501, 126.97306266269747)))
-                .mannerScore(0)
+                .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
                 .status(true)
                 .authType(AuthType.GENERAL)
