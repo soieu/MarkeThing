@@ -48,8 +48,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         List<ChatMessageResponseDto> chatMessageResponseDtos = new ArrayList<>();
 
         for (ChatMessage chatMessage : chatMessageList) {
-            ChatMessageResponseDto responseDto = ChatMessageResponseDto
-                    .toDto(chatMessage, getFormattedTime(chatMessage.getCreatedAt()));
+            ChatMessageResponseDto responseDto = ChatMessageResponseDto.fromEntity(chatMessage,getFormattedTime(chatMessage.getCreatedAt()));
             chatMessageResponseDtos.add(responseDto);
         }
         return chatMessageResponseDtos;
