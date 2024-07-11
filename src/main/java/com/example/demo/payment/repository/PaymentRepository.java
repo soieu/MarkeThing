@@ -11,8 +11,8 @@ public interface PaymentRepository extends JpaRepository<Pay, Long> {
 
     @Query("SELECT new com.example.demo.payment.dto.PayResponseDto(p.payMethod, p.status, p.amount, p.createdAt) " +
             "FROM Pay p " +
-            "WHERE p.id = :id " +
+            "WHERE p.siteUser.id = :id " +
             "ORDER BY p.createdAt")
-    List<PayResponseDto> findPayResponseDtoById(@Param("id") Long id);
+    List<PayResponseDto> findPayResponseDtoByUserId(@Param("id") Long id);
 
 }

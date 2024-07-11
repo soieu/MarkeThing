@@ -118,6 +118,6 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<PayResponseDto> listPayment(PaymentListRequestDto paymentListRequestDto) {
-        return paymentRepository.findPayResponseDtoById(paymentListRequestDto.getUserId());
+        return paymentRepository.findPayResponseDtoByUserId(paymentListRequestDto.getUserId());
     }
 }
