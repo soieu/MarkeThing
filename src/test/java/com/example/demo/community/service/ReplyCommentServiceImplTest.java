@@ -89,6 +89,51 @@ public class ReplyCommentServiceImplTest {
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
 
+    @Test
+    void editSuccess() {
+        // given
+        ReplyCommentRequestDto editedreplyCommentRequestDto = getReplyCommentRequestDto();
+        ReplyComment editedReplyComment = getUpdateReplyComment(editedreplyCommentRequestDto);
+
+        given(replyCommentRepository.findById(editedReplyComment.getId()))
+                .willReturn(Optional.of(editedReplyComment));
+
+        // when
+        ReplyComment result = replyCommentService.edit(editedReplyComment.getSiteUser().getEmail(),
+                editedReplyComment.getId(), editedreplyCommentRequestDto);
+
+        // then
+        assertThat(result.getContent()).isEqualTo(editedreplyCommentRequestDto.getContent());
+    }
+
+    @Test
+    void editFailedByReplyCommentNotFound() {
+        // given
+        given(replyCommentRepository.findById(1L))
+                .willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> replyCommentService.edit("mockEmail@gmail.com",
+                        1L, getReplyCommentRequestDto()));
+
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.REPLY_COMMENT_NOT_FOUND);
+    }
+
+    private static ReplyComment getUpdateReplyComment(
+            ReplyCommentRequestDto editedreplyCommentRequestDto) {
+
+        return ReplyComment.builder()
+                .id(1L)
+                .comment(getComment())
+                .siteUser(getSiteUser())
+                .content(editedreplyCommentRequestDto.getContent())
+                .postStatus(PostStatus.POST)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
     private static ReplyComment getReplyComment(Comment comment, SiteUser siteUser,
             ReplyCommentRequestDto replyCommentRequestDto) {
         return ReplyComment.builder()
@@ -96,6 +141,17 @@ public class ReplyCommentServiceImplTest {
                 .comment(comment)
                 .siteUser(siteUser)
                 .content(replyCommentRequestDto.getContent())
+                .postStatus(PostStatus.POST)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static Comment getComment() {
+        return Comment.builder()
+                .id(1L)
+                .community(getCommunity())
+                .siteUser(getSiteUser())
+                .content("content")
                 .postStatus(PostStatus.POST)
                 .createdAt(LocalDateTime.now())
                 .build();
