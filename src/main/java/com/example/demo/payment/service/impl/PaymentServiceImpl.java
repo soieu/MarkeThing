@@ -3,10 +3,7 @@ package com.example.demo.payment.service.impl;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
-import com.example.demo.payment.dto.CancelPaymentRequestDto;
-import com.example.demo.payment.dto.PaymentCallbackRequestDto;
-import com.example.demo.payment.dto.PaymentListRequestDto;
-import com.example.demo.payment.dto.RequestPayDto;
+import com.example.demo.payment.dto.*;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.PaymentService;
@@ -120,7 +117,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<Pay> listPayment(PaymentListRequestDto paymentListRequestDto) {
-        return paymentRepository.findBySiteUser(siteUserRepository.findById(paymentListRequestDto.getUserId()));
+    public List<PayResponseDto> listPayment(PaymentListRequestDto paymentListRequestDto) {
+        return paymentRepository.findPayResponseDtoById(paymentListRequestDto.getUserId());
     }
 }

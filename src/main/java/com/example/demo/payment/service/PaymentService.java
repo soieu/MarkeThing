@@ -1,9 +1,6 @@
 package com.example.demo.payment.service;
 
-import com.example.demo.payment.dto.CancelPaymentRequestDto;
-import com.example.demo.payment.dto.PaymentCallbackRequestDto;
-import com.example.demo.payment.dto.PaymentListRequestDto;
-import com.example.demo.payment.dto.RequestPayDto;
+import com.example.demo.payment.dto.*;
 import com.example.demo.payment.entity.Pay;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
@@ -21,5 +18,5 @@ public interface PaymentService {
     IamportResponse<Payment> cancelPayment(Long paymentId, CancelPaymentRequestDto request);
 
     // 결제내역열람
-    List<Pay> listPayment(PaymentListRequestDto paymentListRequestDto);
+    List<PayResponseDto> listPayment(PaymentListRequestDto paymentListRequestDto);
 }

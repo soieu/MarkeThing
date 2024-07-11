@@ -1,6 +1,7 @@
 package com.example.demo.payment.controller.api;
 
 import com.example.demo.payment.dto.CancelPaymentRequestDto;
+import com.example.demo.payment.dto.PayResponseDto;
 import com.example.demo.payment.dto.PaymentCallbackRequestDto;
 import com.example.demo.payment.dto.PaymentListRequestDto;
 import com.example.demo.payment.entity.Pay;
@@ -33,7 +34,7 @@ public class PaymentApiController {
     }
 
     @PostMapping("/list")
-    public ResponseEntity<List<Pay>> getPaymentList(@RequestBody PaymentListRequestDto paymentListRequestDto) {
+    public ResponseEntity<List<PayResponseDto>> getPaymentList(@RequestBody PaymentListRequestDto paymentListRequestDto) {
         var result = paymentService.listPayment(paymentListRequestDto);
         return ResponseEntity.ok(result);
     }
