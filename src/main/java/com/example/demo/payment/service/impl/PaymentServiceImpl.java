@@ -21,6 +21,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.demo.exception.type.ErrorCode.*;
 
@@ -42,9 +43,9 @@ public class PaymentServiceImpl implements PaymentService {
 
         return RequestPayDto.builder()
                 .buyerName(marketPurchaseRequest.getSiteUser().getName())
-                .paymentPrice((long) marketPurchaseRequest.getPay().getAmount())
+                .paymentPrice(marketPurchaseRequest.getPay().getAmount())
                 .itemName(marketPurchaseRequest.getTitle())
-                .orderUid(String.valueOf(marketPurchaseRequest.getId()))
+                .orderUid(marketPurchaseRequest.getId())
                 .build();
     }
 
@@ -118,6 +119,18 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<PayResponseDto> listPayment(PaymentListRequestDto paymentListRequestDto) {
-        return paymentRepository.findPayResponseDtoById(paymentListRequestDto.getUserId());
+        List<Pay> payments = paymentRepository.findBySiteUser(siteUserRepository.findById(paymentListRequestDto.getUserId()));
+
+        List<PayResponseDto> responseDtoList = payments.stream()
+                .map(pay -> PayResponseDto.builder()
+                        .payMethod(pay.getPayMethod())
+                        .status(pay.getStatus())
+                        .amount(pay.getAmount())
+                        .createdAt(pay.getCreatedAt())
+                        // 필요에 따라 다른 필드들도 추가
+                        .build())
+                .collect(Collectors.toList());
+
+        return responseDtoList;
     }
 }

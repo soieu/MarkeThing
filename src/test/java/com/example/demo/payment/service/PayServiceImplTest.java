@@ -10,6 +10,8 @@ import com.example.demo.payment.dto.PaymentListRequestDto;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.impl.PaymentServiceImpl;
+import com.example.demo.siteuser.entity.SiteUser;
+import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.PaymentStatus;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -21,8 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -31,14 +31,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class PayServiceImplTest {
 
@@ -50,6 +48,9 @@ public class PayServiceImplTest {
 
     @Mock
     private MarketPurchaseRequestRepository marketPurchaseRequestRepository;
+
+    @Mock
+    private SiteUserRepository siteUserRepository;
 
     @Mock
     private PaymentRepository paymentRepository;
@@ -186,11 +187,23 @@ public class PayServiceImplTest {
         Long userId = 1L;
         PaymentListRequestDto requestDto = new PaymentListRequestDto(userId);
 
-        PayResponseDto dto1 = new PayResponseDto("CARD", PaymentStatus.OK, 1000, LocalDateTime.now());
-        PayResponseDto dto2 = new PayResponseDto("CASH", PaymentStatus.CANCEL, 2000, LocalDateTime.now());
-        List<PayResponseDto> expectedDtos = Arrays.asList(dto1, dto2);
+        // Create some Pay entities
+        Pay pay1 = Pay.builder()
+                .payMethod("CARD")
+                .status(PaymentStatus.OK)
+                .amount(1000)
+                .createdAt(LocalDateTime.now())
+                .build();
+        Pay pay2 = Pay.builder()
+                .payMethod("CASH")
+                .status(PaymentStatus.CANCEL)
+                .amount(2000)
+                .createdAt(LocalDateTime.now())
+                .build();
+        List<Pay> pays = Arrays.asList(pay1, pay2);
 
-        given(paymentRepository.findPayResponseDtoById(userId)).willReturn(expectedDtos);
+        // Mock the repository method to return the Pay entities
+        given(paymentRepository.findBySiteUser(siteUserRepository.findById(userId))).willReturn(pays);
 
         // When
         List<PayResponseDto> result = paymentService.listPayment(requestDto);
@@ -207,8 +220,6 @@ public class PayServiceImplTest {
         assertThat(result.get(1).getStatus()).isEqualTo(PaymentStatus.CANCEL);
         assertThat(result.get(1).getAmount()).isEqualTo(2000);
 
-        verify(paymentRepository).findPayResponseDtoById(userId);
-
+        verify(paymentRepository).findBySiteUser(siteUserRepository.findById(userId));
     }
-
 }

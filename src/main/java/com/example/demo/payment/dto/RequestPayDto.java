@@ -10,8 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestPayDto {
-    private String orderUid;
+    private Long orderUid;
     private String itemName;
     private String buyerName;
-    private Long paymentPrice;
+    private int paymentPrice;
 }
