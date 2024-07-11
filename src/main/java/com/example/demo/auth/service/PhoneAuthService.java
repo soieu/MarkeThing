@@ -1,6 +1,8 @@
 package com.example.demo.auth.service;
 
+import com.example.demo.auth.dto.StringResponseDto;
 import com.example.demo.auth.sms.MessageSender;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -16,8 +18,23 @@ public class PhoneAuthService {
     private final RedisTemplate<String, String> redisTemplate;
     private final MessageSender messageSender;
 
-//  public String sendCode(String PhoneNumber){
-//
-//  }
+    public StringResponseDto sendCode(String PhoneNumber) {
+        String randomNumber = makeRandom();
+        return new StringResponseDto(SMS_SEND_OK);
+    }
+
+    private String makeMessage(String phoneNumber) {
+        return "[Markething] 인증번호는 " + phoneNumber + "입니다. (5분 안에 입력해 주세요!)";
+    }
+
+    private String makeRandom(){
+        StringBuilder random = new StringBuilder();
+        Random rand = new Random();
+        for (int i = 0; i < 6; i++) {
+            String randNum = Integer.toString(rand.nextInt(10));
+            random.append(randNum);
+        }
+        return random.toString();
+    }
 
 }

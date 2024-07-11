@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -12,11 +13,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.demo.common.filter.dto.CommunityFilterDto;
 import com.example.demo.common.filter.dto.CommunityFilterRequestDto;
 import com.example.demo.community.controller.api.CommunityApiController;
-import com.example.demo.community.dto.CommunityPreviewDto;
-import com.example.demo.community.dto.CommunityRequestDto;
+import com.example.demo.community.dto.community.CommunityDetailDto;
+import com.example.demo.community.dto.community.CommunityPreviewDto;
+import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.service.CommunityService;
 import com.example.demo.community.type.AreaType;
+import com.example.demo.config.SecurityConfig;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.AuthType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,6 +33,7 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -40,11 +44,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 @WebMvcTest(CommunityApiController.class)
-// @Import(SecurityConfiguration.class) // 로그인 api 작성 후 주석 제거
+@Import(SecurityConfig.class)
 public class CommunityApiControllerTest {
 
     @MockBean
     private MappingMongoConverter mappingMongoConverter;
+
     @MockBean
     private CommunityService communityService;
 
@@ -116,6 +121,10 @@ public class CommunityApiControllerTest {
         Page<CommunityPreviewDto> pages
                 = new PageImpl<>(communityPreviewDtos, pageRequest, communityPreviewDtos.size());
 
+
+        given(communityService.confirmSortOrder(eq("date")))
+                .willReturn(Sort.by("createdAt").descending());
+
         given(communityService.getCommunitiesByFilter(any(),
                 any())) // 컨트롤러 내 서비스 단의 인자를 잡지 못래 any()로 대체
                 .willReturn(pages);
@@ -134,8 +143,71 @@ public class CommunityApiControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    public void getCommunityDetailTest() throws Exception {
+        // given
+        Community community = getCommunity();
+
+        given(communityService.getCommunityDetail(eq(1L)))
+                .willReturn(CommunityDetailDto.fromEntity(community));
+
+        //when & then
+        mockMvc.perform(get("/api/communities/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(community.getId()))
+                .andExpect(jsonPath("$.area").value(community.getArea().toString()))
+                .andDo(print());
+    }
+
+    @Test
+    public void getMyCommunityListTest() throws Exception {
+        //given
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+        List<CommunityPreviewDto> communityPreviewDtos = new ArrayList<>();
+        CommunityPreviewDto communityPreviewDto = getCommunityPreviewDto();
+        communityPreviewDtos.add(communityPreviewDto);
+
+        Page<CommunityPreviewDto> pages
+                = new PageImpl<>(communityPreviewDtos, pageRequest, communityPreviewDtos.size());
+
+        given(communityService.confirmSortOrder(eq("date")))
+                .willReturn(Sort.by("createdAt").descending());
+
+        given(communityService.getMyCommunities(eq("mockEmail@gmail.com"),
+                any())) // 컨트롤러 내 서비스 단의 인자를 잡지 못래 any()로 대체
+                .willReturn(pages);
+
+        //when & then
+        mockMvc.perform(get("/api/communities/list/myList")
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(5))
+                        .param("sort", "date")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].area").value(
+                        communityPreviewDto.getArea().toString()))
+                .andExpect(jsonPath("$.content[0].title").value(communityPreviewDto.getTitle()))
+                .andDo(print());
+    }
+
+    private static Community getCommunity() {
+        return Community.builder()
+                .siteUser(getSiteUser())
+                .id(1L)
+                .area(AreaType.SEOUL)
+                .title("title")
+                .content("content")
+                .postImg("postImg")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
     private static CommunityPreviewDto getCommunityPreviewDto() {
         return CommunityPreviewDto.builder()
+                .id(1L)
+                .nickname("nickname")
                 .area(AreaType.SEOUL)
                 .title("title")
                 .build();
@@ -170,7 +242,7 @@ public class CommunityApiControllerTest {
                 .phoneNumber("010-1234-5678")
                 .address("address")
                 .myLocation(myLocation)
-                .mannerScore(0)
+                .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
                 .status(true)
                 .authType(AuthType.GENERAL)

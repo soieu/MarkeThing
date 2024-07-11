@@ -18,15 +18,14 @@ public class AuthController {
     private final PhoneAuthService phoneAuthService;
 
 
-    @PostMapping("/signUp")
+    @PostMapping("/sign-up")
     public void signUp(@RequestBody SignupDto signupDto) {
         authService.signUp(signupDto);
     }
 
-//  @PostMapping("/phone/sendCode")
+//  @PostMapping("/auth/pass")
 //  public ResponseEntity<StringResponseDto> sendCode(@RequestBody PhoneNumberRequestDto phoneNumberRequestDto) {
-//
+//        var result = phoneAuthService.sendCode(phoneNumberRequestDto.getPhoneNumber());
+//        return ResponseEntity.ok(new StringResponseDto(result));
 //  }
-
-
 }

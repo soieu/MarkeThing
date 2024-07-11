@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -21,7 +20,9 @@ import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Coordinate;
@@ -48,6 +49,7 @@ public class MarketPurchaseRequestServiceImplTest {
     private static final GeometryFactory geometryFactory = new GeometryFactory();
 
     @Test
+    @DisplayName("시장 의뢰글 등록 성공 테스트")
     void createMarketPurchaseRequest() throws Exception {
         //given
         Market market = getMarket();
@@ -72,6 +74,7 @@ public class MarketPurchaseRequestServiceImplTest {
     }
 
     @Test
+    @DisplayName("시장 의뢰글 등록 실패 테스트 - USER NOT FOUND")
     void createFailedByUserNotFound() throws Exception {
         // given
         given(siteUserRepository.findById(any())).willReturn(Optional.empty());
@@ -85,6 +88,7 @@ public class MarketPurchaseRequestServiceImplTest {
     }
 
     @Test
+    @DisplayName("시장 의뢰글 삭제 성공 테스트")
     void deleteMarketPurchaseRequest() throws Exception {
         //given
         Market market = getMarket();
@@ -103,6 +107,7 @@ public class MarketPurchaseRequestServiceImplTest {
     }
 
     @Test
+    @DisplayName("시장 의뢰글 삭제 실패 테스트 - USER NOT FOUND")
     void deleteFailedByRequestNotFound() throws Exception {
         // given
         given(marketPurchaseRequestRepository.findById(any())).willReturn(Optional.empty());
@@ -130,8 +135,7 @@ public class MarketPurchaseRequestServiceImplTest {
                 .marketId(market.getId())
                 .build();
     }
-
-    private static SiteUser getSiteUser() {
+SiteUser getSiteUser() {
         return SiteUser.builder()
                 .id(1L)
                 .email("mockEmail@gmail.com")
@@ -141,7 +145,7 @@ public class MarketPurchaseRequestServiceImplTest {
                 .phoneNumber("010-1234-5678")
                 .address("address")
                 .myLocation(geometryFactory.createPoint(new Coordinate(37.56600357774501, 126.97306266269747)))
-                .mannerScore(0)
+                .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
                 .status(true)
                 .authType(AuthType.GENERAL)
