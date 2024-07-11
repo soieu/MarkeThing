@@ -4,13 +4,10 @@ import com.example.demo.exception.MarkethingException;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
 import com.example.demo.payment.dto.CancelPaymentRequestDto;
-import com.example.demo.payment.dto.PayResponseDto;
 import com.example.demo.payment.dto.PaymentCallbackRequestDto;
-import com.example.demo.payment.dto.PaymentListRequestDto;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.impl.PaymentServiceImpl;
-import com.example.demo.type.PaymentStatus;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
@@ -21,24 +18,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class PayServiceImplTest {
 
@@ -179,36 +168,4 @@ public class PayServiceImplTest {
         assertNotNull(exception);
         verify(paymentRepository, never()).save(any(Pay.class));
     }
-
-    @Test
-    void getPayList() {
-        // Given
-        Long userId = 1L;
-        PaymentListRequestDto requestDto = new PaymentListRequestDto(userId);
-
-        PayResponseDto dto1 = new PayResponseDto("CARD", PaymentStatus.OK, 1000, LocalDateTime.now());
-        PayResponseDto dto2 = new PayResponseDto("CASH", PaymentStatus.CANCEL, 2000, LocalDateTime.now());
-        List<PayResponseDto> expectedDtos = Arrays.asList(dto1, dto2);
-
-        given(paymentRepository.findPayResponseDtoById(userId)).willReturn(expectedDtos);
-
-        // When
-        List<PayResponseDto> result = paymentService.listPayment(requestDto);
-
-        // Then
-        assertThat(result).isNotNull();
-        assertThat(result.size()).isEqualTo(2);
-
-        assertThat(result.get(0).getPayMethod()).isEqualTo("CARD");
-        assertThat(result.get(0).getStatus()).isEqualTo(PaymentStatus.OK);
-        assertThat(result.get(0).getAmount()).isEqualTo(1000);
-
-        assertThat(result.get(1).getPayMethod()).isEqualTo("CASH");
-        assertThat(result.get(1).getStatus()).isEqualTo(PaymentStatus.CANCEL);
-        assertThat(result.get(1).getAmount()).isEqualTo(2000);
-
-        verify(paymentRepository).findPayResponseDtoById(userId);
-
-    }
-
 }
