@@ -17,7 +17,7 @@ public class ChatMessageResponseDto {
     private String content; // 내용
     private String time; // 전송 시
 
-    public static ChatMessageResponseDto toDto(ChatMessage chatMessage, String time) {
+    public static ChatMessageResponseDto fromEntity(ChatMessage chatMessage, String time) {
         return ChatMessageResponseDto.builder()
                 .senderId(chatMessage.getSenderId())
                 .content(chatMessage.getContent())
