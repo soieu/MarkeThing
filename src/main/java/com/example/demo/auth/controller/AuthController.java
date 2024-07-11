@@ -28,6 +28,4 @@ public class AuthController {
 //        var result = phoneAuthService.sendCode(phoneNumberRequestDto.getPhoneNumber());
 //        return ResponseEntity.ok(new StringResponseDto(result));
 //  }
-
-
 }

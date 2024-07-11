@@ -60,5 +60,4 @@ public class JWTUtil {
 //                .orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
         return new UsernamePasswordAuthenticationToken(userDetails, authToken, userDetails.getAuthorities());
     }
-
 }
