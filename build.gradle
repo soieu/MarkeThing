@@ -79,6 +79,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+
     // 아임포트 관련 //
     implementation group: 'com.github.iamport', name: 'iamport-rest-client-java', version: '0.2.22'
     implementation group: 'com.squareup.retrofit2', name: 'adapter-rxjava2', version: '2.9.0'

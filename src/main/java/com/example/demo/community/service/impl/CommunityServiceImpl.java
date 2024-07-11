@@ -3,10 +3,12 @@ package com.example.demo.community.service.impl;
 import static com.example.demo.exception.type.ErrorCode.COMMUNITY_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.EMAIL_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.UNAUTHORIZED_USER;
+import static com.example.demo.exception.type.ErrorCode.USER_NOT_FOUND;
 
 import com.example.demo.common.filter.dto.CommunityFilterDto;
-import com.example.demo.community.dto.CommunityPreviewDto;
-import com.example.demo.community.dto.CommunityRequestDto;
+import com.example.demo.community.dto.community.CommunityDetailDto;
+import com.example.demo.community.dto.community.CommunityPreviewDto;
+import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.repository.CommunityRepository;
 import com.example.demo.community.service.CommunityService;
@@ -16,6 +18,7 @@ import com.example.demo.siteuser.repository.SiteUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +33,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Transactional
     public Community create(String email, CommunityRequestDto communityRequestDto) {
         var siteUser = siteUserRepository.findByEmail(email)
-                .orElseThrow(() -> new MarkethingException(EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new MarkethingException(USER_NOT_FOUND));
 
         return communityRepository.save(communityRequestDto.toEntity(siteUser));
     }
@@ -39,7 +42,7 @@ public class CommunityServiceImpl implements CommunityService {
     @Transactional
     public Community edit(String email, CommunityRequestDto communityRequestDto, Long communityId) {
         var siteUser = siteUserRepository.findByEmail(email)
-                .orElseThrow(() -> new MarkethingException(EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new MarkethingException(USER_NOT_FOUND));
 
         var community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new MarkethingException(COMMUNITY_NOT_FOUND));
@@ -51,9 +54,10 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
+    @Transactional
     public void delete(String email, Long communityId) {
         var siteUser = siteUserRepository.findByEmail(email)
-                .orElseThrow(() -> new MarkethingException(EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new MarkethingException(USER_NOT_FOUND));
 
         var community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new MarkethingException(COMMUNITY_NOT_FOUND));
@@ -71,6 +75,29 @@ public class CommunityServiceImpl implements CommunityService {
         }
         return communityRepository.findAllByFilter(communityFilterDto, pageable)
                 .map(CommunityPreviewDto::fromEntity);
+    }
+
+    @Override
+    public CommunityDetailDto getCommunityDetail(Long communityId) {
+        var community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new MarkethingException(COMMUNITY_NOT_FOUND));
+
+        return CommunityDetailDto.fromEntity(community);
+    }
+
+    @Override
+    public Page<CommunityPreviewDto> getMyCommunities(String email, Pageable pageable) {
+        return communityRepository.findAllBySiteUser_email(email, pageable)
+                .map(CommunityPreviewDto::fromEntity);
+    }
+
+    @Override
+    public Sort confirmSortOrder(String sort) {
+        Sort sortOrder = Sort.unsorted();
+        if("date".equals(sort)) {
+            sortOrder = Sort.by("createdAt").descending();
+        }
+        return sortOrder;
     }
 
     private static void validateAuthorization(SiteUser siteUser, Community community) {

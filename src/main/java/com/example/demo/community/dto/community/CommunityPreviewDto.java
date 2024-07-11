@@ -1,4 +1,4 @@
-package com.example.demo.community.dto;
+package com.example.demo.community.dto.community;
 
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.type.AreaType;
@@ -13,6 +13,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommunityPreviewDto {
+
+    private long id;
+
+    private String nickname;
+
     @NotBlank(message = "지역명을 입력해 주세요.")
     private AreaType area;
 
@@ -21,6 +26,8 @@ public class CommunityPreviewDto {
 
     public static CommunityPreviewDto fromEntity(Community community) {
         return CommunityPreviewDto.builder()
+                .id(community.getId())
+                .nickname(community.getSiteUser().getNickname())
                 .area(community.getArea())
                 .title(community.getTitle())
                 .build();
