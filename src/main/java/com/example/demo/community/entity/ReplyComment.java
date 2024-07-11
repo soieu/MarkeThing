@@ -59,4 +59,8 @@ public class ReplyComment {
         content = replyCommentRequestDto.getContent();
         postStatus = PostStatus.MODIFY;
     }
+
+    public void delete() {
+        postStatus = PostStatus.DELETE;
+    }
 }
