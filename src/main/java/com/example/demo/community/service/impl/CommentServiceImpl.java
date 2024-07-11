@@ -38,8 +38,8 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new MarkethingException(ErrorCode.COMMENT_NOT_FOUND));
 
         validateAuthorization(email, comment);
-
         comment.update(commentRequestDto);
+
         return comment;
     }
 
@@ -50,8 +50,8 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new MarkethingException(ErrorCode.COMMENT_NOT_FOUND));
 
         validateAuthorization(email, comment);
-
         comment.delete();
+
         return comment;
     }
 

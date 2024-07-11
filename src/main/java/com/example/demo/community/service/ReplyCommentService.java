@@ -6,4 +6,6 @@ import com.example.demo.community.entity.ReplyComment;
 public interface ReplyCommentService {
 
     ReplyComment create(String email, Long commentId, ReplyCommentRequestDto replyCommentRequestDto);
+
+    ReplyComment edit(String email, Long replyId, ReplyCommentRequestDto commentRequestDto);
 }
