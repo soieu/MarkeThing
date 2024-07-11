@@ -68,10 +68,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     public List<ChatRoomResponseDto> getMyChatRooms(Long id) { //나의 아이디를 가져오는 거겠지
         SiteUser siteUser = siteUserRepository.findById(id)
                 .orElseThrow(() -> new MarkethingException(USER_NOT_FOUND));
-
-
-        List<ChatRoom> agents = chatRoomRepository.findByAgent(siteUser); // 대행 구매 희망자였던 채팅방
-        List<ChatRoom> requesters = chatRoomRepository.findByRequester(siteUser); // 의뢰자일 때의 채팅방
+        List<ChatRoom> agents = chatRoomRepository.findByAgentId(siteUser.getId()); // 대행 구매 희망자였던 채팅방
+        List<ChatRoom> requesters = chatRoomRepository.findByRequesterId(siteUser.getId()); // 의뢰자일 때의 채팅방
         // 두 리스트를 합치고 중복을 제거하기 위한 TreeSet -> 생성순으로 오름차순으로 정렬을 함
         TreeSet<ChatRoom> chatRoomTreeSet = new TreeSet<>(Comparator.comparing(ChatRoom::getCreatedAt));
 
