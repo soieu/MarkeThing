@@ -7,7 +7,6 @@ import com.example.demo.payment.dto.*;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.PaymentService;
-import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -21,6 +20,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.demo.exception.type.ErrorCode.*;
@@ -127,10 +127,17 @@ public class PaymentServiceImpl implements PaymentService {
                         .status(pay.getStatus())
                         .amount(pay.getAmount())
                         .createdAt(pay.getCreatedAt())
-                        // 필요에 따라 다른 필드들도 추가
                         .build())
                 .collect(Collectors.toList());
 
         return responseDtoList;
     }
+
+    @Override
+    public Optional<PayDetailDto> detailPayment(Long id) {
+        return paymentRepository.findById(id)
+                .map(Pay::toPayDetailDto);
+    }
+
+
 }
