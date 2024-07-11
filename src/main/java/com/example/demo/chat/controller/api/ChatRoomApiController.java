@@ -3,6 +3,7 @@ package com.example.demo.chat.controller.api;
 
 import com.example.demo.chat.dto.ChatMessageResponseDto;
 import com.example.demo.chat.dto.ChatRoomRequestDto;
+import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.service.ChatMessageService;
 import com.example.demo.chat.service.ChatRoomService;
 import java.util.List;
@@ -33,7 +34,7 @@ public class ChatRoomApiController {
     }
     // TODO: 헤더 값에서 email을 받아와서 userId를 넣어줌
     @GetMapping("/api/chat/rooms/{userId}")
-    public ResponseEntity<?> getMyChatRooms(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<ChatRoomResponseDto>> getMyChatRooms(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(chatRoomService.getMyChatRooms(userId));
     }
 }
