@@ -132,4 +132,17 @@ INSERT INTO  CHATROOM(id, request_id, requester_id, agent_id, created_at)
             '2',
             '2023-07-04 10:00:00'
 
-           )
+           );
+
+
+INSERT INTO PAY(id, user_id, order_id, amount, status, created_at)
+    VALUES (
+            '1',
+            1,
+            1,
+            100.00,
+            'READY',
+            '2024-07-11 14:00:00'
+        );
+
+

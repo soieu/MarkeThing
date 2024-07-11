@@ -5,10 +5,13 @@ import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
 import com.example.demo.payment.dto.CancelPaymentRequestDto;
 import com.example.demo.payment.dto.PaymentCallbackRequestDto;
+import com.example.demo.payment.dto.PaymentListRequestDto;
 import com.example.demo.payment.dto.RequestPayDto;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.PaymentService;
+import com.example.demo.siteuser.entity.SiteUser;
+import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 import static com.example.demo.exception.type.ErrorCode.*;
 
@@ -31,6 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final IamportClient iamportClient;
     private final MarketPurchaseRequestRepository marketPurchaseRequestRepository;
+    private final SiteUserRepository siteUserRepository;
 
     @Override
     public RequestPayDto findRequestDto(Long orderUid) {
@@ -114,5 +119,8 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
-
+    @Override
+    public List<Pay> listPayment(PaymentListRequestDto paymentListRequestDto) {
+        return paymentRepository.findBySiteUser(siteUserRepository.findById(paymentListRequestDto.getUserId()));
+    }
 }
