@@ -49,7 +49,7 @@
     </style>
     <script>
       function navigateToChatRoom(chatRoomId) {
-        window.location.href = 'http://localhost:8080/test/chat1/' + chatRoomId;
+        window.location.href = 'http://localhost:8080/view/chat/rooms/1/user/3';
       }
     </script>
 </head>
