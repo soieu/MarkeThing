@@ -179,6 +179,40 @@ public class CommentApiControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
+    public void deleteReplyCommentTest() throws Exception {
+        // given
+        ReplyCommentRequestDto commentRequestDto = getEditedReplyCommentRequestDto();
+        Community community = getCommunity();
+        SiteUser siteUser = getSiteUser();
+        Comment comment = getComment();
+        ReplyComment replyComment = getDeletedReplyComment(comment, siteUser, commentRequestDto);
+
+        given(replyCommentService.delete(eq("mockEmail@gmail.com")
+                , eq(community.getId())))
+                .willReturn(replyComment);
+
+        // when & then
+        mockMvc.perform(delete("/api/communities/reply-comments/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    private static ReplyComment getDeletedReplyComment(Comment comment, SiteUser siteUser,
+            ReplyCommentRequestDto replyCommentRequestDto) {
+        return ReplyComment.builder()
+                .id(1L)
+                .comment(comment)
+                .siteUser(siteUser)
+                .content(replyCommentRequestDto.getContent())
+                .postStatus(PostStatus.DELETE)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
     private static ReplyComment getReplyComment(Comment comment, SiteUser siteUser,
             ReplyCommentRequestDto replyCommentRequestDto) {
         return ReplyComment.builder()
