@@ -18,6 +18,7 @@ import com.example.demo.type.AuthType;
 import com.example.demo.type.PostStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -116,7 +117,7 @@ public class CommentApiControllerTest {
                 .phoneNumber("010-1234-5678")
                 .address("address")
                 .myLocation(myLocation)
-                .mannerScore(0)
+                .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
                 .status(true)
                 .authType(AuthType.GENERAL)

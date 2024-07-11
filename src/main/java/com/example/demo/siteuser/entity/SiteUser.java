@@ -1,20 +1,20 @@
 package com.example.demo.siteuser.entity;
 
-import com.example.demo.chat.entiity.ChatMessage;
 import com.example.demo.community.entity.Community;
 import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.entity.Account;
 import com.example.demo.community.entity.Comment;
-import com.example.demo.entity.Manner;
 import com.example.demo.community.entity.ReplyComment;
 import com.example.demo.entity.RequestSuccess;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
+import com.example.demo.siteuser.service.MannerConverter;
 import com.example.demo.type.AuthType;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -78,7 +78,8 @@ public class SiteUser implements UserDetails {
     private Point myLocation;
 
     @Column(name = "MANNER_SCORE")
-    private Integer mannerScore;
+    @Convert(converter = MannerConverter.class)
+    private List<String> mannerScore;
 
     @Column(name = "PROFILE_IMG", length = 1023, nullable = false)
     private String profileImg;
@@ -107,12 +108,12 @@ public class SiteUser implements UserDetails {
     @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReplyComment> replyComments;
 
-    @OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Manner> agents;
+    @OneToMany(mappedBy = "taker", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Manner> takers;
 
     // 평가를 한 목록
-    @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Manner> requesters;
+    @OneToMany(mappedBy = "rater", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Manner> raters;
 
     @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MarketPurchaseRequest> purchaseRequests;
@@ -159,5 +160,7 @@ public class SiteUser implements UserDetails {
         return true;
     }
 
-
+    public void updateManner(List<String> manner) {
+        this.mannerScore = manner;
+    }
 }
