@@ -20,14 +20,14 @@ public class ChatRoomViewController {
 
 
     // TODO: 헤더 값에서 userId 받아오기 아직은 임의로 지정
-    @GetMapping("/api/chatRooms/{userId}")
+    @GetMapping("/view/chat/rooms/{userId}")
     public String myChatRoom(@PathVariable("userId") Long userId, Model model) {
         List<ChatRoomResponseDto> chatRooms = chatRoomService.getMyChatRooms(userId);
         model.addAttribute("chatRooms", chatRooms);
         return "chatRooms";
     }
     // TODO: 헤더 값에서 userId 받아오기 아직은 임의로 지정
-    @GetMapping(value = "api/chatRoom/{chatRoomId}/userId/{userId}")
+    @GetMapping(value = "view/chat/rooms/{chatRoomId}/user/{userId}")
     public String getChatRoom(@PathVariable("chatRoomId") Long chatRoomId, @PathVariable("userId") Long userId, Model model){
         List<ChatMessageResponseDto> chatMessageDtos = chatMessageService.getChatMessages(chatRoomId);
         Long requestId = chatRoomService.getPurchaseRequest(chatRoomId);
