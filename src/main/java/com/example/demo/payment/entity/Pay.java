@@ -1,12 +1,8 @@
 package com.example.demo.payment.entity;
 
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import javax.persistence.*;
-
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
+import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +14,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 
 @Entity
 @Builder
@@ -27,12 +27,16 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "PAYMENT")
-public class Payment {
+@Table(name = "PAY")
+public class Pay {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private SiteUser siteUser;
 
     @OneToOne
     @JoinColumn(name = "ORDER_ID", nullable = false)
@@ -41,8 +45,8 @@ public class Payment {
     @Column(name = "IMP_UID", nullable = false)
     private String impUid;
 
-    @Column(name = "PAYMENT_METHOD")
-    private String paymentMethod;
+    @Column(name = "PAY_METHOD")
+    private String payMethod;
 
     @Column(name = "APPLY_NUM")
     private String applyNum;
@@ -69,7 +73,7 @@ public class Payment {
     private String name;
 
     @Column(name = "AMOUNT", nullable = false)
-    private Long amount;
+    private int amount;
 
     @Column(name = "BUYER_NAME")
     private String buyerName;
@@ -105,7 +109,7 @@ public class Payment {
     @Column(name = "BUYER_ADDR",nullable = false)
     private Long buyerAddr;
 
-    @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "pay", cascade = CascadeType.ALL, orphanRemoval = true)
     private PaymentCancelDetail paymentCancelDetails;
 
     @CreatedDate
@@ -115,4 +119,12 @@ public class Payment {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+    public void changePaymentBySuccess() {
+            status = PaymentStatus.OK;
+    }
+    public void changePaymentByCancel() {
+        status = PaymentStatus.CANCEL;
+    }
+
 }

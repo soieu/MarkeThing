@@ -1,29 +1,11 @@
 package com.example.demo.siteuser.entity;
 
-import com.example.demo.community.entity.Community;
-import com.example.demo.entity.Account;
 import com.example.demo.chat.entiity.ChatRoom;
-import com.example.demo.entity.Comment;
-import com.example.demo.entity.Manner;
-import com.example.demo.entity.ReplyComment;
-import com.example.demo.entity.RequestSuccess;
+import com.example.demo.community.entity.Community;
+import com.example.demo.entity.*;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
+import com.example.demo.payment.entity.Pay;
 import com.example.demo.type.AuthType;
-import java.time.LocalDateTime;
-import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +17,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Builder
 @Getter
@@ -43,7 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@Table(name= "SITE_USER")
+@Table(name = "SITE_USER")
 public class SiteUser {
 
     @Id
@@ -53,7 +39,7 @@ public class SiteUser {
     @Column(name = "EMAIL", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "PASSWORD", length = 50, nullable = false)
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
 
     @Column(name = "NAME", length = 50, nullable = false)
@@ -103,6 +89,9 @@ public class SiteUser {
 
     @OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Manner> agents;
+
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pay> pays;
 
     // 평가를 한 목록
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -2,11 +2,14 @@ package com.example.demo.community.entity;
 
 
 import com.example.demo.community.dto.CommunityRequestDto;
+import com.example.demo.community.type.AreaType;
 import com.example.demo.siteuser.entity.SiteUser;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,8 +46,9 @@ public class Community {
     @JoinColumn(name = "USER_ID", nullable = false)
     private SiteUser siteUser;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "AREA", nullable = false)
-    private String area;
+    private AreaType area;
 
     @Column(name = "TITLE", length = 50, nullable = false)
     private String title;

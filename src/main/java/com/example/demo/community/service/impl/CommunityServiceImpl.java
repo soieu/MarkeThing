@@ -1,9 +1,7 @@
 package com.example.demo.community.service.impl;
 
-import static com.example.demo.exception.type.ErrorCode.COMMUNITY_NOT_FOUND;
-import static com.example.demo.exception.type.ErrorCode.EMAIL_NOT_FOUND;
-import static com.example.demo.exception.type.ErrorCode.UNAUTHORIZED_USER;
-
+import com.example.demo.common.filter.dto.CommunityFilterDto;
+import com.example.demo.community.dto.CommunityPreviewDto;
 import com.example.demo.community.dto.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.repository.CommunityRepository;
@@ -12,8 +10,12 @@ import com.example.demo.exception.MarkethingException;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.example.demo.exception.type.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +58,17 @@ public class CommunityServiceImpl implements CommunityService {
 
         validateAuthorization(siteUser, community);
         communityRepository.delete(community);
+    }
+
+    @Override
+    public Page<CommunityPreviewDto> getCommunitiesByFilter(CommunityFilterDto communityFilterDto,
+            Pageable pageable) {
+        if(communityFilterDto.getAreas().isEmpty()) {
+            return communityRepository.findAll(pageable)
+                    .map(CommunityPreviewDto::fromEntity);
+        }
+        return communityRepository.findAllByFilter(communityFilterDto, pageable)
+                .map(CommunityPreviewDto::fromEntity);
     }
 
     private static void validateAuthorization(SiteUser siteUser, Community community) {

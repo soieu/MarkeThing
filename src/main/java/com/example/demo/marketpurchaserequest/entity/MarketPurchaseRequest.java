@@ -4,7 +4,7 @@ package com.example.demo.marketpurchaserequest.entity;
 import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.market.entity.Market;
 import com.example.demo.entity.RequestSuccess;
-import com.example.demo.payment.entity.Payment;
+import com.example.demo.payment.entity.Pay;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
@@ -90,7 +90,7 @@ public class MarketPurchaseRequest {
     private List<ChatRoom> chatRooms;
 
     @OneToOne(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Payment payment;
+    private Pay pay;
 
     @Column(name = "MEETUP_LOCATION")
     private Point meetupLocation;
