@@ -1,7 +1,7 @@
 package com.example.demo.siteuser.dto;
 
 
-import com.example.demo.entity.Manner;
+import com.example.demo.siteuser.entity.Manner;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.Rate;
 import lombok.Builder;
@@ -21,10 +21,10 @@ public class MannerRequestDto {
         this.rate = rate;
     }
 
-    public Manner toEntity(SiteUser requester, SiteUser agent) {
+    public Manner toEntity(SiteUser rater, SiteUser taker) {
         return Manner.builder()
-                .requester(requester)
-                .agent(agent)
+                .rater(rater)
+                .taker(taker)
                 .rate(rate)
                 .build();
     }

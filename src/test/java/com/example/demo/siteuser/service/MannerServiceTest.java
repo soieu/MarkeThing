@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.lenient;
 
-import com.example.demo.entity.Manner;
+import com.example.demo.siteuser.entity.Manner;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.siteuser.dto.MannerRequestDto;
@@ -46,17 +46,17 @@ public class MannerServiceTest {
     @DisplayName("회원 매너 평가 성공 테스트")
     void successCreateManner() throws Exception {
         // given
-        SiteUser requester = getSiteUser(1L);
-        SiteUser agent = getSiteUser(2L);
+        SiteUser rater = getSiteUser(1L);
+        SiteUser taker = getSiteUser(2L);
         MannerRequestDto mannerRequestDto = getMannerRequestDto();
-        Manner manner = mannerRequestDto.toEntity(requester, agent);
+        Manner manner = mannerRequestDto.toEntity(rater, taker);
         // mocking
         given(mannerRepository.save(any(Manner.class))).willReturn(manner);
-        given(siteUserRepository.findByEmail(requester.getEmail())).willReturn(Optional.ofNullable(requester));
-        given(siteUserRepository.findById(agent.getId())).willReturn(Optional.ofNullable(agent));
+        given(siteUserRepository.findByEmail(rater.getEmail())).willReturn(Optional.ofNullable(rater));
+        given(siteUserRepository.findById(taker.getId())).willReturn(Optional.ofNullable(taker));
         given(mannerRepository.findById(manner.getId())).willReturn(Optional.ofNullable(manner));
         // when
-        Manner newManner = managerServiceImpl.createManner(mannerRequestDto,requester.getEmail(),agent.getId());
+        Manner newManner = managerServiceImpl.createManner(mannerRequestDto,rater.getEmail(),taker.getId());
         // then
         Manner findManner = mannerRepository.findById(newManner.getId()).orElse(null);
         assertEquals(manner.getId(), findManner.getId());
@@ -65,15 +65,15 @@ public class MannerServiceTest {
     @DisplayName("회원 매너 평가 실패 테스트 - USER NOT FOUND")
     void failCreateManner() throws Exception {
         // given
-        SiteUser requester = getSiteUser(1L);
-        SiteUser agent = getSiteUser(2L);
+        SiteUser rater = getSiteUser(1L);
+        SiteUser taker = getSiteUser(2L);
         MannerRequestDto mannerRequestDto = getMannerRequestDto();
-        Manner manner = mannerRequestDto.toEntity(requester, agent);
+        Manner manner = mannerRequestDto.toEntity(rater, taker);
         // mocking
         lenient().when(mannerRepository.save(any(Manner.class))).thenReturn(manner);
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
-                ()->managerServiceImpl.createManner(mannerRequestDto,requester.getEmail(),agent.getId()));
+                ()->managerServiceImpl.createManner(mannerRequestDto,rater.getEmail(),taker.getId()));
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }

@@ -1,6 +1,6 @@
 package com.example.demo.siteuser.service.impl;
 
-import com.example.demo.entity.Manner;
+import com.example.demo.siteuser.entity.Manner;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.siteuser.dto.MannerRequestDto;
@@ -25,12 +25,12 @@ public class MannerServiceImpl implements MannerService {
     @Override
     @Transactional
     public Manner createManner(MannerRequestDto mannerRequestDto, String email, Long userId) {
-        SiteUser requester = siteUserRepository.findByEmail(email).orElseThrow(() -> new MarkethingException(
+        SiteUser rater = siteUserRepository.findByEmail(email).orElseThrow(() -> new MarkethingException(
                 ErrorCode.USER_NOT_FOUND));
-        SiteUser agent = siteUserRepository.findById(userId).orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
-        checkManner(agent, mannerRequestDto.getRate());
-        agent.updateManner(checkManner(agent, mannerRequestDto.getRate()));
-        return managerRepository.save(mannerRequestDto.toEntity(requester, agent));
+        SiteUser taker = siteUserRepository.findById(userId).orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
+        checkManner(taker, mannerRequestDto.getRate());
+        taker.updateManner(checkManner(taker, mannerRequestDto.getRate()));
+        return managerRepository.save(mannerRequestDto.toEntity(rater, taker));
     }
 
     public List<String> checkManner(SiteUser siteUser, Rate rate) {

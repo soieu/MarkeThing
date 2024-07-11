@@ -1,6 +1,6 @@
 package com.example.demo.siteuser.service;
 
-import com.example.demo.entity.Manner;
+import com.example.demo.siteuser.entity.Manner;
 import com.example.demo.siteuser.dto.MannerRequestDto;
 
 public interface MannerService {

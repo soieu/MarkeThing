@@ -4,7 +4,6 @@ import com.example.demo.community.entity.Community;
 import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.entity.Account;
 import com.example.demo.community.entity.Comment;
-import com.example.demo.entity.Manner;
 import com.example.demo.community.entity.ReplyComment;
 import com.example.demo.entity.RequestSuccess;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
@@ -109,12 +108,12 @@ public class SiteUser implements UserDetails {
     @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReplyComment> replyComments;
 
-    @OneToMany(mappedBy = "agent", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Manner> agents;
+    @OneToMany(mappedBy = "taker", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Manner> takers;
 
     // 평가를 한 목록
-    @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Manner> requesters;
+    @OneToMany(mappedBy = "rater", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Manner> raters;
 
     @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MarketPurchaseRequest> purchaseRequests;
