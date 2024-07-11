@@ -2,6 +2,7 @@ package com.example.demo.community.controller.api;
 
 import com.example.demo.community.dto.comment.CommentRequestDto;
 import com.example.demo.community.service.CommentService;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,17 +19,17 @@ public class CommentApiController {
     // 회원 가입 기능 구현 완료 후 user 정보 가져오기 위해 Principal 객체 request에 추가
     @PostMapping("{communityId}/comments")
     public void postComment(@RequestBody CommentRequestDto commentRequestDto
-            , @PathVariable Long communityId) {
+            , @PathVariable Long communityId, Principal principal) {
 
-        String email = "mockEmail@gmail.com";
+        var email = principal.getName();
         commentService.create(email, communityId, commentRequestDto);
     }
 
     @PatchMapping("/comments/{commentId}")
     public void editComment(@RequestBody CommentRequestDto commentRequestDto
-            , @PathVariable Long commentId) {
+            , @PathVariable Long commentId, Principal principal) {
 
-        String email = "mockEmail@gmail.com";
+        var email = principal.getName();
         commentService.edit(email, commentId, commentRequestDto);
     }
 

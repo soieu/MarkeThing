@@ -37,11 +37,15 @@ public class CommentServiceImpl implements CommentService {
         var comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new MarkethingException(ErrorCode.COMMENT_NOT_FOUND));
 
-        if(!email.equals(comment.getSiteUser().getEmail())) {
-            throw new MarkethingException(ErrorCode.UNAUTHORIZED_USER);
-        }
+        validateAuthorization(email, comment);
 
         comment.update(commentRequestDto);
         return comment;
+    }
+
+    private static void validateAuthorization(String email, Comment comment) {
+        if(!email.equals(comment.getSiteUser().getEmail())) {
+            throw new MarkethingException(ErrorCode.UNAUTHORIZED_USER);
+        }
     }
 }

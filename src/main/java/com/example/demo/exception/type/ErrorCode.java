@@ -18,7 +18,9 @@ public enum ErrorCode {
     COMMUNITY_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"커뮤니티를 찾을 수 없습니다."),
     REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 의뢰글 입니다,"),
     MARKET_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"시장을 찾을 수 없습니다."),
+    CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"채팅방을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"댓글을 찾을 수 없습니다."),
+
 
     // UNAUTHORIZED
     LOGIN_REQUIRED(HttpStatus.UNAUTHORIZED.value(), "로그인이 필요한 서비스입니다."),
@@ -47,7 +49,8 @@ public enum ErrorCode {
 
     // INTERNAL_SERVER_ERROR
     SMS_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR.value(), "sms 문자 전송에 실패했습니다."),
-    IAMPORT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "아임포트 API 호출을 실패했습니다.");
+    IAMPORT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "아임포트 API 호출을 실패했습니다."),
+    ;
 
     private final int code;
     private final String description;

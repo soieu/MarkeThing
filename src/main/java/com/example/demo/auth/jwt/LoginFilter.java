@@ -57,6 +57,4 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse response, AuthenticationException failed) {
         response.setStatus(401);
     }
-
-
 }
