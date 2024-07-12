@@ -136,6 +136,49 @@ public class CommentServiceImplTest {
         assertEquals(exception.getErrorCode(), ErrorCode.COMMENT_NOT_FOUND);
     }
 
+    @Test
+    void deleteSuccess() {
+        // given
+        SiteUser siteUser = getSiteUser();
+        Community community = getCommunity();
+        Comment comment = getDeletedComment(community, siteUser);
+
+        given(commentRepository.findById(community.getId()))
+                .willReturn(Optional.of(comment));
+
+        // when
+        Comment result = commentService.delete(siteUser.getEmail(), comment.getId());
+
+        // then
+        assertThat(result.getPostStatus()).isEqualTo(PostStatus.DELETE);
+    }
+
+    @Test
+    void deleteFailedByCommentNotFound() {
+        // given
+        given(commentRepository.findById(1L))
+                .willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> commentService
+                        .delete("mockEmail@gmail.com", 1L));
+
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.COMMENT_NOT_FOUND);
+    }
+
+    private static Comment getDeletedComment(Community community, SiteUser siteUser) {
+        return Comment.builder()
+                .id(1L)
+                .community(community)
+                .siteUser(siteUser)
+                .content("delete Content")
+                .postStatus(PostStatus.DELETE)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
     private static CommentRequestDto getCommentRequestDto() {
         return CommentRequestDto
                 .builder()
