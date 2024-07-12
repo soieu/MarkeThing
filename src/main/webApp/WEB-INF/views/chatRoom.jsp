@@ -15,6 +15,7 @@
         margin: 0;
         background-color: #f2f2f2;
       }
+
       #chat-container {
         width: 80%;
         max-width: 800px;
@@ -23,6 +24,7 @@
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
         padding: 20px;
       }
+
       #messages {
         border: 1px solid #ccc;
         padding: 10px;
@@ -31,6 +33,7 @@
         display: flex;
         flex-direction: column;
       }
+
       .message {
         margin-bottom: 10px;
         padding: 10px;
@@ -38,21 +41,32 @@
         max-width: 80%;
         word-wrap: break-word;
       }
+
       .own-message {
         background-color: #dcf8c6;
         align-self: flex-end;
         text-align: right;
       }
+
       .other-message {
         background-color: #e3e3e3;
         align-self: flex-start;
         text-align: left;
       }
+
       .message-time {
         font-size: 0.8em;
         color: #888;
         margin-top: 5px;
       }
+
+      .left-chat-room {
+        color: #888;
+        text-align: center;
+        margin-top: 20px;
+        display: none; /* 처음에는 숨김 */
+      }
+
       #msg {
         width: calc(100% - 70px);
         padding: 10px;
@@ -61,6 +75,7 @@
         border-radius: 5px;
         font-size: 14px;
       }
+
       #send-btn {
         padding: 10px 20px;
         background-color: #4CAF50;
@@ -70,13 +85,17 @@
         cursor: pointer;
         font-size: 14px;
       }
+
+      .disabled-btn {
+        background-color: #ccc !important;
+        cursor: not-allowed;
+      }
     </style>
 </head>
 <body>
 <div id="chat-container">
     <div id="messages">
-        <%
-            List<ChatMessageResponseDto> chatMessages = (List<ChatMessageResponseDto>) request.getAttribute("chatMessages");
+        <% List<ChatMessageResponseDto> chatMessages = (List<ChatMessageResponseDto>) request.getAttribute("chatMessages");
             Long userId = (Long) request.getAttribute("userId");
             for (ChatMessageResponseDto chatMessage : chatMessages) {
                 String messageClass = chatMessage.getSenderId().equals(userId) ? "own-message" : "other-message";
@@ -85,14 +104,15 @@
             <%= chatMessage.getContent() %>
             <div class="message-time"><%= chatMessage.getTime() %></div>
         </div>
-        <%
-            }
-        %>
+        <% } %>
     </div>
+
     <div style="display: flex; align-items: center; margin-top: 10px;">
         <input type="text" id="msg" placeholder="Enter your message" onkeypress="handleKeyPress(event)">
-        <button id="send-btn" onclick="sendMsg()">Send</button>
+        <button id="send-btn">Send</button>
     </div>
+
+    <div id="left-chat-room-msg" class="left-chat-room">상대방이 나갔습니다.</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -102,6 +122,7 @@
   var stompClient = null;
   var chatRoomId = "<%= request.getAttribute("chatRoomId") %>";
   var senderId = "<%= request.getAttribute("userId") %>";
+  var chatRoomStatus = <%= request.getAttribute("chatRoomStatus") %>; // chatRoomStatus 값을 JSP에서 가져옵니다.
 
   function connect() {
     var socket = new SockJS('/ws');
@@ -163,8 +184,14 @@
   }
 
   $(document).ready(function() {
-    connect();
-    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    if (chatRoomStatus === 1) {
+      $('#msg').prop('disabled', true);
+      $('#send-btn').addClass('disabled-btn').prop('disabled', true);
+      $('.left-chat-room').show(); // 상대방이 나갔다는 메시지 보이기
+    } else {
+      connect();
+      document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
   });
 </script>
 </body>
