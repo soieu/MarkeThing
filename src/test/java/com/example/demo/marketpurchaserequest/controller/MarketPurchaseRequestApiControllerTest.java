@@ -176,7 +176,5 @@ public class MarketPurchaseRequestApiControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
-
     }
-
 }

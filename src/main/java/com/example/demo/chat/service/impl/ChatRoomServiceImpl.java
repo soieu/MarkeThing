@@ -1,4 +1,5 @@
 package com.example.demo.chat.service.impl;
+
 import static com.example.demo.exception.type.ErrorCode.CHATROOM_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.REQUEST_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.USER_NOT_FOUND;
@@ -22,7 +23,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
