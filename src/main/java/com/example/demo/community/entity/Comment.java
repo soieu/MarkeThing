@@ -1,6 +1,8 @@
 package com.example.demo.community.entity;
 
 
+import com.example.demo.community.dto.comment.CommentRequestDto;
+import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PostStatus;
 import java.time.LocalDateTime;
@@ -54,4 +56,9 @@ public class Comment {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+    public void update(CommentRequestDto commentRequestDto) {
+        content = commentRequestDto.getContent();
+        postStatus = PostStatus.MODIFY;
+    }
 }

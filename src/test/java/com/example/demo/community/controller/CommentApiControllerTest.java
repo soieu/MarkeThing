@@ -2,10 +2,13 @@ package com.example.demo.community.controller;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.demo.auth.jwt.JWTUtil;
 import com.example.demo.community.controller.api.CommentApiController;
 import com.example.demo.community.dto.comment.CommentRequestDto;
 import com.example.demo.community.entity.Comment;
@@ -24,16 +27,18 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 
 @WebMvcTest(CommentApiController.class)
-@Import(SecurityConfig.class)
+@AutoConfigureMockMvc
 public class CommentApiControllerTest {
 
     @MockBean
@@ -42,6 +47,9 @@ public class CommentApiControllerTest {
     @MockBean
     private CommentService commentService;
 
+    @MockBean
+    private JWTUtil jwtUtil;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -49,6 +57,7 @@ public class CommentApiControllerTest {
     private MockMvc mockMvc;
 
     @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
     public void createCommentTest() throws Exception {
         // given
         CommentRequestDto commentRequestDto = getCommentRequestDto();
@@ -65,9 +74,44 @@ public class CommentApiControllerTest {
         // when & then
         mockMvc.perform(post("/api/communities/1/comments")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content))
+                        .content(content).with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
+    public void editCommentTest() throws Exception {
+        // given
+        CommentRequestDto commentRequestDto = getCommentRequestDto();
+        Community community = getCommunity();
+        SiteUser siteUser = getSiteUser();
+        Comment updatedComment = getUpdatedComment(community, siteUser, commentRequestDto);
+
+        String content = objectMapper.writeValueAsString(commentRequestDto);
+
+        given(commentService.edit(eq("mockEmail@gmail.com")
+                , eq(community.getId()) ,eq(commentRequestDto)))
+                .willReturn(updatedComment);
+
+        // when & then
+        mockMvc.perform(patch("/api/communities/comments/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content).with(csrf()))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    private static Comment getUpdatedComment(Community community, SiteUser siteUser,
+            CommentRequestDto commentRequestDto) {
+        return Comment.builder()
+                .id(1L)
+                .community(community)
+                .siteUser(siteUser)
+                .content(commentRequestDto.getContent())
+                .postStatus(PostStatus.MODIFY)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
     private static Comment getComment(Community community, SiteUser siteUser,
