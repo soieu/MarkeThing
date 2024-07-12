@@ -7,14 +7,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MarketPurchaseRequestDto {
 
     @NotBlank(message = "제목을 입력하세요.")
@@ -58,9 +62,8 @@ public class MarketPurchaseRequestDto {
         this.longitude = longitude;
         this.userId = userId;
         this.marketId = marketId;
-
-
     }
+
     public Point getPoint(double latitude, double longitude) {
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
         return geometryFactory.createPoint(new Coordinate(latitude, longitude));
