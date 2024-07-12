@@ -48,4 +48,9 @@ public class SiteUserApiController {
         siteUserService.accumulatePoint(request.getEmail(), request.getAmount());
     }
 
+    @PostMapping("/point/spend")
+    public void spendPoint(@RequestBody PointDto request) {
+        siteUserService.spendPoint(request.getEmail(), request.getAmount());
+    }
+
 }
