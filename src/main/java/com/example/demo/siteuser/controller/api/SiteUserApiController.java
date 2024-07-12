@@ -38,8 +38,8 @@ public class SiteUserApiController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/{userId}/manner")
-    public void createManner(@PathVariable Long userId, @RequestBody MannerRequestDto request) {
-        String email = "mockEmail@gmail.com";
+    public void createManner(@PathVariable Long userId, @RequestBody MannerRequestDto request, Principal principal) {
+        String email = principal.getName();
         mannerService.createManner(request,email,userId);
     }
 
