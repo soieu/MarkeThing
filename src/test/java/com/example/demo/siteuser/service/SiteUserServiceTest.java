@@ -3,9 +3,7 @@ package com.example.demo.siteuser.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
@@ -114,14 +112,46 @@ public class SiteUserServiceTest {
         // Given
         String email = "nonexistentemail@example.com";
         int charge = 100;
-
-        // Mocking the repository to return an empty Optional, simulating user not found
         given(siteUserRepository.findByEmail("nonexistentemail@example.com")).willReturn(Optional.empty());
 
         // When & Then
         assertThrows(MarkethingException.class, () -> {
             siteUserServiceImpl.accumulatePoint(email, charge);
         });
+    }
+
+    @Test
+    @DisplayName("포인트 사용 성공 테스트")
+    public void successSpendPoint() {
+        // Given
+        SiteUser siteUser = getSiteUser();
+
+        when(siteUserRepository.findByEmail(siteUser.getEmail())).thenReturn(java.util.Optional.of(siteUser));
+
+        // When
+        siteUserServiceImpl.accumulatePoint(siteUser.getEmail(), 500);
+        siteUserServiceImpl.spendPoint(siteUser.getEmail(), 100);
+
+        // Then
+        verify(siteUserRepository, times(2)).findByEmail(siteUser.getEmail());
+        verify(siteUserRepository, times(2)).save(any(SiteUser.class));
+        assert siteUser.getPoint() == 150;
+    }
+
+    @Test
+    @DisplayName("포인트 사용 실패 테스트 - 잔액 부족")
+    public void insufficientPointsSpendPoint() {
+        // Given
+        SiteUser siteUser = getSiteUser();
+
+        when(siteUserRepository.findByEmail(siteUser.getEmail())).thenReturn(java.util.Optional.of(siteUser));
+
+        // When & Then
+        assertThrows(MarkethingException.class, () -> {
+            siteUserServiceImpl.spendPoint(siteUser.getEmail(), 10);
+        });
+        verify(siteUserRepository, times(1)).findByEmail(siteUser.getEmail());
+        verify(siteUserRepository, never()).save(any(SiteUser.class));
     }
 
 

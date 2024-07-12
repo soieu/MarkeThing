@@ -3,8 +3,7 @@ package com.example.demo.siteuser.controller;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -40,6 +39,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(controllers = SiteUserApiController.class)
 @Import({SecurityConfig.class})
@@ -151,8 +151,23 @@ public class SiteUserApiControllerTest {
                         .content("{\"email\":\"test@example.com\", \"amount\":100}"))
                 .andExpect(status().isOk());
 
-        // Verify that the service method was called with the expected parameters
         verify(siteUserService).accumulatePoint("test@example.com", 100);
+    }
+
+    @Test
+    @DisplayName("포인트 사용 API")
+    public void testSpendPoint() throws Exception {
+        String email = "test@example.com";
+        int amount = 100;
+
+        String requestBody = String.format("{\"email\": \"%s\", \"amount\": %d}", email, amount);
+
+        mockMvc.perform(post("/api/users/point/spend")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk());
+
+        verify(siteUserService, times(1)).spendPoint(email, amount);
     }
 
 }
