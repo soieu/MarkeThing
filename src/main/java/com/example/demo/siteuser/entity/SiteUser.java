@@ -163,4 +163,11 @@ public class SiteUser implements UserDetails {
     public void updateManner(List<String> manner) {
         this.mannerScore = manner;
     }
+
+    public void updateSiteUser(String nickname, String phoneNumber,String address, String profileImg) {
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.profileImg = profileImg;
+    }
 }
