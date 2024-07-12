@@ -37,9 +37,9 @@ public class SiteUserServiceImpl implements SiteUserService {
     @Transactional
     public void updateSiteUser(String email, UpdateSiteUserRequestDto updateSiteUserRequestDto) {
         SiteUser siteUser = siteUserRepository.findByEmail(email).orElseThrow(()->new MarkethingException(ErrorCode.USER_NOT_FOUND));
-        String nickName = updateSiteUserRequestDto.getNickname()==null || updateSiteUserRequestDto.getNickname().isBlank()? siteUser.getNickname():updateSiteUserRequestDto.getNickname();
-        String phoneNumber = updateSiteUserRequestDto.getPhoneNumber()==null || updateSiteUserRequestDto.getPhoneNumber().isBlank()? siteUser.getPhoneNumber():updateSiteUserRequestDto.getPhoneNumber();
-        String address = updateSiteUserRequestDto.getAddress()==null || updateSiteUserRequestDto.getAddress().isBlank()? siteUser.getAddress():updateSiteUserRequestDto.getAddress();
+        String nickName = updateSiteUserRequestDto.getNickname().isBlank()? siteUser.getNickname():updateSiteUserRequestDto.getNickname();
+        String phoneNumber = updateSiteUserRequestDto.getPhoneNumber().isBlank()? siteUser.getPhoneNumber():updateSiteUserRequestDto.getPhoneNumber();
+        String address = updateSiteUserRequestDto.getAddress().isBlank()? siteUser.getAddress():updateSiteUserRequestDto.getAddress();
         siteUser.updateSiteUser(nickName, phoneNumber, address,
                 updateSiteUserRequestDto.getProfileImg());
     }
