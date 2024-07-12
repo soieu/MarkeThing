@@ -162,4 +162,12 @@ public class SiteUser implements UserDetails {
     public void accumulatePoint(int charge) {
         this.point += charge / 2;
     }
+
+    public void spendPoint(int charge) {
+        if (charge > this.point) {
+            throw new MarkethingException(INSUFFICIENT_POINT);
+        }
+        this.point -= charge;
+    }
+
 }

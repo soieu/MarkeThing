@@ -37,4 +37,12 @@ public class SiteUserServiceImpl implements SiteUserService {
         siteUserRepository.save(siteUser);
     }
 
+    @Override
+    public void spendPoint(String email, int charge) {
+        SiteUser siteUser = getSiteUserByEmail(email);
+        siteUser.spendPoint(charge);
+        siteUserRepository.save(siteUser);
+    }
+
 }
+
