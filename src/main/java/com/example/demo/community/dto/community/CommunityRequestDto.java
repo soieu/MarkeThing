@@ -1,4 +1,4 @@
-package com.example.demo.community.dto;
+package com.example.demo.community.dto.community;
 
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.type.AreaType;

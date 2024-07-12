@@ -10,8 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.example.demo.common.filter.dto.CommunityFilterDto;
-import com.example.demo.community.dto.CommunityPreviewDto;
-import com.example.demo.community.dto.CommunityRequestDto;
+import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.repository.CommunityRepository;
 import com.example.demo.community.service.impl.CommunityServiceImpl;
@@ -33,7 +32,6 @@ import org.locationtech.jts.geom.Point;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -70,12 +68,16 @@ public class CommunityServiceImplTest {
     }
 
     @Test
-    void createFailedByEmailNotFound() {
+    void createFailedByUserNotFound() {
+        // given
+        given(siteUserRepository.findByEmail("mockEmail@gmail.com"))
+                .willReturn(Optional.empty());
+
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
                 () -> communityService.create("mockEmail@gmail.com", getCommunityRequestDto()));
         // then
-        assertEquals(exception.getErrorCode(), ErrorCode.EMAIL_NOT_FOUND);
+        assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
 
     @Test
@@ -83,7 +85,7 @@ public class CommunityServiceImplTest {
         // given
         SiteUser siteUser = getSiteUser();
         CommunityRequestDto communityRequestDto = getCommunityRequestDto();
-        CommunityRequestDto editCommunityRequestDto = getEditCommunityRequestDto();
+        CommunityRequestDto editedCommunityRequestDto = getEditedCommunityRequestDto();
         Community community = communityRequestDto.toEntity(siteUser);
 
         given(siteUserRepository.findByEmail(siteUser.getEmail()))
@@ -92,17 +94,17 @@ public class CommunityServiceImplTest {
                 .willReturn(Optional.of(community));
 
         // when
-        Community result = communityService.edit(siteUser.getEmail(), editCommunityRequestDto, 1L);
+        Community result = communityService.edit(siteUser.getEmail(), editedCommunityRequestDto, 1L);
 
         // then
-        assertThat(result.getArea()).isEqualTo(editCommunityRequestDto.getArea());
-        assertThat(result.getContent()).isEqualTo(editCommunityRequestDto.getContent());
-        assertThat(result.getTitle()).isEqualTo(editCommunityRequestDto.getTitle());
-        assertThat(result.getPostImg()).isEqualTo(editCommunityRequestDto.getPostImg());
+        assertThat(result.getArea()).isEqualTo(editedCommunityRequestDto.getArea());
+        assertThat(result.getContent()).isEqualTo(editedCommunityRequestDto.getContent());
+        assertThat(result.getTitle()).isEqualTo(editedCommunityRequestDto.getTitle());
+        assertThat(result.getPostImg()).isEqualTo(editedCommunityRequestDto.getPostImg());
     }
 
     @Test
-    void editFailedByEmailNotFound() {
+    void editFailedByUserNotFound() {
         // given
         given(siteUserRepository.findByEmail("mockEmail@gmail.com"))
                 .willReturn(Optional.empty());
@@ -112,7 +114,7 @@ public class CommunityServiceImplTest {
                 () -> communityService.edit("mockEmail@gmail.com", getCommunityRequestDto(), 1L));
 
         // then
-        assertEquals(exception.getErrorCode(), ErrorCode.EMAIL_NOT_FOUND);
+        assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
 
     @Test
@@ -156,7 +158,7 @@ public class CommunityServiceImplTest {
     }
 
     @Test
-    void deleteFailedByEmailNotFound() {
+    void deleteFailedByUserNotFound() {
         // given
         given(siteUserRepository.findByEmail("mockEmail@gmail.com"))
                 .willReturn(Optional.empty());
@@ -166,7 +168,7 @@ public class CommunityServiceImplTest {
                 () -> communityService.delete("mockEmail@gmail.com", 1L));
 
         // then
-        assertEquals(exception.getErrorCode(), ErrorCode.EMAIL_NOT_FOUND);
+        assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
 
     @Test
@@ -193,16 +195,14 @@ public class CommunityServiceImplTest {
         CommunityFilterDto communityFilterDto = getFilterDto();
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
 
-        SiteUser siteUser = getSiteUser();
-        CommunityRequestDto communityRequestDto = getCommunityRequestDto();
-        Community community = communityRequestDto.toEntity(siteUser);
+        Community community = getCommunity();
         List<Community> communities = new ArrayList<>();
         communities.add(community);
 
         PageImpl<Community> communityPage
                 = new PageImpl<>(communities, pageRequest, communities.size());
 
-        given(communityRepository.findAllByFilter(communityFilterDto, pageRequest))
+        given(communityRepository.findAllByFilter(any(), any()))
                 .willReturn(communityPage);
 
         // when
@@ -213,10 +213,54 @@ public class CommunityServiceImplTest {
         assertThat(result.getContent().get(0).getTitle()).isEqualTo(community.getTitle());
     }
 
-    private static CommunityPreviewDto getCommunityPreviewDto() {
-        return CommunityPreviewDto.builder()
+    @Test
+    void getCommunityDetail() {
+        // given
+        Community community = getCommunity();
+        given(communityRepository.findById(eq(community.getId())))
+        .willReturn(Optional.of(community));
+
+        // when
+        var result = communityService.getCommunityDetail(community.getId());
+
+        //then
+        assertThat(result.getArea()).isEqualTo(community.getArea());
+        assertThat(result.getContent()).isEqualTo(community.getContent());
+    }
+
+    @Test
+    void getMyCommunities() {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+
+        Community community = getCommunity();
+        List<Community> communities = new ArrayList<>();
+        communities.add(community);
+
+        PageImpl<Community> communityPage
+                = new PageImpl<>(communities, pageRequest, communities.size());
+
+        given(communityRepository.findAllBySiteUser_email(eq("mockEmail@gmail.com"), any()))
+                .willReturn(communityPage);
+
+        // when
+        var result = communityService.getMyCommunities("mockEmail@gmail.com", pageRequest);
+
+        // then
+        assertThat(result.getContent().get(0).getArea()).isEqualTo(community.getArea());
+        assertThat(result.getContent().get(0).getTitle()).isEqualTo(community.getTitle());
+    }
+
+    private static Community getCommunity() {
+        return Community.builder()
+                .siteUser(getSiteUser())
+                .id(1L)
                 .area(AreaType.SEOUL)
                 .title("title")
+                .content("content")
+                .postImg("postImg")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 
@@ -243,7 +287,7 @@ public class CommunityServiceImplTest {
                 .phoneNumber("010-1234-5678")
                 .address("address")
                 .myLocation(myLocation)
-                .mannerScore(0)
+                .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
                 .status(true)
                 .authType(AuthType.GENERAL)
@@ -261,7 +305,7 @@ public class CommunityServiceImplTest {
                 .build();
     }
 
-    private static CommunityRequestDto getEditCommunityRequestDto() {
+    private static CommunityRequestDto getEditedCommunityRequestDto() {
         return CommunityRequestDto
                 .builder()
                 .area(AreaType.GANGWON)

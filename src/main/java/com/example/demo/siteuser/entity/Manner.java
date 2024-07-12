@@ -1,8 +1,7 @@
-package com.example.demo.entity;
+package com.example.demo.siteuser.entity;
 
 
-import com.example.demo.siteuser.entity.SiteUser;
-import com.example.demo.type.PostStatus;
+import com.example.demo.type.Rate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +14,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Builder
@@ -25,30 +23,28 @@ import java.time.LocalDate;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "REPLY_COMMENT")
-public class ReplyComment {
+@Table(name = "MANNER")
+public class Manner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private SiteUser siteUser;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TAKER_ID")
+    private SiteUser taker;
 
-    @ManyToOne
-    @JoinColumn(name = "COMMENT_ID", nullable = false)
-    private Comment comment;
-
-    @Column(name = "CONTENT", length =1023, nullable = false)
-    private String content;
+    // 평가를 하는 사용자와의 다대일 관계를 정의
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RATER_ID")
+    private SiteUser rater;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "STATUS", length = 50, nullable = false)
-    private PostStatus postStatus;
+    @Column(name = "RATE", length = 50, nullable = false)
+    private Rate rate;
 
     @CreatedDate
-    @Column(name = "CREATED_AT", nullable = false)
+    @Column(name = "CREATED_AT",nullable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate

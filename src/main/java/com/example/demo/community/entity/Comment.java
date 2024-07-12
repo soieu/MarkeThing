@@ -1,9 +1,24 @@
-package com.example.demo.entity;
+package com.example.demo.community.entity;
 
 
-import com.example.demo.community.entity.Community;
+import com.example.demo.community.dto.comment.CommentRequestDto;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PostStatus;
+import java.time.LocalDateTime;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,10 +28,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Builder
@@ -58,4 +69,13 @@ public class Comment {
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+    public void update(CommentRequestDto commentRequestDto) {
+        content = commentRequestDto.getContent();
+        postStatus = PostStatus.MODIFY;
+    }
+
+    public void delete() {
+        postStatus = PostStatus.DELETE;
+    }
 }

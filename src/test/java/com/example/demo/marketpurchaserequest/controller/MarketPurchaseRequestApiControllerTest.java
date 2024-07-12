@@ -3,11 +3,11 @@ package com.example.demo.marketpurchaserequest.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.demo.auth.jwt.JWTFilter;
+import com.example.demo.config.SecurityConfig;
 import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.controller.api.MarketPurchaseRequestApiController;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
@@ -18,10 +18,13 @@ import com.example.demo.type.AuthType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
@@ -31,6 +34,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(controllers = MarketPurchaseRequestApiController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class MarketPurchaseRequestApiControllerTest {
 
     @MockBean
@@ -38,6 +42,12 @@ public class MarketPurchaseRequestApiControllerTest {
 
     @MockBean
     private MappingMongoConverter mappingMongoConverter;
+
+    @MockBean
+    private SecurityConfig securityConfig;
+
+    @MockBean
+    private JWTFilter jwtFilter;
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,7 +66,7 @@ public class MarketPurchaseRequestApiControllerTest {
             .phoneNumber("010-1234-5678")
             .address("address")
             .myLocation(geometryFactory.createPoint(new Coordinate(37.56600357774501, 126.97306266269747)))
-            .mannerScore(0)
+            .mannerScore(List.of("0,0,0"))
             .profileImg("profileImg")
             .status(true)
             .authType(AuthType.GENERAL)
@@ -88,6 +98,7 @@ public class MarketPurchaseRequestApiControllerTest {
 
 
     @Test
+    @DisplayName("시장 의뢰글 등록 테스트")
     void createMarketPurchaseRequest() throws Exception {
         // given
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,market);
@@ -105,15 +116,16 @@ public class MarketPurchaseRequestApiControllerTest {
     }
 
     @Test
+    @DisplayName("시장 의뢰글 삭제 테스트")
     void deleteMarketPurchaseRequest() throws Exception {
         // given
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,market);
 
-        given(marketPurchaseRequestService.createMarketPurchaseRequest(any())).willReturn(marketPurchaseRequest);
+        given(marketPurchaseRequestService.createMarketPurchaseRequest(marketPurchaseRequestDto)).willReturn(marketPurchaseRequest);
         doNothing().when(marketPurchaseRequestService).deleteMarketPurchaseRequest(
                 marketPurchaseRequest.getId());
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/requests/1"))
-                .andExpect(status().isNoContent()).andDo(print());
+                .andExpect(status().isOk()).andDo(print());
     }
 }

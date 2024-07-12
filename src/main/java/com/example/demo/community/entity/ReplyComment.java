@@ -1,8 +1,9 @@
-package com.example.demo.entity;
+package com.example.demo.community.entity;
 
 
+import com.example.demo.community.dto.comment.ReplyCommentRequestDto;
 import com.example.demo.siteuser.entity.SiteUser;
-import com.example.demo.type.Rate;
+import com.example.demo.type.PostStatus;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Builder
@@ -25,31 +25,42 @@ import java.time.LocalDate;
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "MANNER")
-public class Manner {
+@Table(name = "REPLY_COMMENT")
+public class ReplyComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "AGENT_ID")
-    private SiteUser agent;
+    @ManyToOne
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private SiteUser siteUser;
 
-    // 평가를 하는 사용자와의 다대일 관계를 정의
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "REQUESTER_ID")
-    private SiteUser requester;
+    @ManyToOne
+    @JoinColumn(name = "COMMENT_ID", nullable = false)
+    private Comment comment;
+
+    @Column(name = "CONTENT", length =1023, nullable = false)
+    private String content;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "RATE", length = 50, nullable = false)
-    private Rate rate;
+    @Column(name = "STATUS", length = 50, nullable = false)
+    private PostStatus postStatus;
 
     @CreatedDate
-    @Column(name = "CREATED_AT",nullable = false)
+    @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+    public void update(ReplyCommentRequestDto replyCommentRequestDto) {
+        content = replyCommentRequestDto.getContent();
+        postStatus = PostStatus.MODIFY;
+    }
+
+    public void delete() {
+        postStatus = PostStatus.DELETE;
+    }
 }

@@ -1,3 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.example.demo.chat.dto.ChatMessageResponseDto" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,6 +48,11 @@
         align-self: flex-start;
         text-align: left;
       }
+      .message-time {
+        font-size: 0.8em;
+        color: #888;
+        margin-top: 5px;
+      }
       #msg {
         width: calc(100% - 70px);
         padding: 10px;
@@ -66,7 +74,21 @@
 </head>
 <body>
 <div id="chat-container">
-    <div id="messages"></div>
+    <div id="messages">
+        <%
+            List<ChatMessageResponseDto> chatMessages = (List<ChatMessageResponseDto>) request.getAttribute("chatMessages");
+            Long userId = (Long) request.getAttribute("userId");
+            for (ChatMessageResponseDto chatMessage : chatMessages) {
+                String messageClass = chatMessage.getSenderId().equals(userId) ? "own-message" : "other-message";
+        %>
+        <div class="message <%= messageClass %>">
+            <%= chatMessage.getContent() %>
+            <div class="message-time"><%= chatMessage.getTime() %></div>
+        </div>
+        <%
+            }
+        %>
+    </div>
     <div style="display: flex; align-items: center; margin-top: 10px;">
         <input type="text" id="msg" placeholder="Enter your message" onkeypress="handleKeyPress(event)">
         <button id="send-btn" onclick="sendMsg()">Send</button>
@@ -78,21 +100,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
   var stompClient = null;
-  var nickname = '';
-  var chatRoomId = 1; // Default chat room ID
-  var senderId = 2; // Default sender ID
+  var chatRoomId = "<%= request.getAttribute("chatRoomId") %>";
+  var senderId = "<%= request.getAttribute("userId") %>";
 
   function connect() {
     var socket = new SockJS('/ws');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
       console.log('Connected: ' + frame);
-      stompClient.subscribe('/sub/chat/room', function(userInfo) {
-        var user = JSON.parse(userInfo.body);
-        nickname = user.nickname;
-        senderId = user.senderId;
-        console.log('Nickname: ' + nickname + ', Sender ID: ' + senderId);
-      });
       stompClient.subscribe('/sub/chat/room/' + chatRoomId, function(messageOutput) {
         showMessage(JSON.parse(messageOutput.body));
       });
@@ -107,7 +122,6 @@
       senderId: senderId,
       content: $('#msg').val()
     };
-    console.log(JSON.stringify(message));
     stompClient.send("/pub/sendMessage", {}, JSON.stringify(message));
     $('#msg').val('');
   }
@@ -115,24 +129,42 @@
   function showMessage(message) {
     var messageElement = document.createElement('div');
     messageElement.className = 'message';
-    if (message.senderId === senderId) {
+    var messageTime = document.createElement('div');
+    messageTime.className = 'message-time';
+
+    if (message.senderId == senderId) {
       messageElement.classList.add('own-message');
-      messageElement.innerText = message.content;
     } else {
       messageElement.classList.add('other-message');
-      messageElement.innerText = message.content;
     }
+    messageElement.innerText = message.content;
+    messageTime.innerText = message.time ? message.time : formatAMPM(new Date());
+
+    messageElement.appendChild(messageTime);
     document.getElementById('messages').appendChild(messageElement);
     document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
   }
+
   function handleKeyPress(event) {
     if (event.keyCode === 13) { // 13 is the key code for Enter
       sendMsg();
     }
   }
 
+  function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? '오후' : '오전';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+  }
+
   $(document).ready(function() {
     connect();
+    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
   });
 </script>
 </body>
