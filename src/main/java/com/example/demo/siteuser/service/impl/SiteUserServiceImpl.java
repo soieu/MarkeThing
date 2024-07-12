@@ -29,4 +29,12 @@ public class SiteUserServiceImpl implements SiteUserService {
         SiteUser siteUser = getSiteUserByEmail(email);
         return SiteUserResponseDto.fromEntity(siteUser);
     }
+
+    @Override
+    public void accumulatePoint(String email, int charge) {
+        SiteUser siteUser = getSiteUserByEmail(email);
+        siteUser.accumulatePoint(charge);
+        siteUserRepository.save(siteUser);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.demo.siteuser.controller.api;
 
 import com.example.demo.siteuser.dto.MannerRequestDto;
+import com.example.demo.siteuser.dto.PointDto;
 import com.example.demo.siteuser.dto.SiteUserResponseDto;
 import com.example.demo.siteuser.service.MannerService;
 import com.example.demo.siteuser.service.SiteUserService;
@@ -40,6 +41,16 @@ public class SiteUserApiController {
     public void createManner(@PathVariable Long userId, @RequestBody MannerRequestDto request) {
         String email = "mockEmail@gmail.com";
         mannerService.createManner(request,email,userId);
+    }
+
+    @PostMapping("/point/accumulate")
+    public void accumulatePoint(@RequestBody PointDto request) {
+        siteUserService.accumulatePoint(request.getEmail(), request.getAmount());
+    }
+
+    @PostMapping("/point/spend")
+    public void spendPoint(@RequestBody PointDto request) {
+        siteUserService.spendPoint(request.getEmail(), request.getAmount());
     }
 
 }

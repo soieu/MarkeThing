@@ -5,6 +5,7 @@ import com.example.demo.community.entity.Comment;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.entity.ReplyComment;
 import com.example.demo.entity.*;
+import com.example.demo.exception.MarkethingException;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.siteuser.service.MannerConverter;
@@ -26,6 +27,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+
+import static com.example.demo.exception.type.ErrorCode.INSUFFICIENT_POINT;
 
 @Entity
 @Builder
@@ -72,6 +75,9 @@ public class SiteUser implements UserDetails {
 
     @Column(name = "STATUS", nullable = false)
     private boolean status;
+
+    @Column(name = "POINT", nullable = false)
+    private int point;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "AUTH_TYPE", length = 50, nullable = false)
@@ -151,5 +157,9 @@ public class SiteUser implements UserDetails {
 
     public void updateManner(List<String> manner) {
         this.mannerScore = manner;
+    }
+
+    public void accumulatePoint(int charge) {
+        this.point += charge / 2;
     }
 }
