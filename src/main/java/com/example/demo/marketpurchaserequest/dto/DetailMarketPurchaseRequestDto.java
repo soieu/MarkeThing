@@ -1,10 +1,10 @@
 package com.example.demo.marketpurchaserequest.dto;
 
-import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.type.MarketType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,11 +16,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DetailMarketPurchaseRequestDto {
 
+    private long requestId;
     private String title;
     private String content;
     private String postImg;
     private int fee;
-    private LocalDate meetupTime;
+    private LocalTime meetupTime;
     private LocalDate meetupDate;
     private String meetupAddress;
     private Double latitude;
@@ -38,6 +39,7 @@ public class DetailMarketPurchaseRequestDto {
             MarketPurchaseRequest request) {
 
         return DetailMarketPurchaseRequestDto.builder()
+                .requestId(request.getId())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .postImg(request.getPostImg())
