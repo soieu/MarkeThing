@@ -4,6 +4,7 @@ import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.market.entity.Market;
 import com.example.demo.market.repository.MarketRepository;
+import com.example.demo.marketpurchaserequest.dto.DetailMarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
@@ -26,14 +27,29 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
     @Transactional
     public MarketPurchaseRequest createMarketPurchaseRequest(
             MarketPurchaseRequestDto marketPurchaseRequestDto) {
-        SiteUser siteUser = siteUserRepository.findById(marketPurchaseRequestDto.getUserId()).orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
-        Market market = marketRepository.findById(marketPurchaseRequestDto.getMarketId()).orElseThrow(()-> new MarkethingException(ErrorCode.MARKET_NOT_FOUND));
-        return marketPurchaseRequestRepository.save(marketPurchaseRequestDto.toEntity(siteUser,market));
+        SiteUser siteUser = siteUserRepository.findById(marketPurchaseRequestDto.getUserId())
+                .orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
+
+        Market market = marketRepository.findById(marketPurchaseRequestDto.getMarketId())
+                .orElseThrow(()-> new MarkethingException(ErrorCode.MARKET_NOT_FOUND));
+
+        return marketPurchaseRequestRepository.save(marketPurchaseRequestDto
+                .toEntity(siteUser,market));
     }
 
     @Override
     public void deleteMarketPurchaseRequest(Long id) {
-        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestRepository.findById(id).orElseThrow(() -> new MarkethingException(ErrorCode.REQUEST_NOT_FOUND));
+        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestRepository.findById(id)
+                .orElseThrow(() -> new MarkethingException(ErrorCode.REQUEST_NOT_FOUND));
         marketPurchaseRequestRepository.delete(marketPurchaseRequest);
+    }
+
+    @Override
+    public DetailMarketPurchaseRequestDto getMarketPurchaseRequest(Long requestId) {
+        return DetailMarketPurchaseRequestDto
+                .fromEntity(
+                        marketPurchaseRequestRepository.findById(requestId)
+                .orElseThrow(() -> new MarkethingException(ErrorCode.REQUEST_NOT_FOUND))
+                );
     }
 }
