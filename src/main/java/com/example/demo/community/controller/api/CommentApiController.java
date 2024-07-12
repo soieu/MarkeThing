@@ -44,12 +44,20 @@ public class CommentApiController {
         commentService.delete(email, commentId);
     }
 
-    @PostMapping("/comments/{commentId}/replyComments")
+    @PostMapping("/comments/{commentId}/reply-comments")
     public void postReplyComment(@RequestBody ReplyCommentRequestDto replyCommentRequestDto
             , @PathVariable Long commentId, Principal principal) {
 
         var email = principal.getName();
         replyCommentService.create(email, commentId, replyCommentRequestDto);
+    }
+
+    @PatchMapping("/reply-comments/{replyId}")
+    public void editReplyComment(@RequestBody ReplyCommentRequestDto commentRequestDto
+            , @PathVariable Long replyId, Principal principal) {
+
+        var email = principal.getName();
+        replyCommentService.edit(email, replyId, commentRequestDto);
     }
 
 }

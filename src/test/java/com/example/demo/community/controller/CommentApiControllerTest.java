@@ -148,7 +148,31 @@ public class CommentApiControllerTest {
                 .willReturn(replyComment);
 
         // when & then
-        mockMvc.perform(post("/api/communities/comments/1/replyComments")
+        mockMvc.perform(post("/api/communities/comments/1/reply-comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content).with(csrf()))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
+    public void editReplyCommentTest() throws Exception {
+        // given
+        ReplyCommentRequestDto commentRequestDto = getEditedReplyCommentRequestDto();
+        Community community = getCommunity();
+        SiteUser siteUser = getSiteUser();
+        Comment comment = getComment();
+        ReplyComment updatedReplyComment = getReplyComment(comment, siteUser, commentRequestDto);
+
+        String content = objectMapper.writeValueAsString(commentRequestDto);
+
+        given(replyCommentService.edit(eq("mockEmail@gmail.com")
+                , eq(community.getId()) ,eq(commentRequestDto)))
+                .willReturn(updatedReplyComment);
+
+        // when & then
+        mockMvc.perform(patch("/api/communities/reply-comments/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content).with(csrf()))
                 .andExpect(status().isOk())
@@ -164,6 +188,13 @@ public class CommentApiControllerTest {
                 .content(replyCommentRequestDto.getContent())
                 .postStatus(PostStatus.POST)
                 .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static ReplyCommentRequestDto getEditedReplyCommentRequestDto() {
+        return ReplyCommentRequestDto
+                .builder()
+                .content("new content")
                 .build();
     }
 
@@ -204,6 +235,17 @@ public class CommentApiControllerTest {
                 .community(community)
                 .siteUser(siteUser)
                 .content(commentRequestDto.getContent())
+                .postStatus(PostStatus.POST)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static Comment getComment() {
+        return Comment.builder()
+                .id(1L)
+                .community(getCommunity())
+                .siteUser(getSiteUser())
+                .content("content")
                 .postStatus(PostStatus.POST)
                 .createdAt(LocalDateTime.now())
                 .build();

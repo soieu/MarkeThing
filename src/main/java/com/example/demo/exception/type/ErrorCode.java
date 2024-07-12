@@ -20,6 +20,7 @@ public enum ErrorCode {
     MARKET_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"시장을 찾을 수 없습니다."),
     CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"채팅방을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"댓글을 찾을 수 없습니다."),
+    REPLY_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"대댓글을 찾을 수 없습니다."),
 
 
     // UNAUTHORIZED
