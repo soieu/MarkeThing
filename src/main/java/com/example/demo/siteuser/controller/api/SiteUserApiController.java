@@ -5,7 +5,6 @@ import com.example.demo.siteuser.dto.SiteUserResponseDto;
 import com.example.demo.siteuser.dto.UpdateSiteUserRequestDto;
 import com.example.demo.siteuser.service.MannerService;
 import com.example.demo.siteuser.service.SiteUserService;
-import com.example.demo.siteuser.service.impl.SiteUserServiceImpl;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ public class SiteUserApiController {
 
     private final SiteUserService siteUserService;
     private final MannerService mannerService;
-    private final SiteUserServiceImpl siteUserServiceImpl;
 
     @DeleteMapping()
     public void deleteSiteUser(Principal principal) {
@@ -48,11 +46,7 @@ public class SiteUserApiController {
     @PatchMapping()
     public void updateSiteUser(@RequestBody UpdateSiteUserRequestDto requestDto, Principal principal) {
         String email = principal.getName();
-//        SiteUserResponseDto siteUserResponseDto = siteUserService.getMyInformation(email);
-//        String nickName = requestDto.getNickname()==null || requestDto.getNickname().isBlank()? siteUserResponseDto.getNickname():requestDto.getNickname();
-//        String phoneNumber = requestDto.getPhoneNumber()==null || requestDto.getPhoneNumber().isBlank()? siteUserResponseDto.getPhoneNumber():requestDto.getPhoneNumber();
-//        String address = requestDto.getAddress()==null || requestDto.getAddress().isBlank()? siteUserResponseDto.getAddress():requestDto.getAddress();
-        siteUserServiceImpl.updateSiteUser(email, requestDto);
+        siteUserService.updateSiteUser(email, requestDto);
 
     }
 

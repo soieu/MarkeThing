@@ -2,10 +2,8 @@ package com.example.demo.siteuser.dto;
 
 import com.example.demo.siteuser.entity.SiteUser;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class SiteUserResponseDto {
@@ -38,18 +36,6 @@ public class SiteUserResponseDto {
                 .address(siteUser.getAddress())
                 .mannerScore(siteUser.getMannerScore())
                 .profileImg(siteUser.getProfileImg())
-                .build();
-    }
-
-    public SiteUser toEntity(SiteUserResponseDto responseDto) {
-        return SiteUser.builder()
-                .email(responseDto.getEmail())
-                .name(responseDto.getName())
-                .nickname(responseDto.getNickname())
-                .phoneNumber(responseDto.getPhoneNumber())
-                .address(responseDto.getAddress())
-                .mannerScore(responseDto.getMannerScore())
-                .profileImg(responseDto.getProfileImg())
                 .build();
     }
 }
