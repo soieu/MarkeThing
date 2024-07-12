@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,9 +32,9 @@ public class PaymentApiController {
         paymentService.cancelPayment(paymentId, request);
     }
 
-    @PostMapping("/list")
-    public ResponseEntity<List<PayResponseDto>> getPaymentList(@RequestBody PaymentListRequestDto paymentListRequestDto) {
-        var result = paymentService.listPayment(paymentListRequestDto);
+    @GetMapping("/list")
+    public ResponseEntity<List<PayResponseDto>> getPaymentList(Principal principal) {
+        var result = paymentService.listPayment(principal.getName());
         return ResponseEntity.ok(result);
     }
 

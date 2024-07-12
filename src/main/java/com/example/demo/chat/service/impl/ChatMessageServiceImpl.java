@@ -9,6 +9,7 @@ import com.example.demo.chat.repository.ChatMessageRepository;
 import com.example.demo.chat.repository.ChatRoomRepository;
 import com.example.demo.chat.service.ChatMessageService;
 import com.example.demo.exception.MarkethingException;
+import com.example.demo.exception.type.ErrorCode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Transactional
     public List<ChatMessageResponseDto> getChatMessages(Long chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new MarkethingException(CHATROOM_NOT_FOUND));
+                .orElseThrow(() -> new MarkethingException(ErrorCode.CHATROOM_NOT_FOUND));
 
         List<ChatMessage> chatMessageList = chatMessageRepository.findByChatRoomId(
                 chatRoom.getId());

@@ -26,6 +26,7 @@ import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -161,7 +162,7 @@ public class ChatServiceTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(LocalDate.now())
+                .meetupTime(LocalTime.now())
                 .meetupDate(LocalDate.now())
                 .meetupAddress("Address")
                 .meetupLocation(myLocation)
@@ -181,7 +182,7 @@ public class ChatServiceTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(LocalDate.now())
+                .meetupTime(LocalTime.now())
                 .meetupDate(LocalDate.now())
                 .meetupAddress("Address")
                 .meetupLocation(myLocation)

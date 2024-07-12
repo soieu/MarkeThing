@@ -118,8 +118,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<PayResponseDto> listPayment(PaymentListRequestDto paymentListRequestDto) {
-        List<Pay> payments = paymentRepository.findBySiteUser(siteUserRepository.findById(paymentListRequestDto.getUserId()));
+    public List<PayResponseDto> listPayment(String email) {
+        List<Pay> payments = paymentRepository.findBySiteUser(siteUserRepository.findByEmail(email));
 
         List<PayResponseDto> responseDtoList = payments.stream()
                 .map(pay -> PayResponseDto.builder()

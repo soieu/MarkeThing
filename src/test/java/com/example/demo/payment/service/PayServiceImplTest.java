@@ -182,7 +182,7 @@ public class PayServiceImplTest {
     void getPayList() {
         // Given
         Long userId = 1L;
-        PaymentListRequestDto requestDto = new PaymentListRequestDto(userId);
+        String email = "abc@gmail.com";
 
         // Create some Pay entities
         Pay pay1 = Pay.builder()
@@ -203,7 +203,7 @@ public class PayServiceImplTest {
         given(paymentRepository.findBySiteUser(siteUserRepository.findById(userId))).willReturn(pays);
 
         // When
-        List<PayResponseDto> result = paymentService.listPayment(requestDto);
+        List<PayResponseDto> result = paymentService.listPayment(email);
 
         // Then
         assertThat(result).isNotNull();

@@ -35,10 +35,10 @@ public interface PaymentService {
 
     /**
      * 결제내역열람
-     * @param paymentListRequestDto
+     * @param email
      * @return
      */
-    List<PayResponseDto> listPayment(PaymentListRequestDto paymentListRequestDto);
+    List<PayResponseDto> listPayment(String email);
 
     /**
      * 상세 결제내역
