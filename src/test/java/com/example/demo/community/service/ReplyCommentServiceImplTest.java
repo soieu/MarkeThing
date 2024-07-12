@@ -103,7 +103,7 @@ public class ReplyCommentServiceImplTest {
                 editedReplyComment.getId(), editedreplyCommentRequestDto);
 
         // then
-        assertThat(result.getContent()).isEqualTo(editedreplyCommentRequestDto.getContent());
+        assertThat(result.getPostStatus()).isEqualTo(PostStatus.MODIFY);
     }
 
     @Test
@@ -119,6 +119,50 @@ public class ReplyCommentServiceImplTest {
 
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.REPLY_COMMENT_NOT_FOUND);
+    }
+
+    @Test
+    void deleteSuccess() {
+        // given
+        ReplyCommentRequestDto deletedreplyCommentRequestDto = getReplyCommentRequestDto();
+        ReplyComment deletedReplyComment = getDeletedReplyComment(deletedreplyCommentRequestDto);
+
+        given(replyCommentRepository.findById(deletedReplyComment.getId()))
+                .willReturn(Optional.of(deletedReplyComment));
+
+        // when
+        ReplyComment result = replyCommentService.delete(deletedReplyComment.getSiteUser().getEmail(),
+                deletedReplyComment.getId());
+
+        // then
+        assertThat(result.getPostStatus()).isEqualTo(PostStatus.DELETE);
+    }
+
+    @Test
+    void DeleteFailedByReplyCommentNotFound() {
+        // given
+        given(replyCommentRepository.findById(1L))
+                .willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> replyCommentService.delete("mockEmail@gmail.com", 1L));
+
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.REPLY_COMMENT_NOT_FOUND);
+    }
+
+    private static ReplyComment getDeletedReplyComment(
+            ReplyCommentRequestDto editedreplyCommentRequestDto) {
+
+        return ReplyComment.builder()
+                .id(1L)
+                .comment(getComment())
+                .siteUser(getSiteUser())
+                .content(editedreplyCommentRequestDto.getContent())
+                .postStatus(PostStatus.DELETE)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
     private static ReplyComment getUpdateReplyComment(

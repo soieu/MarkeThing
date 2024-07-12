@@ -45,6 +45,18 @@ public class ReplyCommentServiceImpl implements ReplyCommentService {
         return replyComment;
     }
 
+    @Override
+    @Transactional
+    public ReplyComment delete(String email, Long replyId) {
+        var replyComment = replyCommentRepository.findById(replyId)
+                .orElseThrow(() -> new MarkethingException(ErrorCode.REPLY_COMMENT_NOT_FOUND));
+
+        validateAuthorization(email, replyComment);
+        replyComment.delete();
+
+        return replyComment;
+    }
+
     private static void validateAuthorization(String email, ReplyComment replyComment) {
         if(!email.equals(replyComment.getSiteUser().getEmail())) {
             throw new MarkethingException(ErrorCode.UNAUTHORIZED_USER);

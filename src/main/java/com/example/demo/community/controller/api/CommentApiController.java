@@ -60,4 +60,10 @@ public class CommentApiController {
         replyCommentService.edit(email, replyId, commentRequestDto);
     }
 
+    @DeleteMapping("/reply-comments/{replyId}")
+    public void deleteReplyComment(@PathVariable Long replyId, Principal principal) {
+
+        var email = principal.getName();
+        replyCommentService.delete(email, replyId);
+    }
 }
