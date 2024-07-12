@@ -45,7 +45,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         SiteUser siteUser = (SiteUser) authentication.getPrincipal();
 
-        String userEmail = siteUser.getUsername();
+        String userEmail = siteUser.getEmail();
 
         String token = jwtUtil.createJwt(userEmail, 60 * 60 * 1000L);
 
@@ -58,5 +58,5 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(401);
     }
 
-
 }
+

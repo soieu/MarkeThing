@@ -10,7 +10,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.example.demo.common.filter.dto.CommunityFilterDto;
-import com.example.demo.community.dto.community.CommunityPreviewDto;
 import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.repository.CommunityRepository;
@@ -86,7 +85,7 @@ public class CommunityServiceImplTest {
         // given
         SiteUser siteUser = getSiteUser();
         CommunityRequestDto communityRequestDto = getCommunityRequestDto();
-        CommunityRequestDto editCommunityRequestDto = getEditCommunityRequestDto();
+        CommunityRequestDto editedCommunityRequestDto = getEditedCommunityRequestDto();
         Community community = communityRequestDto.toEntity(siteUser);
 
         given(siteUserRepository.findByEmail(siteUser.getEmail()))
@@ -95,13 +94,13 @@ public class CommunityServiceImplTest {
                 .willReturn(Optional.of(community));
 
         // when
-        Community result = communityService.edit(siteUser.getEmail(), editCommunityRequestDto, 1L);
+        Community result = communityService.edit(siteUser.getEmail(), editedCommunityRequestDto, 1L);
 
         // then
-        assertThat(result.getArea()).isEqualTo(editCommunityRequestDto.getArea());
-        assertThat(result.getContent()).isEqualTo(editCommunityRequestDto.getContent());
-        assertThat(result.getTitle()).isEqualTo(editCommunityRequestDto.getTitle());
-        assertThat(result.getPostImg()).isEqualTo(editCommunityRequestDto.getPostImg());
+        assertThat(result.getArea()).isEqualTo(editedCommunityRequestDto.getArea());
+        assertThat(result.getContent()).isEqualTo(editedCommunityRequestDto.getContent());
+        assertThat(result.getTitle()).isEqualTo(editedCommunityRequestDto.getTitle());
+        assertThat(result.getPostImg()).isEqualTo(editedCommunityRequestDto.getPostImg());
     }
 
     @Test
@@ -306,7 +305,7 @@ public class CommunityServiceImplTest {
                 .build();
     }
 
-    private static CommunityRequestDto getEditCommunityRequestDto() {
+    private static CommunityRequestDto getEditedCommunityRequestDto() {
         return CommunityRequestDto
                 .builder()
                 .area(AreaType.GANGWON)

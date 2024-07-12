@@ -1,8 +1,13 @@
 package com.example.demo.community.controller.api;
 
 import com.example.demo.community.dto.comment.CommentRequestDto;
+import com.example.demo.community.dto.comment.ReplyCommentRequestDto;
 import com.example.demo.community.service.CommentService;
+import com.example.demo.community.service.ReplyCommentService;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,15 +16,54 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/communities/{communityId}")
+@RequestMapping("/api/communities")
 public class CommentApiController {
     private final CommentService commentService;
-    // 회원 가입 기능 구현 완료 후 user 정보 가져오기 위해 Principal 객체 request에 추가
-    @PostMapping("/comments")
+    private final ReplyCommentService replyCommentService;
+
+    @PostMapping("{communityId}/comments")
     public void postComment(@RequestBody CommentRequestDto commentRequestDto
-            , @PathVariable Long communityId) {
-        String email = "mockEmail@gmail.com";
+            , @PathVariable Long communityId, Principal principal) {
+
+        var email = principal.getName();
         commentService.create(email, communityId, commentRequestDto);
     }
 
+    @PatchMapping("/comments/{commentId}")
+    public void editComment(@RequestBody CommentRequestDto commentRequestDto
+            , @PathVariable Long commentId, Principal principal) {
+
+        var email = principal.getName();
+        commentService.edit(email, commentId, commentRequestDto);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    public void deleteComment(@PathVariable Long commentId, Principal principal) {
+
+        var email = principal.getName();
+        commentService.delete(email, commentId);
+    }
+
+    @PostMapping("/comments/{commentId}/reply-comments")
+    public void postReplyComment(@RequestBody ReplyCommentRequestDto replyCommentRequestDto
+            , @PathVariable Long commentId, Principal principal) {
+
+        var email = principal.getName();
+        replyCommentService.create(email, commentId, replyCommentRequestDto);
+    }
+
+    @PatchMapping("/reply-comments/{replyId}")
+    public void editReplyComment(@RequestBody ReplyCommentRequestDto commentRequestDto
+            , @PathVariable Long replyId, Principal principal) {
+
+        var email = principal.getName();
+        replyCommentService.edit(email, replyId, commentRequestDto);
+    }
+
+    @DeleteMapping("/reply-comments/{replyId}")
+    public void deleteReplyComment(@PathVariable Long replyId, Principal principal) {
+
+        var email = principal.getName();
+        replyCommentService.delete(email, replyId);
+    }
 }

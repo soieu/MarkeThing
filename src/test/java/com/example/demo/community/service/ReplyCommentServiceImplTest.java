@@ -8,11 +8,15 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 import com.example.demo.community.dto.comment.CommentRequestDto;
+import com.example.demo.community.dto.comment.ReplyCommentRequestDto;
 import com.example.demo.community.entity.Comment;
 import com.example.demo.community.entity.Community;
+import com.example.demo.community.entity.ReplyComment;
 import com.example.demo.community.repository.CommentRepository;
 import com.example.demo.community.repository.CommunityRepository;
+import com.example.demo.community.repository.ReplyCommentRepository;
 import com.example.demo.community.service.impl.CommentServiceImpl;
+import com.example.demo.community.service.impl.ReplyCommentServiceImpl;
 import com.example.demo.community.type.AreaType;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
@@ -33,10 +37,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class CommentServiceImplTest {
-
-    @Mock
-    private CommunityRepository communityRepository;
+public class ReplyCommentServiceImplTest {
 
     @Mock
     private SiteUserRepository siteUserRepository;
@@ -44,30 +45,34 @@ public class CommentServiceImplTest {
     @Mock
     private CommentRepository commentRepository;
 
+    @Mock
+    private ReplyCommentRepository replyCommentRepository;
+
     @InjectMocks
-    private CommentServiceImpl commentService;
+    private ReplyCommentServiceImpl replyCommentService;
 
     @Test
     void createSuccess() {
         // given
         SiteUser siteUser = getSiteUser();
         Community community = getCommunity();
-        CommentRequestDto commentRequestDto = getCommentRequestDto();
-        Comment comment = getComment(community, siteUser, commentRequestDto);
+        Comment comment = getComment(community, siteUser);
+        ReplyCommentRequestDto replyCommentRequestDto = getReplyCommentRequestDto();
+        ReplyComment replyComment = getReplyComment(comment, siteUser, replyCommentRequestDto);
 
         given(siteUserRepository.findByEmail(siteUser.getEmail()))
                 .willReturn(Optional.of(siteUser));
-        given(communityRepository.findById(community.getId()))
-                .willReturn(Optional.of(community));
-        given(commentRepository.save(any(Comment.class)))
-                .willReturn(comment);
+        given(commentRepository.findById(community.getId()))
+                .willReturn(Optional.of(comment));
+        given(replyCommentRepository.save(any(ReplyComment.class)))
+                .willReturn(replyComment);
 
         // when
-        Comment result = commentService.create(siteUser.getEmail(),
-                community.getId(), commentRequestDto);
+        ReplyComment result = replyCommentService.create(siteUser.getEmail(),
+                community.getId(), replyCommentRequestDto);
 
         // then
-        assertThat(result.getContent()).isEqualTo(commentRequestDto.getContent());
+        assertThat(result.getContent()).isEqualTo(replyCommentRequestDto.getContent());
     }
 
     @Test
@@ -78,130 +83,139 @@ public class CommentServiceImplTest {
 
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
-                () -> commentService.create("mockEmail@gmail.com",
-                        1L, getCommentRequestDto()));
+                () -> replyCommentService.create("mockEmail@gmail.com",
+                        1L, getReplyCommentRequestDto()));
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
 
     @Test
-    void createFailedByCommunityNotFound() {
-        // given
-        SiteUser siteUser = getSiteUser();
-
-        given(siteUserRepository.findByEmail(siteUser.getEmail()))
-                .willReturn(Optional.of(siteUser));
-        given(communityRepository.findById(eq(1L)))
-                .willReturn(Optional.empty());
-
-        // when
-        MarkethingException exception = assertThrows(MarkethingException.class,
-                () -> commentService.create("mockEmail@gmail.com",
-                        1L, getCommentRequestDto()));
-        // then
-        assertEquals(exception.getErrorCode(), ErrorCode.COMMUNITY_NOT_FOUND);
-    }
-
-    @Test
     void editSuccess() {
         // given
-        SiteUser siteUser = getSiteUser();
-        Community community = getCommunity();
-        CommentRequestDto commentRequestDto = getCommentRequestDto();
-        CommentRequestDto editedcommentRequestDto = getEditCommentRequestDto();
-        Comment comment = getComment(community, siteUser, commentRequestDto);
+        ReplyCommentRequestDto editedreplyCommentRequestDto = getReplyCommentRequestDto();
+        ReplyComment editedReplyComment = getUpdateReplyComment(editedreplyCommentRequestDto);
 
-        given(commentRepository.findById(community.getId()))
-                .willReturn(Optional.of(comment));
+        given(replyCommentRepository.findById(editedReplyComment.getId()))
+                .willReturn(Optional.of(editedReplyComment));
 
         // when
-        Comment result = commentService.edit(siteUser.getEmail(), comment.getId(), editedcommentRequestDto);
+        ReplyComment result = replyCommentService.edit(editedReplyComment.getSiteUser().getEmail(),
+                editedReplyComment.getId(), editedreplyCommentRequestDto);
 
         // then
-        assertThat(result.getContent()).isEqualTo(editedcommentRequestDto.getContent());
+        assertThat(result.getPostStatus()).isEqualTo(PostStatus.MODIFY);
     }
 
     @Test
-    void editFailedByCommentNotFound() {
+    void editFailedByReplyCommentNotFound() {
         // given
-        given(commentRepository.findById(1L))
+        given(replyCommentRepository.findById(1L))
                 .willReturn(Optional.empty());
 
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
-                () -> commentService
-                        .edit("mockEmail@gmail.com", 1L, getCommentRequestDto()));
+                () -> replyCommentService.edit("mockEmail@gmail.com",
+                        1L, getReplyCommentRequestDto()));
 
         // then
-        assertEquals(exception.getErrorCode(), ErrorCode.COMMENT_NOT_FOUND);
+        assertEquals(exception.getErrorCode(), ErrorCode.REPLY_COMMENT_NOT_FOUND);
     }
 
     @Test
     void deleteSuccess() {
         // given
-        SiteUser siteUser = getSiteUser();
-        Community community = getCommunity();
-        Comment comment = getDeletedComment(community, siteUser);
+        ReplyCommentRequestDto deletedreplyCommentRequestDto = getReplyCommentRequestDto();
+        ReplyComment deletedReplyComment = getDeletedReplyComment(deletedreplyCommentRequestDto);
 
-        given(commentRepository.findById(community.getId()))
-                .willReturn(Optional.of(comment));
+        given(replyCommentRepository.findById(deletedReplyComment.getId()))
+                .willReturn(Optional.of(deletedReplyComment));
 
         // when
-        Comment result = commentService.delete(siteUser.getEmail(), comment.getId());
+        ReplyComment result = replyCommentService.delete(deletedReplyComment.getSiteUser().getEmail(),
+                deletedReplyComment.getId());
 
         // then
         assertThat(result.getPostStatus()).isEqualTo(PostStatus.DELETE);
     }
 
     @Test
-    void deleteFailedByCommentNotFound() {
+    void DeleteFailedByReplyCommentNotFound() {
         // given
-        given(commentRepository.findById(1L))
+        given(replyCommentRepository.findById(1L))
                 .willReturn(Optional.empty());
 
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
-                () -> commentService
-                        .delete("mockEmail@gmail.com", 1L));
+                () -> replyCommentService.delete("mockEmail@gmail.com", 1L));
 
         // then
-        assertEquals(exception.getErrorCode(), ErrorCode.COMMENT_NOT_FOUND);
+        assertEquals(exception.getErrorCode(), ErrorCode.REPLY_COMMENT_NOT_FOUND);
     }
 
-    private static Comment getDeletedComment(Community community, SiteUser siteUser) {
-        return Comment.builder()
+    private static ReplyComment getDeletedReplyComment(
+            ReplyCommentRequestDto editedreplyCommentRequestDto) {
+
+        return ReplyComment.builder()
                 .id(1L)
-                .community(community)
-                .siteUser(siteUser)
-                .content("delete Content")
+                .comment(getComment())
+                .siteUser(getSiteUser())
+                .content(editedreplyCommentRequestDto.getContent())
                 .postStatus(PostStatus.DELETE)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
 
-    private static CommentRequestDto getCommentRequestDto() {
-        return CommentRequestDto
-                .builder()
-                .content("content")
+    private static ReplyComment getUpdateReplyComment(
+            ReplyCommentRequestDto editedreplyCommentRequestDto) {
+
+        return ReplyComment.builder()
+                .id(1L)
+                .comment(getComment())
+                .siteUser(getSiteUser())
+                .content(editedreplyCommentRequestDto.getContent())
+                .postStatus(PostStatus.POST)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 
-    private static CommentRequestDto getEditCommentRequestDto() {
-        return CommentRequestDto
-                .builder()
-                .content("content")
+    private static ReplyComment getReplyComment(Comment comment, SiteUser siteUser,
+            ReplyCommentRequestDto replyCommentRequestDto) {
+        return ReplyComment.builder()
+                .id(1L)
+                .comment(comment)
+                .siteUser(siteUser)
+                .content(replyCommentRequestDto.getContent())
+                .postStatus(PostStatus.POST)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 
-    private static Comment getComment(Community community, SiteUser siteUser,
-            CommentRequestDto commentRequestDto) {
+    private static Comment getComment() {
+        return Comment.builder()
+                .id(1L)
+                .community(getCommunity())
+                .siteUser(getSiteUser())
+                .content("content")
+                .postStatus(PostStatus.POST)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static Comment getComment(Community community, SiteUser siteUser) {
         return Comment.builder()
                 .id(1L)
                 .community(community)
                 .siteUser(siteUser)
-                .content(commentRequestDto.getContent())
+                .content("comment")
                 .postStatus(PostStatus.POST)
                 .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private static ReplyCommentRequestDto getReplyCommentRequestDto() {
+        return ReplyCommentRequestDto
+                .builder()
+                .content("content")
                 .build();
     }
 
