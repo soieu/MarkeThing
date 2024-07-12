@@ -109,16 +109,16 @@ public class PayApiControllerTest {
     public void listTest() throws Exception {
         // Given
         Long userId = 1L;
-        PaymentListRequestDto requestDto = new PaymentListRequestDto(userId);
+        String email = "abc@gmail.com";
 
         PayResponseDto dto1 = new PayResponseDto("CARD", PaymentStatus.OK, 1000, LocalDateTime.now());
         PayResponseDto dto2 = new PayResponseDto("CASH", PaymentStatus.CANCEL, 2000, LocalDateTime.now());
         List<PayResponseDto> expectedDtos = Arrays.asList(dto1, dto2);
 
-        when(paymentService.listPayment(any(PaymentListRequestDto.class))).thenReturn(expectedDtos);
+        when(paymentService.listPayment(email)).thenReturn(expectedDtos);
 
         // When
-        List<PayResponseDto> result = paymentService.listPayment(requestDto);
+        List<PayResponseDto> result = paymentService.listPayment(email);
 
         // Then
         assertThat(result).isNotNull();

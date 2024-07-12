@@ -8,5 +8,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Pay, Long> {
-    List<Pay> findBySiteUser(Optional<SiteUser> siteUser);
+    List<Pay> findAllBySiteUser(SiteUser siteUser);
 }

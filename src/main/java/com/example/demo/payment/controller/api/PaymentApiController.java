@@ -1,9 +1,6 @@
 package com.example.demo.payment.controller.api;
 
-import com.example.demo.payment.dto.CancelPaymentRequestDto;
-import com.example.demo.payment.dto.PayResponseDto;
-import com.example.demo.payment.dto.PaymentCallbackRequestDto;
-import com.example.demo.payment.dto.PaymentListRequestDto;
+import com.example.demo.payment.dto.*;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -34,8 +33,15 @@ public class PaymentApiController {
     }
 
     @PostMapping("/list")
-    public ResponseEntity<List<PayResponseDto>> getPaymentList(@RequestBody PaymentListRequestDto paymentListRequestDto) {
-        var result = paymentService.listPayment(paymentListRequestDto);
+    public ResponseEntity<List<PayResponseDto>> getPaymentList(Principal principal) {
+        var result = paymentService.listPayment(principal.getName());
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/list/{paymentId}")
+    public ResponseEntity<Optional<PayDetailDto>> PaymentDetail(@PathVariable Long paymentId) {
+        var result = paymentService.detailPayment(paymentId);
+        return ResponseEntity.ok(result);
+    }
+
 }

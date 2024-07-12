@@ -2,6 +2,7 @@ package com.example.demo.payment.entity;
 
 
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
+import com.example.demo.payment.dto.PayDetailDto;
 import com.example.demo.payment.dto.RequestPayDto;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PaymentStatus;
@@ -134,6 +135,21 @@ public class Pay {
                 .orderUid(marketPurchaseRequest.getId())
                 .buyerName(buyerName)
                 .itemName(marketPurchaseRequest.getTitle())
+                .build();
+    }
+    public PayDetailDto toPayDetailDto() {
+        return PayDetailDto.builder()
+                .payMethod(payMethod != null ? payMethod : "")
+                .bankName(bankName != null ? bankName : "")
+                .bankCode(bankCode != null ? bankCode : "")
+                .cardCode(cardCode != null ? cardCode : "")
+                .cardName(cardName != null ? cardName : "")
+                .cardNumber(cardNumber != null ? cardNumber : "")
+                .amount(amount)
+                .itemName(marketPurchaseRequest != null ? marketPurchaseRequest.getTitle() : "")
+                .paidAt(paidAt)
+                .status(status != null ? status : PaymentStatus.READY)
+                .failReason(failReason != null ? failReason : "")
                 .build();
     }
 

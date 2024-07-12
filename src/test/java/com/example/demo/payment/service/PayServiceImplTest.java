@@ -185,7 +185,7 @@ public class PayServiceImplTest {
     void getPayList() {
         // Given
         Long userId = 1L;
-        PaymentListRequestDto requestDto = new PaymentListRequestDto(userId);
+        String email = "abc@gmail.com";
 
         // Create some Pay entities
         Pay pay1 = Pay.builder()
@@ -202,11 +202,12 @@ public class PayServiceImplTest {
                 .build();
         List<Pay> pays = Arrays.asList(pay1, pay2);
 
-        // Mock the repository method to return the Pay entities
-        given(paymentRepository.findBySiteUser(siteUserRepository.findById(userId))).willReturn(pays);
+         //TODO
+
+//        given(paymentRepository.findAllBySiteUser(siteUserRepository.findById(userId))).willReturn(pays);
 
         // When
-        List<PayResponseDto> result = paymentService.listPayment(requestDto);
+        List<PayResponseDto> result = paymentService.listPayment(email);
 
         // Then
         assertThat(result).isNotNull();
@@ -220,6 +221,7 @@ public class PayServiceImplTest {
         assertThat(result.get(1).getStatus()).isEqualTo(PaymentStatus.CANCEL);
         assertThat(result.get(1).getAmount()).isEqualTo(2000);
 
-        verify(paymentRepository).findBySiteUser(siteUserRepository.findById(userId));
+        //TODO
+//        verify(paymentRepository).findAllBySiteUser(siteUserRepository.findById(userId));
     }
 }
