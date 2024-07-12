@@ -22,7 +22,6 @@ public class MarketPurchaseRequestController {
     @Value("${kakao.kakao-js-key}")
     String kakaoJSKey;
 
-
     @GetMapping("/request/regRequest")
     public String reqRequest(Model model) throws UnsupportedEncodingException, URISyntaxException {
         String email = "MockEmail@gmail.com";

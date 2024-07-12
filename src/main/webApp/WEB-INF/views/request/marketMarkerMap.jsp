@@ -40,7 +40,7 @@
   // 마커를 표시할 좌표와 내용 가지고 있는 객체 배열 생성
   var positions= []
 
-  // model로 받은 list 객체를 javascript
+  // 시장 리스트 전달받아서 보여주기
   <c:forEach items="${testList}" var="item">
   // 전달받은 시장의 정보들을 배열에 저장
   positions.push({
