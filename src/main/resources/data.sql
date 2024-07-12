@@ -7,7 +7,7 @@ INSERT INTO SITE_USER (
              'name',
              'nickname',
              '010-1234-5678',
-             'address',
+             '서울 성동구 상원12길',
              '0,0,0',
              'profileImg',
              true,
@@ -76,7 +76,7 @@ INSERT INTO SITE_USER (
     id, email, password, name, nickname, phone_number, address, manner_score, profile_img, status, my_location, auth_type, created_at, updated_at
 ) VALUES (
              5,
-             'mockEmail@gmail.com',
+             'mockEmail2@gmail.com',
              'password',
              'name',
              '신동은',
