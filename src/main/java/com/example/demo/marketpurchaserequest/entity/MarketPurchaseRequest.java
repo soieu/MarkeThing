@@ -9,6 +9,7 @@ import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -67,7 +68,7 @@ public class MarketPurchaseRequest {
     private PurchaseRequestStatus purchaseRequestStatus;
 
     @Column(name = "MEETUP_TIME",nullable = false)
-    private LocalDate meetupTime;
+    private LocalTime meetupTime;
 
     @Column(name = "MEETUP_DATE")
     private LocalDate meetupDate;

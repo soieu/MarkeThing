@@ -14,6 +14,7 @@ import com.example.demo.type.PurchaseRequestStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -113,7 +114,7 @@ public class ChatApiControllerTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(LocalDate.now())
+                .meetupTime(LocalTime.now())
                 .meetupDate(LocalDate.now())
                 .meetupAddress("Address")
                 .meetupLocation(myLocation)
