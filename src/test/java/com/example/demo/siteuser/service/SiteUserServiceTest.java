@@ -89,6 +89,41 @@ public class SiteUserServiceTest {
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
 
+    @Test
+    @DisplayName("포인트 충전 성공 테스트")
+    void successAccumulatePoint() throws Exception {
+        // Given
+        String email = "test@example.com";
+        int charge = 100;
+        SiteUser mockSiteUser = getSiteUser();
+
+        given(siteUserRepository.findByEmail("test@example.com")).willReturn(Optional.of(mockSiteUser));
+        given(siteUserRepository.save(mockSiteUser)).willReturn(mockSiteUser);
+
+        // When
+        siteUserServiceImpl.accumulatePoint(email, charge);
+
+        // Then
+        assertEquals(50, mockSiteUser.getPoint());
+        verify(siteUserRepository, times(1)).save(mockSiteUser);
+    }
+
+    @Test
+    @DisplayName("포인트 충전 실패 테스트")
+    void failAccumulatePoint() throws Exception {
+        // Given
+        String email = "nonexistentemail@example.com";
+        int charge = 100;
+
+        // Mocking the repository to return an empty Optional, simulating user not found
+        given(siteUserRepository.findByEmail("nonexistentemail@example.com")).willReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(MarkethingException.class, () -> {
+            siteUserServiceImpl.accumulatePoint(email, charge);
+        });
+    }
+
 
     private static SiteUser getSiteUser() {
         return SiteUser.builder()
@@ -99,6 +134,7 @@ public class SiteUserServiceTest {
                 .nickname("nickname")
                 .phoneNumber("010-1234-5678")
                 .address("address")
+                .point(0)
                 .myLocation(geometryFactory.createPoint(new Coordinate(37.56600357774501, 126.97306266269747)))
                 .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")

@@ -1,9 +1,12 @@
 package com.example.demo.siteuser.controller;
 
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,6 +15,7 @@ import com.example.demo.auth.jwt.JWTFilter;
 import com.example.demo.config.SecurityConfig;
 import com.example.demo.siteuser.controller.api.SiteUserApiController;
 import com.example.demo.siteuser.dto.MannerRequestDto;
+import com.example.demo.siteuser.dto.PointDto;
 import com.example.demo.siteuser.dto.SiteUserResponseDto;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.service.MannerService;
@@ -127,10 +131,28 @@ public class SiteUserApiControllerTest {
         String email = "mockEmail@gmail.com";
         given(mannerService.createManner(mannerRequestDto,email,3L)).willReturn(mannerRequestDto.toEntity(requester,agent));
         // when & then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/3/manner")
+        mockMvc.perform(post("/api/users/3/manner")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(mannerRequestDto)))
                 .andExpect(status().isOk()).andDo(print());
+    }
+
+    @Test
+    @DisplayName("포인트 충전 테스트")
+    public void accumulatePoint() throws Exception {
+        // Given
+        PointDto pointDto = new PointDto();
+        pointDto.setEmail("test@example.com");
+        pointDto.setAmount(100);
+
+        // When & Then
+        mockMvc.perform(post("/api/users/point/accumulate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"test@example.com\", \"amount\":100}"))
+                .andExpect(status().isOk());
+
+        // Verify that the service method was called with the expected parameters
+        verify(siteUserService).accumulatePoint("test@example.com", 100);
     }
 
 }
