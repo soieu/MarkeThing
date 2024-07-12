@@ -129,7 +129,7 @@ INSERT INTO MARKET_PURCHASE_REQUEST(
              2,
              '2',
              '1',
-             'title',
+             '테스트용 의뢰글 입니다',
              'content',
              'post-img',
              3000,
