@@ -117,12 +117,14 @@ public class CommunityApiControllerTest {
     public void deleteCommunityTest() throws Exception {
         // when & then
         mockMvc.perform(delete("/api/communities/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
     @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
     public void getCommunityListTest() throws Exception {
         //given
         CommunityFilterRequestDto communityFilterRequestDto = getCommunityFilterRequestDto();
@@ -150,7 +152,7 @@ public class CommunityApiControllerTest {
                         .param("size", String.valueOf(5))
                         .param("sort", "date")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)) // requestBody에 들어가는 인자 저장
+                        .content(content).with(csrf())) // requestBody에 들어가는 인자 저장
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].area").value(
                         communityPreviewDto.getArea().toString()))
@@ -159,6 +161,7 @@ public class CommunityApiControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
     public void getCommunityDetailTest() throws Exception {
         // given
         Community community = getCommunity();
@@ -168,7 +171,8 @@ public class CommunityApiControllerTest {
 
         //when & then
         mockMvc.perform(get("/api/communities/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(community.getId()))
                 .andExpect(jsonPath("$.area").value(community.getArea().toString()))

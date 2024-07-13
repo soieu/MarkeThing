@@ -17,6 +17,7 @@ public class MarketPurchaseRequestPreviewDto {
 
     private long requestId;
     private String title;
+    private String content;
     private int fee;
     private LocalTime meetupTime;
     private LocalDate meetupDate;
@@ -31,6 +32,7 @@ public class MarketPurchaseRequestPreviewDto {
         return MarketPurchaseRequestPreviewDto.builder()
                 .requestId(request.getId())
                 .title(request.getTitle())
+                .content(request.getContent())
                 .fee(request.getFee())
                 .meetupTime(request.getMeetupTime())
                 .meetupDate(request.getMeetupDate())
