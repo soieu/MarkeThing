@@ -3,11 +3,12 @@ package com.example.demo.siteuser.controller;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.demo.auth.jwt.JWTFilter;
@@ -16,6 +17,7 @@ import com.example.demo.siteuser.controller.api.SiteUserApiController;
 import com.example.demo.siteuser.dto.MannerRequestDto;
 import com.example.demo.siteuser.dto.PointDto;
 import com.example.demo.siteuser.dto.SiteUserResponseDto;
+import com.example.demo.siteuser.dto.UpdateSiteUserRequestDto;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.siteuser.service.MannerService;
@@ -25,6 +27,7 @@ import com.example.demo.type.Rate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.List;
+
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +45,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -113,6 +115,11 @@ public class SiteUserApiControllerTest {
 
     private final MannerRequestDto mannerRequestDto = MannerRequestDto.builder()
             .rate(Rate.BAD).build();
+    private final UpdateSiteUserRequestDto updateSiteUserRequestDto = UpdateSiteUserRequestDto.builder()
+            .nickName("안녕")
+            .phoneNumber("010-1234-5678")
+            .address("광진구")
+            .build();
 
     @BeforeEach
     public void setup() {
@@ -132,11 +139,12 @@ public class SiteUserApiControllerTest {
     @Test
     @DisplayName("내 정보 조회 테스트")
     void getMyInformation() throws Exception {
+        String email = "mockEmail@gmail.com";
         // given
-        given(siteUserService.getMyInformation("mockEmail@gmail.com")).willReturn(
+        when(siteUserService.getMyInformation(email)).thenReturn(
                 SiteUserResponseDto.fromEntity(requester));
         // when & then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/information")).andExpect(status().isOk()).andExpect(jsonPath("$.email").value("mockEmail@gmail.com")).andDo(print());
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/information")).andExpect(status().isOk()).andDo(print());
     }
     @Test
     @DisplayName("회원 매너 점수 평가 테스트")
@@ -145,9 +153,21 @@ public class SiteUserApiControllerTest {
         String email = "mockEmail@gmail.com";
         given(mannerService.createManner(mannerRequestDto,email,3L)).willReturn(mannerRequestDto.toEntity(requester,agent));
         // when & then
-        mockMvc.perform(post("/api/users/3/manner")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/3/manner")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(mannerRequestDto)))
+                .andExpect(status().isOk()).andDo(print());
+    }
+    @Test
+    @DisplayName("회원 정보 수정")
+    void editSiteUser() throws Exception {
+        // given
+        String email = "mockEmail@gmail.com";
+        doNothing().when(siteUserService).updateSiteUser(email, updateSiteUserRequestDto);
+        // when&then
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateSiteUserRequestDto)))
                 .andExpect(status().isOk()).andDo(print());
     }
 

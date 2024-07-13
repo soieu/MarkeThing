@@ -3,9 +3,11 @@ package com.example.demo.siteuser.service.impl;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.siteuser.dto.SiteUserResponseDto;
+import com.example.demo.siteuser.dto.UpdateSiteUserRequestDto;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.siteuser.service.SiteUserService;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class SiteUserServiceImpl implements SiteUserService {
         return siteUserRepository.findByEmail(email).orElseThrow(()->new MarkethingException(ErrorCode.USER_NOT_FOUND));
     }
     @Override
+    @Transactional
     public void deleteSiteUser(String email) {
         SiteUser siteUser = getSiteUserByEmail(email);
         siteUserRepository.delete(siteUser);
@@ -44,5 +47,15 @@ public class SiteUserServiceImpl implements SiteUserService {
         siteUserRepository.save(siteUser);
     }
 
-}
+    @Override
+    @Transactional
+    public void updateSiteUser(String email, UpdateSiteUserRequestDto updateSiteUserRequestDto) {
+        SiteUser siteUser = siteUserRepository.findByEmail(email).orElseThrow(()->new MarkethingException(ErrorCode.USER_NOT_FOUND));
+        String nickName = updateSiteUserRequestDto.getNickname().isBlank()? siteUser.getNickname():updateSiteUserRequestDto.getNickname();
+        String phoneNumber = updateSiteUserRequestDto.getPhoneNumber().isBlank()? siteUser.getPhoneNumber():updateSiteUserRequestDto.getPhoneNumber();
+        String address = updateSiteUserRequestDto.getAddress().isBlank()? siteUser.getAddress():updateSiteUserRequestDto.getAddress();
+        siteUser.updateSiteUser(nickName, phoneNumber, address,
+                updateSiteUserRequestDto.getProfileImg());
+    }
 
+}

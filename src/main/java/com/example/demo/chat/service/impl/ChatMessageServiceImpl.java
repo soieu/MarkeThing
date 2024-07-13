@@ -32,8 +32,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         ChatMessage chatMessage = requestDto.toEntity(); // 채팅 메시지를 생성하고 몽고디비에 저장을 함
         chatMessageRepository.save(chatMessage);
     }
-
-
     /*
     chatRoomId를 통해 모든 메시지를 가져오고 형식에 맞게 dto리스트로 변환
      */

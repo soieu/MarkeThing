@@ -1,8 +1,5 @@
 package com.example.demo.chat.entiity;
 
-
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;

@@ -1,19 +1,38 @@
 package com.example.demo.siteuser.entity;
 
-import com.example.demo.chat.entiity.ChatRoom;
-import com.example.demo.community.entity.Comment;
 import com.example.demo.community.entity.Community;
+import com.example.demo.chat.entiity.ChatRoom;
+import com.example.demo.entity.Account;
+import com.example.demo.community.entity.Comment;
 import com.example.demo.community.entity.ReplyComment;
-import com.example.demo.entity.*;
+import com.example.demo.entity.RequestSuccess;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.siteuser.service.MannerConverter;
 import com.example.demo.type.AuthType;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.locationtech.jts.geom.Point;
@@ -23,16 +42,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-
 import static com.example.demo.exception.type.ErrorCode.INSUFFICIENT_POINT;
 
 @Entity
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
@@ -157,6 +172,13 @@ public class SiteUser implements UserDetails {
 
     public void updateManner(List<String> manner) {
         this.mannerScore = manner;
+    }
+
+    public void updateSiteUser(String nickname, String phoneNumber,String address, String profileImg) {
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.profileImg = profileImg;
     }
 
     public void accumulatePoint(int charge) {

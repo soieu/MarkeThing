@@ -20,6 +20,9 @@ import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
+
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -162,8 +165,8 @@ public class MarketPurchaseRequestServiceImplTest {
                 .postImg("postImg")
                 .fee(10000)
                 .purchaseRequestStatus(PurchaseRequestStatus.RECRUITING)
-                .meetupTime(LocalTime.now())
-                .meetupDate(LocalDate.now())
+                .meetupTime(Time.valueOf(LocalTime.now()))
+                .meetupDate(Date.valueOf(LocalDate.now()))
                 .meetupAddress("서울시")
                 .market(getMarket())
                 .siteUser(getSiteUser())
@@ -178,8 +181,8 @@ public class MarketPurchaseRequestServiceImplTest {
                 .title("test request")
                 .content("3 apples")
                 .fee(15000)
-                .meetupTime(LocalTime.now())
-                .meetupDate(LocalDate.now())
+                .meetupTime(Time.valueOf(LocalTime.now()))
+                .meetupDate(Date.valueOf(LocalDate.now()))
                 .meetupAddress("서울시")
                 .latitude(37.5509)
                 .longitude(127.0506)
