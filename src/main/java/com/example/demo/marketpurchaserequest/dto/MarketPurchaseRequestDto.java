@@ -3,9 +3,9 @@ package com.example.demo.marketpurchaserequest.dto;
 import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.siteuser.entity.SiteUser;
-import java.time.LocalDate;
+import java.sql.Time;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.sql.Date;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -31,10 +31,10 @@ public class MarketPurchaseRequestDto {
     private int fee;
 
     @NotEmpty(message = "약속 시간을 입력하세요.")
-    private LocalTime meetupTime;
+    private Time meetupTime;
 
     @NotEmpty(message = "약속 날짜 입력하세요.")
-    private LocalDate meetupDate;
+    private Date meetupDate;
 
     private Double meetupLat;
     private Double meetupLon;

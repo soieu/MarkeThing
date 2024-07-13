@@ -24,6 +24,9 @@ import com.example.demo.marketpurchaserequest.service.MarketPurchaseRequestServi
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.AuthType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -119,8 +122,8 @@ public class MarketPurchaseRequestApiControllerTest {
                     .content("content")
                     .postImg("postImg")
                     .fee(50000)
-                    .meetupTime(LocalTime.now())
-                    .meetupDate(LocalDate.now())
+                    .meetupTime(Time.valueOf(LocalTime.now()))
+                    .meetupDate(Date.valueOf(LocalDate.now()))
                     .meetupAddress("서울시")
                     .meetupLat(37.5509)
                     .meetupLon(127.0506)

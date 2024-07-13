@@ -7,9 +7,9 @@ import com.example.demo.market.entity.Market;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PurchaseRequestStatus;
-import java.time.LocalDate;
+import java.sql.Time;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.sql.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -66,11 +66,11 @@ public class MarketPurchaseRequest {
     @Column(name = "STATUS", length = 50, nullable = false)
     private PurchaseRequestStatus purchaseRequestStatus;
 
-    @Column(name = "MEETUP_TIME", nullable = false)
-    private LocalTime meetupTime;
+    @Column(name = "MEETUP_TIME",nullable = false)
+    private Time meetupTime;
 
     @Column(name = "MEETUP_DATE")
-    private LocalDate meetupDate;
+    private Date meetupDate;
 
     @Column(name = "MEETUP_ADDRESS", nullable = false)
     private String meetupAddress;

@@ -3,9 +3,7 @@ package com.example.demo.siteuser.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
@@ -89,6 +87,63 @@ public class SiteUserServiceTest {
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
 
+    @Test
+    @DisplayName("포인트 충전 성공 테스트")
+    void testAccumulatePoint() {
+        SiteUser siteUser = getSiteUser();
+
+        when(siteUserRepository.findByEmail(siteUser.getEmail())).thenReturn(Optional.of(siteUser));
+
+        siteUserServiceImpl.accumulatePoint(siteUser.getEmail(), 50);
+
+        verify(siteUserRepository, times(1)).findByEmail(siteUser.getEmail());
+        verify(siteUserRepository, times(1)).save(siteUser);
+
+        assertEquals(25, siteUser.getPoint()); // 포인트가 올바르게 누적되었는지 확인
+    }
+
+    @Test
+    @DisplayName("포인트 사용 성공 테스트")
+    void testSpendPoint() {
+        SiteUser siteUser = getSiteUser();
+
+        when(siteUserRepository.findByEmail(siteUser.getEmail())).thenReturn(Optional.of(siteUser));
+
+        siteUserServiceImpl.accumulatePoint(siteUser.getEmail(), 100);
+        siteUserServiceImpl.spendPoint(siteUser.getEmail(), 25);
+
+        verify(siteUserRepository, times(2)).findByEmail(siteUser.getEmail());
+        verify(siteUserRepository, times(2)).save(siteUser);
+
+        assertEquals(25, siteUser.getPoint()); // 포인트가 올바르게 차감되었는지 확인
+    }
+
+    @Test
+    @DisplayName("포인트 충전 실패 테스트")
+    void testAccumulatePointUserNotFound() {
+        SiteUser siteUser = getSiteUser();
+
+        when(siteUserRepository.findByEmail(siteUser.getEmail())).thenReturn(Optional.empty());
+
+        assertThrows(MarkethingException.class, () -> siteUserServiceImpl.accumulatePoint(siteUser.getEmail(), 50));
+
+        verify(siteUserRepository, times(1)).findByEmail(siteUser.getEmail());
+        verify(siteUserRepository, times(0)).save(any(SiteUser.class));
+    }
+
+    @Test
+    @DisplayName("포인트 사용 실패 테스트")
+    void testSpendPointUserNotFound() {
+        SiteUser siteUser = getSiteUser();
+
+        when(siteUserRepository.findByEmail(siteUser.getEmail())).thenReturn(Optional.empty());
+
+        assertThrows(MarkethingException.class, () -> siteUserServiceImpl.spendPoint(siteUser.getEmail(), 50));
+
+        verify(siteUserRepository, times(1)).findByEmail(siteUser.getEmail());
+        verify(siteUserRepository, times(0)).save(any(SiteUser.class));
+    }
+
 
     private static SiteUser getSiteUser() {
         return SiteUser.builder()
@@ -99,6 +154,7 @@ public class SiteUserServiceTest {
                 .nickname("nickname")
                 .phoneNumber("010-1234-5678")
                 .address("address")
+                .point(0)
                 .myLocation(geometryFactory.createPoint(new Coordinate(37.56600357774501, 126.97306266269747)))
                 .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")

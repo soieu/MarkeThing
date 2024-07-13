@@ -5,13 +5,15 @@ import com.example.demo.chat.dto.ChatRoomRequestDto;
 import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.chat.service.ChatRoomService;
-import com.example.demo.chat.service.impl.ChatRoomServiceImpl;
 import com.example.demo.config.SecurityConfig;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,7 +33,10 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -92,6 +97,19 @@ public class ChatApiControllerTest {
 
 
     }
+    @Test
+    public void deleteMyChatRoom() throws Exception {
+        Long chatRoomId = 1L;
+        Long userId = 1L;
+
+        // When
+        mockMvc.perform(delete("/api/chat/rooms/{chatRoomId}/user/{userId}", chatRoomId, userId))
+                .andExpect(status().isOk());
+        // delete: MockMvc에서 제공하는 메서드로, HTTP DELETE 요청을 생성하는 메서드임
+
+        // Then
+        verify(chatRoomService, times(1)).deleteChatRoom(chatRoomId, userId);
+    }
     private ChatRoomRequestDto getChatRoomRequestDto(){
         return ChatRoomRequestDto.builder()
                 .requestId(1L)
@@ -114,8 +132,8 @@ public class ChatApiControllerTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(LocalTime.now())
-                .meetupDate(LocalDate.now())
+                .meetupTime(Time.valueOf(LocalTime.now()))
+                .meetupDate(Date.valueOf(LocalDate.now()))
                 .meetupAddress("Address")
                 .createdAt(LocalDateTime.now())
                 .build();

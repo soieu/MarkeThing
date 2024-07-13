@@ -1,16 +1,17 @@
 package com.example.demo.payment.controller.api;
 
-import com.example.demo.payment.dto.CancelPaymentRequestDto;
-import com.example.demo.payment.dto.PaymentCallbackRequestDto;
+import com.example.demo.payment.dto.*;
+import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.service.PaymentService;
-import com.siot.IamportRestClient.response.IamportResponse;
-import com.siot.IamportRestClient.response.Payment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -22,12 +23,24 @@ public class PaymentApiController {
 
     @PostMapping
     public void validationPayment(@RequestBody PaymentCallbackRequestDto request) {
-        IamportResponse<Payment> response = paymentService.paymentByCallback(request);
+        paymentService.paymentByCallback(request);
     }
 
     @PostMapping("/{paymentId}/cancel")
     public void cancelPayment(@PathVariable Long paymentId,
                               @RequestBody CancelPaymentRequestDto request) {
-        IamportResponse<Payment> response = paymentService.cancelPayment(paymentId, request);
+        paymentService.cancelPayment(paymentId, request);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<PayResponseDto>> getPaymentList(Principal principal) {
+        var result = paymentService.listPayment(principal.getName());
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/list/{paymentId}")
+    public ResponseEntity<PayDetailDto> paymentDetail(@PathVariable Long paymentId, Principal principal) {
+        PayDetailDto result = paymentService.detailPayment(paymentId, principal.getName());
+        return ResponseEntity.ok(result);
     }
 }
