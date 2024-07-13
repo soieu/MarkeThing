@@ -1,8 +1,10 @@
 package com.example.demo.community.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,6 +12,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.demo.auth.jwt.JWTFilter;
+import com.example.demo.auth.jwt.JWTUtil;
+import com.example.demo.auth.jwt.LoginFilter;
+import com.example.demo.auth.service.CustomUserDetailsService;
 import com.example.demo.common.filter.dto.CommunityFilterDto;
 import com.example.demo.common.filter.dto.CommunityFilterRequestDto;
 import com.example.demo.community.controller.api.CommunityApiController;
@@ -31,6 +37,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -40,11 +47,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
 @WebMvcTest(CommunityApiController.class)
-@Import(SecurityConfig.class)
+@AutoConfigureMockMvc
 public class CommunityApiControllerTest {
 
     @MockBean
@@ -53,6 +62,9 @@ public class CommunityApiControllerTest {
     @MockBean
     private CommunityService communityService;
 
+    @MockBean
+    private JWTUtil jwtUtil;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -60,6 +72,7 @@ public class CommunityApiControllerTest {
     private MockMvc mockMvc;
 
     @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
     public void createCommunityTest() throws Exception {
         // given
         CommunityRequestDto communityRequestDto = getCommunityRequestDto();
@@ -67,18 +80,19 @@ public class CommunityApiControllerTest {
 
         String content = objectMapper.writeValueAsString(communityRequestDto);
 
-        given(communityService.create(eq("mockEmail@gmail.com"), eq(communityRequestDto)))
+        given(communityService.create( eq("mockEmail@gmail.com"), eq(communityRequestDto)))
                 .willReturn(community);
 
         // when & then
         mockMvc.perform(post("/api/communities")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)) // requestBody에 들어가는 인자 저장
+                        .content(content).with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
     @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
     public void editCommunityTest() throws Exception {
         // given
         CommunityRequestDto editCommunityRequestDto = getEditCommunityRequestDto();
@@ -93,12 +107,13 @@ public class CommunityApiControllerTest {
         //when & then
         mockMvc.perform(post("/api/communities/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)) // requestBody에 들어가는 인자 저장
+                        .content(content).with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
     @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
     public void deleteCommunityTest() throws Exception {
         // when & then
         mockMvc.perform(delete("/api/communities/1")
@@ -161,6 +176,7 @@ public class CommunityApiControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
     public void getMyCommunityListTest() throws Exception {
         //given
         PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
@@ -242,7 +258,7 @@ public class CommunityApiControllerTest {
                 .phoneNumber("010-1234-5678")
                 .address("address")
                 .myLocation(myLocation)
-                .mannerScore(0)
+                .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
                 .status(true)
                 .authType(AuthType.GENERAL)

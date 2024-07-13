@@ -1,5 +1,6 @@
 package com.example.demo.marketpurchaserequest.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,8 +19,11 @@ import com.example.demo.marketpurchaserequest.service.impl.MarketPurchaseRequest
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
+import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -120,12 +124,61 @@ public class MarketPurchaseRequestServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("시장 의뢰글 조회 성공 테스트")
+    void getMarketPurchaseRequestSuccess() throws Exception {
+        // given
+        given(marketPurchaseRequestRepository.findById(1L))
+                .willReturn(Optional.ofNullable(getMarketPurchaseRequest()));
+
+        // when
+        var result = marketPurchaseRequestServiceImpl.getMarketPurchaseRequest(1L);
+
+        // then
+        assertThat(result.getMarketId()).isEqualTo(getMarketPurchaseRequest().getId());
+    }
+
+    @Test
+    @DisplayName("시장 의뢰글 조회 실패 테스트 - REQUEST_NOT_FOUND")
+    void getMarketPurchaseRequestFailedByRequestNotFound() throws Exception {
+        // given
+        given(marketPurchaseRequestRepository.findById(any()))
+                .willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> marketPurchaseRequestServiceImpl.getMarketPurchaseRequest(1L));
+
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.REQUEST_NOT_FOUND);
+
+    }
+
+    private static MarketPurchaseRequest getMarketPurchaseRequest() {
+        return MarketPurchaseRequest.builder()
+                .id(1L)
+                .title("title")
+                .content("content")
+                .postImg("postImg")
+                .fee(10000)
+                .purchaseRequestStatus(PurchaseRequestStatus.RECRUITING)
+                .meetupTime(LocalTime.now())
+                .meetupDate(LocalDate.now())
+                .meetupAddress("서울시")
+                .market(getMarket())
+                .siteUser(getSiteUser())
+                .meetupLocation(geometryFactory.createPoint(new Coordinate(37.56600357774501, 126.97306266269747)))
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
     private static MarketPurchaseRequestDto getMarketPurchaseRequestDto(SiteUser siteUser, Market market) {
         return MarketPurchaseRequestDto.builder()
                 .title("test request")
                 .content("3 apples")
                 .fee(15000)
-                .meetupTime(LocalDate.now())
+                .meetupTime(LocalTime.now())
                 .meetupDate(LocalDate.now())
                 .meetupAddress("서울시")
                 .latitude(37.5509)
@@ -145,7 +198,7 @@ public class MarketPurchaseRequestServiceImplTest {
                 .phoneNumber("010-1234-5678")
                 .address("address")
                 .myLocation(geometryFactory.createPoint(new Coordinate(37.56600357774501, 126.97306266269747)))
-                .mannerScore(0)
+                .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
                 .status(true)
                 .authType(AuthType.GENERAL)

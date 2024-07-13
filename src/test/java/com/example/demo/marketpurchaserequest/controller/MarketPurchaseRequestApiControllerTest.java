@@ -4,11 +4,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.demo.auth.jwt.JWTFilter;
+import com.example.demo.config.SecurityConfig;
 import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.controller.api.MarketPurchaseRequestApiController;
+import com.example.demo.marketpurchaserequest.dto.DetailMarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.service.MarketPurchaseRequestService;
@@ -17,21 +23,24 @@ import com.example.demo.type.AuthType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(controllers = MarketPurchaseRequestApiController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class MarketPurchaseRequestApiControllerTest {
 
     @MockBean
@@ -39,6 +48,12 @@ public class MarketPurchaseRequestApiControllerTest {
 
     @MockBean
     private MappingMongoConverter mappingMongoConverter;
+
+    @MockBean
+    private SecurityConfig securityConfig;
+
+    @MockBean
+    private JWTFilter jwtFilter;
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,8 +71,9 @@ public class MarketPurchaseRequestApiControllerTest {
             .nickname("nickname")
             .phoneNumber("010-1234-5678")
             .address("address")
-            .myLocation(geometryFactory.createPoint(new Coordinate(37.56600357774501, 126.97306266269747)))
-            .mannerScore(0)
+            .myLocation(geometryFactory
+                    .createPoint(new Coordinate(37.56600357774501, 126.97306266269747)))
+            .mannerScore(List.of("0,0,0"))
             .profileImg("profileImg")
             .status(true)
             .authType(AuthType.GENERAL)
@@ -71,14 +87,16 @@ public class MarketPurchaseRequestApiControllerTest {
             .type(1)
             .roadAddress("강원특별자치도 강릉시 금성로21")
             .streetAddress("강원특별자치도 강릉시 성남동 50")
-            .location(geometryFactory.createPoint(new Coordinate(37.75402359, 128.8986233)))
+            .location(geometryFactory
+                    .createPoint(new Coordinate(37.75402359, 128.8986233)))
             .build();
 
-    private final MarketPurchaseRequestDto marketPurchaseRequestDto = MarketPurchaseRequestDto.builder()
+    private final MarketPurchaseRequestDto marketPurchaseRequestDto =
+            MarketPurchaseRequestDto.builder()
             .title("test request")
             .content("3 apples")
             .fee(15000)
-            .meetupTime(LocalDate.now())
+            .meetupTime(LocalTime.now())
             .meetupDate(LocalDate.now())
             .meetupAddress("서울시")
             .latitude(37.5509)
@@ -87,10 +105,30 @@ public class MarketPurchaseRequestApiControllerTest {
             .marketId(market.getId())
             .build();
 
+    private final DetailMarketPurchaseRequestDto detailMarketPurchaseRequestDto =
+            DetailMarketPurchaseRequestDto.builder()
+                    .requestId(1L)
+                    .title("title")
+                    .content("content")
+                    .postImg("postImg")
+                    .fee(50000)
+                    .meetupTime(LocalTime.now())
+                    .meetupDate(LocalDate.now())
+                    .meetupAddress("서울시")
+                    .latitude(37.5509)
+                    .longitude(127.0506)
+                    .userId(siteUser.getId())
+                    .marketId(market.getId())
+                    .marketName(market.getMarketName())
+                    .marketRoadAddress(market.getRoadAddress())
+                    .marketStreetAddress(market.getStreetAddress())
+                    .marketType(market.converMarketType())
+                    .createdAt(LocalDateTime.now())
+                    .build();
+
 
     @Test
     @DisplayName("시장 의뢰글 등록 테스트")
-    @WithMockUser
     void createMarketPurchaseRequest() throws Exception {
         // given
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,market);
@@ -99,7 +137,7 @@ public class MarketPurchaseRequestApiControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/requests").with(csrf())
+                .post("/api/requests")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(marketPurchaseRequestDto)));
         // then
@@ -109,16 +147,36 @@ public class MarketPurchaseRequestApiControllerTest {
 
     @Test
     @DisplayName("시장 의뢰글 삭제 테스트")
-    @WithMockUser
     void deleteMarketPurchaseRequest() throws Exception {
         // given
-        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,market);
+        MarketPurchaseRequest marketPurchaseRequest =
+                marketPurchaseRequestDto.toEntity(siteUser,market);
 
-        given(marketPurchaseRequestService.createMarketPurchaseRequest(marketPurchaseRequestDto)).willReturn(marketPurchaseRequest);
+        given(marketPurchaseRequestService.createMarketPurchaseRequest(marketPurchaseRequestDto))
+                .willReturn(marketPurchaseRequest);
+
         doNothing().when(marketPurchaseRequestService).deleteMarketPurchaseRequest(
                 marketPurchaseRequest.getId());
+
         // when & then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/requests/1").with(csrf()))
-                .andExpect(status().isOk()).andDo(print());
+        mockMvc.perform(delete("/api/requests/1"))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
+
+    @Test
+    @DisplayName("시장 의뢰글 상세 조회")
+    void getMarketPurchaseRequest() throws Exception {
+        // given
+        given(marketPurchaseRequestService.getMarketPurchaseRequest(1L))
+                .willReturn(detailMarketPurchaseRequestDto);
+
+        // when & then
+        mockMvc.perform(get("/api/requests/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+    }
+
 }

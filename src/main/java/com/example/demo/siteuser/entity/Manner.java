@@ -1,7 +1,6 @@
-package com.example.demo.entity;
+package com.example.demo.siteuser.entity;
 
 
-import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.Rate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Builder
@@ -33,13 +31,13 @@ public class Manner {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "AGENT_ID")
-    private SiteUser agent;
+    @JoinColumn(name = "TAKER_ID")
+    private SiteUser taker;
 
     // 평가를 하는 사용자와의 다대일 관계를 정의
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "REQUESTER_ID")
-    private SiteUser requester;
+    @JoinColumn(name = "RATER_ID")
+    private SiteUser rater;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "RATE", length = 50, nullable = false)

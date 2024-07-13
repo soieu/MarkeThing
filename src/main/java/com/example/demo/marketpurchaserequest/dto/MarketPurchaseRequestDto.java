@@ -3,18 +3,23 @@ package com.example.demo.marketpurchaserequest.dto;
 import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.siteuser.entity.SiteUser;
-import java.time.LocalDate;
+import java.sql.Time;
 import java.time.LocalDateTime;
+import java.sql.Date;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MarketPurchaseRequestDto {
 
     @NotBlank(message = "제목을 입력하세요.")
@@ -29,10 +34,10 @@ public class MarketPurchaseRequestDto {
     private int fee;
 
     @NotEmpty(message = "약속 시간을 입력하세요.")
-    private LocalDate meetupTime;
+    private Time meetupTime;
 
     @NotEmpty(message = "약속 날짜 입력하세요.")
-    private LocalDate meetupDate;
+    private Date meetupDate;
 
     @NotBlank(message = "약속 주소를 입력하세요.")
     private String meetupAddress;
@@ -46,7 +51,7 @@ public class MarketPurchaseRequestDto {
 
     @Builder
     public MarketPurchaseRequestDto(String title, String content, String postImg, int fee,
-            LocalDate meetupTime, LocalDate meetupDate, String meetupAddress, double latitude, double longitude, Long userId, Long marketId) {
+            Time meetupTime, Date meetupDate, String meetupAddress, double latitude, double longitude, Long userId, Long marketId) {
         this.title = title;
         this.content = content;
         this.postImg = postImg;
@@ -58,9 +63,8 @@ public class MarketPurchaseRequestDto {
         this.longitude = longitude;
         this.userId = userId;
         this.marketId = marketId;
-
-
     }
+
     public Point getPoint(double latitude, double longitude) {
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
         return geometryFactory.createPoint(new Coordinate(latitude, longitude));

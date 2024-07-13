@@ -1,6 +1,7 @@
 package com.example.demo.siteuser.dto;
 
 import com.example.demo.siteuser.entity.SiteUser;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,15 +10,17 @@ public class SiteUserResponseDto {
 
     private String email;
     private String name;
+    private String nickname;
     private String phoneNumber;
     private String address;
-    private int mannerScore;
+    private List<String> mannerScore;
     private String profileImg;
 
     @Builder
-    public SiteUserResponseDto(String email, String name, String phoneNumber, String address, int mannerScore, String profileImg) {
+    public SiteUserResponseDto(String email, String name, String nickname, String phoneNumber, String address, List<String> mannerScore, String profileImg) {
         this.email = email;
         this.name = name;
+        this.nickname = nickname;
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.mannerScore = mannerScore;
@@ -25,9 +28,14 @@ public class SiteUserResponseDto {
     }
 
     public static SiteUserResponseDto fromEntity(SiteUser siteUser) {
-        return new SiteUserResponseDto(siteUser.getEmail(), siteUser.getName(), siteUser.getPhoneNumber(),
-                siteUser.getAddress(), siteUser.getMannerScore(), siteUser.getProfileImg());
-
+        return SiteUserResponseDto.builder()
+                .email(siteUser.getEmail())
+                .name(siteUser.getName())
+                .nickname(siteUser.getNickname())
+                .phoneNumber(siteUser.getPhoneNumber())
+                .address(siteUser.getAddress())
+                .mannerScore(siteUser.getMannerScore())
+                .profileImg(siteUser.getProfileImg())
+                .build();
     }
-
 }

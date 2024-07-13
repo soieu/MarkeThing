@@ -1,8 +1,6 @@
 package com.example.demo.chat.entiity;
 
-
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -33,5 +31,5 @@ public class ChatMessage {
     private String content;
 
     @CreatedDate // 생성 시간
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 }
