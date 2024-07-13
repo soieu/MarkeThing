@@ -138,7 +138,6 @@ public class CommunityApiControllerTest {
         Page<CommunityPreviewDto> pages
                 = new PageImpl<>(communityPreviewDtos, pageRequest, communityPreviewDtos.size());
 
-
         given(communityService.confirmSortOrder(eq("date")))
                 .willReturn(Sort.by("createdAt").descending());
 

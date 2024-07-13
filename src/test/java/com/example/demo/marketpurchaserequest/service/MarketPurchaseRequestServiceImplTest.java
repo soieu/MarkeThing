@@ -8,11 +8,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.example.demo.common.filter.dto.KeywordDto;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.market.entity.Market;
 import com.example.demo.market.repository.MarketRepository;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
+import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
 import com.example.demo.marketpurchaserequest.service.impl.MarketPurchaseRequestServiceImpl;
@@ -23,6 +25,7 @@ import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +36,10 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 @ExtendWith(MockitoExtension.class)
 public class MarketPurchaseRequestServiceImplTest {
@@ -57,22 +64,28 @@ public class MarketPurchaseRequestServiceImplTest {
         //given
         Market market = getMarket();
         SiteUser siteUser = getSiteUser();
-        MarketPurchaseRequestDto marketPurchaseRequestDto = getMarketPurchaseRequestDto(siteUser,market);
-        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser, market);
+        MarketPurchaseRequestDto marketPurchaseRequestDto = getMarketPurchaseRequestDto(siteUser,
+                market);
+        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,
+                market);
 
         //mocking
         given(siteUserRepository.findById(any())).willReturn(Optional.ofNullable(siteUser));
         given(marketRepository.findById(any())).willReturn(Optional.ofNullable(market));
-        given(marketPurchaseRequestRepository.save(any(MarketPurchaseRequest.class))).willReturn(marketPurchaseRequest);
-        given(marketPurchaseRequestRepository.findById(marketPurchaseRequest.getId())).willReturn(Optional.ofNullable(marketPurchaseRequest));
+        given(marketPurchaseRequestRepository.save(any(MarketPurchaseRequest.class))).willReturn(
+                marketPurchaseRequest);
+        given(marketPurchaseRequestRepository.findById(marketPurchaseRequest.getId())).willReturn(
+                Optional.ofNullable(marketPurchaseRequest));
 
         // when
-        MarketPurchaseRequest newMarketPurchaseRequest = marketPurchaseRequestServiceImpl.createMarketPurchaseRequest(marketPurchaseRequestDto);
+        MarketPurchaseRequest newMarketPurchaseRequest = marketPurchaseRequestServiceImpl.createMarketPurchaseRequest(
+                marketPurchaseRequestDto);
 
         // then
-        MarketPurchaseRequest findMarketPurchaseRequest = marketPurchaseRequestRepository.findById(newMarketPurchaseRequest.getId()).orElse(null);
+        MarketPurchaseRequest findMarketPurchaseRequest = marketPurchaseRequestRepository.findById(
+                newMarketPurchaseRequest.getId()).orElse(null);
 
-        assertEquals(marketPurchaseRequest.getId(),findMarketPurchaseRequest.getId());
+        assertEquals(marketPurchaseRequest.getId(), findMarketPurchaseRequest.getId());
 
     }
 
@@ -84,7 +97,8 @@ public class MarketPurchaseRequestServiceImplTest {
 
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
-                () -> marketPurchaseRequestServiceImpl.createMarketPurchaseRequest(getMarketPurchaseRequestDto(getSiteUser(), getMarket())));
+                () -> marketPurchaseRequestServiceImpl.createMarketPurchaseRequest(
+                        getMarketPurchaseRequestDto(getSiteUser(), getMarket())));
 
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
@@ -96,17 +110,20 @@ public class MarketPurchaseRequestServiceImplTest {
         //given
         Market market = getMarket();
         SiteUser siteUser = getSiteUser();
-        MarketPurchaseRequestDto marketPurchaseRequestDto = getMarketPurchaseRequestDto(siteUser, market);
-        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser, market);
+        MarketPurchaseRequestDto marketPurchaseRequestDto = getMarketPurchaseRequestDto(siteUser,
+                market);
+        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,
+                market);
 
         // mocking
-        given(marketPurchaseRequestRepository.findById(any())).willReturn(Optional.ofNullable(marketPurchaseRequest));
+        given(marketPurchaseRequestRepository.findById(any())).willReturn(
+                Optional.ofNullable(marketPurchaseRequest));
 
         // when
         marketPurchaseRequestServiceImpl.deleteMarketPurchaseRequest(marketPurchaseRequest.getId());
 
         // then
-        verify(marketPurchaseRequestRepository,times(1)).delete(marketPurchaseRequest);
+        verify(marketPurchaseRequestRepository, times(1)).delete(marketPurchaseRequest);
     }
 
     @Test
@@ -154,6 +171,43 @@ public class MarketPurchaseRequestServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("시장 의뢰글 검색어 조회 테스트")
+    void getMarketPurchaseRequestsByKeyword() throws Exception {
+        // given
+        KeywordDto keywordDto = new KeywordDto("content");
+
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+        List<MarketPurchaseRequest> requests = new ArrayList<>();
+        requests.add(getMarketPurchaseRequest());
+
+        Page<MarketPurchaseRequest> pages
+                = new PageImpl<>(requests, pageRequest, requests.size());
+
+        given(marketPurchaseRequestRepository.findAllByFilter(keywordDto, pageRequest))
+                .willReturn(pages);
+
+        // when
+        var result = marketPurchaseRequestServiceImpl.getRequestsByKeyword(keywordDto, pageRequest);
+
+        // then
+        assertThat(result.getContent().get(0).getContent()).isEqualTo(getMarketPurchaseRequest().getContent());
+
+    }
+
+    private static MarketPurchaseRequestPreviewDto getMarketPurchaseRequestPreviewDto() {
+        return MarketPurchaseRequestPreviewDto.builder()
+                .requestId(1L)
+                .title("title")
+                .content("content")
+                .fee(15000)
+                .meetupDate(LocalDate.now())
+                .meetupTime(LocalTime.now())
+                .marketName("marketName")
+                .nickname("nickname")
+                .build();
+    }
+
     private static MarketPurchaseRequest getMarketPurchaseRequest() {
         return MarketPurchaseRequest.builder()
                 .id(1L)
@@ -167,13 +221,15 @@ public class MarketPurchaseRequestServiceImplTest {
                 .meetupAddress("서울시")
                 .market(getMarket())
                 .siteUser(getSiteUser())
-                .meetupLocation(geometryFactory.createPoint(new Coordinate(37.56600357774501, 126.97306266269747)))
+                .meetupLocation(geometryFactory.createPoint(
+                        new Coordinate(37.56600357774501, 126.97306266269747)))
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
     }
 
-    private static MarketPurchaseRequestDto getMarketPurchaseRequestDto(SiteUser siteUser, Market market) {
+    private static MarketPurchaseRequestDto getMarketPurchaseRequestDto(SiteUser siteUser,
+            Market market) {
         return MarketPurchaseRequestDto.builder()
                 .title("test request")
                 .content("3 apples")
@@ -197,7 +253,8 @@ public class MarketPurchaseRequestServiceImplTest {
                 .nickname("nickname")
                 .phoneNumber("010-1234-5678")
                 .address("address")
-                .myLocation(geometryFactory.createPoint(new Coordinate(37.56600357774501, 126.97306266269747)))
+                .myLocation(geometryFactory.createPoint(
+                        new Coordinate(37.56600357774501, 126.97306266269747)))
                 .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
                 .status(true)

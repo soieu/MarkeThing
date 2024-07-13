@@ -43,7 +43,7 @@ public class MarketPurchaseRequestApiController {
     }
 
     @PostMapping("/list/keyword")
-    public ResponseEntity<Page<MarketPurchaseRequestPreviewDto>> getMarketPurchaseRequestList(
+    public ResponseEntity<Page<MarketPurchaseRequestPreviewDto>> getMarketPurchaseRequestListByKeyword(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false, defaultValue = "register") String sort,
@@ -52,7 +52,7 @@ public class MarketPurchaseRequestApiController {
         Sort sortOrder = marketPurchaseRequestService.confirmSortOrder(sort);
         PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
 
-        var result = marketPurchaseRequestService.getRequestByKeyword(
+        var result = marketPurchaseRequestService.getRequestsByKeyword(
                 keywordDto, pageRequest);
 
         return ResponseEntity.ok(result);

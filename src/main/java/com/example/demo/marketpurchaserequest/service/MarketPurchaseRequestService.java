@@ -20,5 +20,5 @@ public interface MarketPurchaseRequestService {
 
     Sort confirmSortOrder(String sort);
 
-    Page<MarketPurchaseRequestPreviewDto> getRequestByKeyword(KeywordDto keywordDto, Pageable pageable);
+    Page<MarketPurchaseRequestPreviewDto> getRequestsByKeyword(KeywordDto keywordDto, Pageable pageable);
 }
