@@ -1,5 +1,7 @@
 package com.example.demo.payment.dto;
 
+import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
+import com.example.demo.payment.entity.Pay;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PaymentStatus;
 import lombok.*;
@@ -23,5 +25,19 @@ public class PayDetailDto {
     private PaymentStatus status;
     private String failReason;
 
-
+    public static PayDetailDto fromEntity(Pay pay) {
+        return PayDetailDto.builder()
+                .payMethod(pay.getPayMethod() != null ? pay.getPayMethod() : "")
+                .bankName(pay.getBankName() != null ? pay.getBankName() : "")
+                .bankCode(pay.getBankCode() != null ? pay.getBankCode() : "")
+                .cardCode(pay.getCardCode() != null ? pay.getCardCode() : "")
+                .cardName(pay.getCardName() != null ? pay.getCardName() : "")
+                .cardNumber(pay.getCardNumber() != null ? pay.getCardNumber() : "")
+                .amount(pay.getAmount())
+                .itemName(pay.getMarketPurchaseRequest() != null ? pay.getMarketPurchaseRequest().getTitle() : "")
+                .paidAt(pay.getPaidAt())
+                .status(pay.getStatus() != null ? pay.getStatus() : PaymentStatus.READY)
+                .failReason(pay.getFailReason() != null ? pay.getFailReason() : "")
+                .build();
+    }
 }

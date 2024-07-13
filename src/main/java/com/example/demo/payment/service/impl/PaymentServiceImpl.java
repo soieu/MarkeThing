@@ -1,5 +1,6 @@
 package com.example.demo.payment.service.impl;
 
+import com.example.demo.community.dto.community.CommunityDetailDto;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
@@ -120,7 +121,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<PayResponseDto> listPayment(String email) {
-        List<Pay> payments = paymentRepository.findBySiteUser(siteUserRepository.findByEmail(email));
+        List<Pay> payments = paymentRepository.findAllBySiteUser_id(siteUserRepository.findByEmail(email));
 
         List<PayResponseDto> responseDtoList = payments.stream()
                 .map(pay -> PayResponseDto.builder()
@@ -135,26 +136,17 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Optional<PayDetailDto> detailPayment(Long id, String email) {
+    public PayDetailDto detailPayment(Long id, String email) {
         Optional<SiteUser> userOpt = siteUserRepository.findByEmail(email);
         Optional<Pay> payOpt = paymentRepository.findById(id);
 
         if (userOpt.isEmpty() || payOpt.isEmpty()) {
-            // null 체크 추가
             throw new MarkethingException(UNAUTHORIZED_USER);
         }
 
-        // Null 체크 후에 안전하게 객체 접근
         SiteUser user = userOpt.get();
-        Pay payment = payOpt.get();
+        Pay pay = payOpt.get();
 
-        // 이후 로직은 null pointer exception을 방지하도록 안전하게 작성
-        // 예: user와 payment 객체를 활용한 로직
-
-        return Optional.ofNullable(payment.toPayDetailDto());
+        return PayDetailDto.fromEntity(pay);
     }
-
-
-
-
 }

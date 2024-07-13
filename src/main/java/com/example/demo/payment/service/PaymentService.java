@@ -46,5 +46,5 @@ public interface PaymentService {
      * @param id
      * @return
      */
-    Optional<PayDetailDto> detailPayment(Long id, String email);
+    PayDetailDto detailPayment(Long id, String email);
 }

@@ -1,5 +1,6 @@
-package com.example.demo.payment.controller.api;
+package com.example.demo.payment.controller;
 
+import com.example.demo.payment.controller.api.PaymentApiController;
 import com.example.demo.payment.dto.CancelPaymentRequestDto;
 import com.example.demo.payment.dto.PayDetailDto;
 import com.example.demo.payment.dto.PayResponseDto;
@@ -99,7 +100,7 @@ public class PaymentApiControllerTest {
         PayDetailDto payDetailDto = new PayDetailDto();
 
         given(paymentService.detailPayment(paymentId, username))
-                .willReturn(Optional.of(payDetailDto));
+                .willReturn(payDetailDto);
 
         // when
         ResponseEntity<?> responseEntity = paymentApiController.paymentDetail(paymentId, () -> username);
@@ -116,10 +117,10 @@ public class PaymentApiControllerTest {
         String username = "testUser";
 
         given(paymentService.detailPayment(paymentId, username))
-                .willReturn(Optional.empty());
+                .willReturn(null);
 
         // when
-        ResponseEntity<?> responseEntity = paymentApiController.paymentDetail(paymentId, () -> username);
+        ResponseEntity<PayDetailDto> responseEntity = paymentApiController.paymentDetail(paymentId, () -> username);
 
         // then
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());

@@ -22,20 +22,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.security.Principal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
-import static com.example.demo.exception.type.ErrorCode.SUSPECT_PAYMENT_FORGERY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 public class PayServiceImplTest {
@@ -170,7 +165,7 @@ public class PayServiceImplTest {
         List<Pay> pays = Arrays.asList(pay1, pay2);
 
         // Mock the repository method to return the Pay entities
-        given(paymentRepository.findBySiteUser(siteUserRepository.findById(userId))).willReturn(pays);
+        given(paymentRepository.findAllBySiteUser_id(siteUserRepository.findById(userId))).willReturn(pays);
 
         // When
         List<PayResponseDto> result = paymentService.listPayment(email);
@@ -187,7 +182,7 @@ public class PayServiceImplTest {
         assertThat(result.get(1).getStatus()).isEqualTo(PaymentStatus.CANCEL);
         assertThat(result.get(1).getAmount()).isEqualTo(2000);
 
-        verify(paymentRepository).findBySiteUser(siteUserRepository.findById(userId));
+        verify(paymentRepository).findAllBySiteUser_id(siteUserRepository.findById(userId));
     }
 
     @Test
@@ -209,13 +204,12 @@ public class PayServiceImplTest {
         when(paymentRepository.findById(anyLong())).thenReturn(Optional.of(mockPay));
 
         // Call Service Method
-        Optional<PayDetailDto> result = paymentService.detailPayment(paymentId, userEmail);
+        PayDetailDto result = paymentService.detailPayment(paymentId, userEmail);
 
         // Assertions
-        assertTrue(result.isPresent());
-        assertEquals("card", result.get().getPayMethod());
-        assertEquals(PaymentStatus.OK, result.get().getStatus());
-        assertEquals(1000, result.get().getAmount());
+        assertEquals("card", result.getPayMethod());
+        assertEquals(PaymentStatus.OK, result.getStatus());
+        assertEquals(1000, result.getAmount());
 
         // Verify Repository Interactions
         verify(siteUserRepository, times(1)).findByEmail(anyString());
