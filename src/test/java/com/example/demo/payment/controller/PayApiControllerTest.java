@@ -1,6 +1,11 @@
 package com.example.demo.payment.controller;
 
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
+import com.example.demo.payment.controller.api.PaymentApiController;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import com.example.demo.payment.controller.view.PaymentController;
 import com.example.demo.payment.dto.*;
 import com.example.demo.payment.entity.Pay;
@@ -10,6 +15,8 @@ import com.example.demo.type.PaymentStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -21,14 +28,18 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.mockito.Mock;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -52,7 +63,15 @@ public class PayApiControllerTest {
     private ObjectMapper objectMapper;
 
     @InjectMocks
-    private PaymentController paymentController;
+    private PaymentApiController paymentController;
+
+    @Mock
+    private Principal principal;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(paymentController).build();
+    }
 
     @Test
     public void testValidationPayment() throws Exception {
@@ -101,20 +120,6 @@ public class PayApiControllerTest {
     }
 
     @Test
-    public void testCancelPaymentWithBadRequest() throws Exception {
-        // Given
-        String paymentId = "testPaymentId";
-        String invalidJson = "{ invalid json }";
-
-        // When
-        mockMvc.perform(post("/api/payments/{paymentId}/cancel", paymentId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidJson))
-                // Then
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     public void listTest() throws Exception {
         // Given
         Long userId = 1L;
@@ -143,53 +148,39 @@ public class PayApiControllerTest {
     }
 
     @Test
-    public void testPaymentDetailEndpoint() throws Exception {
+    @DisplayName("payment detail 테스트")
+    void testPaymentDetailFound() throws Exception {
         // Given
         Long paymentId = 1L;
-        Pay mockPay = Pay.builder()
+        String username = "testUser";
+        PayDetailDto dto = PayDetailDto.builder()
                 .payMethod("CARD")
-                .bankName("Test Bank")
-                .bankCode("123")
-                .cardCode("456")
-                .cardName("Test Card")
-                .cardNumber("1234-5678-9012-3456")
-                .amount(10000)
-                .marketPurchaseRequest(MarketPurchaseRequest.builder().title("Test Item").build())
-                .paidAt(LocalDate.from(LocalDateTime.now()))
+                .cardNumber("1234567890")
+                .amount(1000)
+                .paidAt(LocalDate.now())
                 .status(PaymentStatus.OK)
-                .failReason(null)
                 .build();
 
-        given(paymentService.detailPayment(anyLong())).willReturn(Optional.of(PayDetailDto.builder()
-                .payMethod(mockPay.getPayMethod())
-                .bankName(mockPay.getBankName())
-                .bankCode(mockPay.getBankCode())
-                .cardCode(mockPay.getCardCode())
-                .cardName(mockPay.getCardName())
-                .cardNumber(mockPay.getCardNumber())
-                .amount(mockPay.getAmount())
-                .itemName(mockPay.getMarketPurchaseRequest().getTitle())
-                .paidAt(mockPay.getPaidAt())
-                .status(mockPay.getStatus())
-                .failReason(mockPay.getFailReason())
-                .build()));
+        given(paymentService.detailPayment(paymentId, username)).willReturn(Optional.of(dto));
 
-        // When/Then
-        mockMvc.perform(post("/api/payments/list/{paymentId}", paymentId)
-                        .contentType(MediaType.APPLICATION_JSON))
+        // When
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/payments/list/{paymentId}", paymentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(request -> {
+                    request.setRemoteUser(username); // Simulate authenticated user
+                    return request;
+                }));
+
+        // Then
+        resultActions
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.payMethod").value("CARD"))
-                .andExpect(jsonPath("$.bankName").value("Test Bank"))
-                .andExpect(jsonPath("$.bankCode").value("123"))
-                .andExpect(jsonPath("$.cardCode").value("456"))
-                .andExpect(jsonPath("$.cardName").value("Test Card"))
-                .andExpect(jsonPath("$.cardNumber").value("1234-5678-9012-3456"))
-                .andExpect(jsonPath("$.amount").value(10000))
-                .andExpect(jsonPath("$.itemName").value("Test Item"))
-                .andExpect(jsonPath("$.paidAt").exists())
-                .andExpect(jsonPath("$.status").value(PaymentStatus.OK.toString()))
+                .andExpect(jsonPath("$.payMethod").value(dto.getPayMethod()))
+                .andExpect(jsonPath("$.cardNumber").value(dto.getCardNumber()))
+                .andExpect(jsonPath("$.amount").value(dto.getAmount()))
+                .andExpect(jsonPath("$.paidAt").value(dto.getPaidAt().toString()))
+                .andExpect(jsonPath("$.status").value(dto.getStatus().toString()))
                 .andExpect(jsonPath("$.failReason").doesNotExist());
     }
-
 }

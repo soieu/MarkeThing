@@ -7,6 +7,7 @@ import com.example.demo.payment.dto.*;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.PaymentService;
+import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -134,10 +135,26 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Optional<PayDetailDto> detailPayment(Long id) {
-        return paymentRepository.findById(id)
-                .map(Pay::toPayDetailDto);
+    public Optional<PayDetailDto> detailPayment(Long id, String email) {
+        Optional<SiteUser> userOpt = siteUserRepository.findByEmail(email);
+        Optional<Pay> payOpt = paymentRepository.findById(id);
+
+        if (userOpt.isEmpty() || payOpt.isEmpty()) {
+            // null 체크 추가
+            throw new MarkethingException(UNAUTHORIZED_USER);
+        }
+
+        // Null 체크 후에 안전하게 객체 접근
+        SiteUser user = userOpt.get();
+        Pay payment = payOpt.get();
+
+        // 이후 로직은 null pointer exception을 방지하도록 안전하게 작성
+        // 예: user와 payment 객체를 활용한 로직
+
+        return Optional.ofNullable(payment.toPayDetailDto());
     }
+
+
 
 
 }

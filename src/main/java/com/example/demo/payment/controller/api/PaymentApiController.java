@@ -38,10 +38,11 @@ public class PaymentApiController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/list/{paymentId}")
-    public ResponseEntity<Optional<PayDetailDto>> PaymentDetail(@PathVariable Long paymentId) {
-        var result = paymentService.detailPayment(paymentId);
-        return ResponseEntity.ok(result);
+    @GetMapping("/list/{paymentId}")
+    public ResponseEntity<?> paymentDetail(@PathVariable Long paymentId, Principal principal) {
+        Optional<PayDetailDto> result = paymentService.detailPayment(paymentId, principal.getName());
+        return result.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
 }

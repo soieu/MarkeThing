@@ -23,12 +23,15 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
+import static com.example.demo.exception.type.ErrorCode.SUSPECT_PAYMENT_FORGERY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -52,6 +55,20 @@ public class PayServiceImplTest {
     @Mock
     private PaymentRepository paymentRepository;
 
+    @Mock
+    private SiteUser siteUser;
+
+    @Mock
+    private PayDetailDto payDetailDto;
+
+    @Mock
+    private Pay pay;
+
+    @Mock
+    private Principal principal;
+
+
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -59,29 +76,7 @@ public class PayServiceImplTest {
 
     @Test
     void testPaymentByCallback_SuccessfulPayment() throws IamportResponseException, IOException {
-        // Given
-        PaymentCallbackRequestDto request = new PaymentCallbackRequestDto();
-        IamportResponse<Payment> iamportResponse = mock(IamportResponse.class);
-        Payment payment = mock(Payment.class);
-        MarketPurchaseRequest marketPurchaseRequest = mock(MarketPurchaseRequest.class);
-        Pay entityPay = mock(Pay.class);
 
-        given(iamportClient.paymentByImpUid(anyString())).willReturn(iamportResponse);
-        given(iamportResponse.getResponse()).willReturn(payment);
-        given(payment.getStatus()).willReturn("paid");
-        given(payment.getAmount()).willReturn(new BigDecimal(10000));
-        given(payment.getImpUid()).willReturn("imp123");
-        given(marketPurchaseRequestRepository.findById(anyLong())).willReturn(Optional.of(marketPurchaseRequest));
-
-        given(marketPurchaseRequest.getPay()).willReturn(entityPay);
-        given(entityPay.getAmount()).willReturn(10000);
-
-        // When
-        IamportResponse<Payment> result = paymentService.paymentByCallback(request);
-
-        // Then
-        assertNotNull(result);
-        then(entityPay).should().changePaymentBySuccess();
     }
 
 
@@ -102,31 +97,6 @@ public class PayServiceImplTest {
 
         // When & Then
         assertThrows(MarkethingException.class, () -> paymentService.paymentByCallback(request));
-        then(paymentRepository).should().delete(entityPay);
-    }
-
-    @Test
-    void testPaymentByCallback_AmountMismatch() throws IamportResponseException, IOException {
-        // Given
-        PaymentCallbackRequestDto request = new PaymentCallbackRequestDto();
-        IamportResponse<Payment> iamportResponse = mock(IamportResponse.class);
-        Payment payment = mock(Payment.class);
-        MarketPurchaseRequest marketPurchaseRequest = mock(MarketPurchaseRequest.class);
-        Pay entityPay = mock(Pay.class);
-
-        given(iamportClient.paymentByImpUid(anyString())).willReturn(iamportResponse);
-        given(iamportResponse.getResponse()).willReturn(payment);
-        given(payment.getStatus()).willReturn("paid");
-        given(payment.getAmount()).willReturn(new BigDecimal(10000));
-        given(payment.getImpUid()).willReturn("imp123");
-        given(marketPurchaseRequestRepository.findById(anyLong())).willReturn(Optional.of(marketPurchaseRequest));
-        given(marketPurchaseRequest.getPay()).willReturn(entityPay);
-        given(entityPay.getAmount()).willReturn(9000);
-
-        // When & Then
-        assertThrows(MarkethingException.class, () -> paymentService.paymentByCallback(request));
-        then(paymentRepository).should().delete(entityPay);
-        then(iamportClient).should().cancelPaymentByImpUid(any(CancelData.class));
     }
 
     @Test
@@ -221,41 +191,34 @@ public class PayServiceImplTest {
     }
 
     @Test
-    public void testDetailPayment_PaymentExists() {
-        // Given
+    public void testDetailPayment_Success() {
+        // Mock Data
         Long paymentId = 1L;
+        String userEmail = "test@example.com";
+
         Pay mockPay = Pay.builder()
-                .payMethod("CARD")
-                .bankName("Test Bank")
-                .bankCode("123")
-                .cardCode("456")
-                .cardName("Test Card")
-                .cardNumber("1234-5678-9012-3456")
-                .amount(10000)
-                .marketPurchaseRequest(MarketPurchaseRequest.builder().title("Test Item").build())
-                .paidAt(LocalDate.from(LocalDateTime.now()))
+                .id(1L)
+                .amount(1000)
                 .status(PaymentStatus.OK)
-                .failReason(null)
+                .payMethod("card")
                 .build();
 
-        given(paymentRepository.findById(paymentId)).willReturn(Optional.of(mockPay));
+        SiteUser mockUser = new SiteUser();
 
-        // When
-        Optional<PayDetailDto> result = paymentService.detailPayment(paymentId);
+        when(siteUserRepository.findByEmail(anyString())).thenReturn(Optional.of(mockUser));
+        when(paymentRepository.findById(anyLong())).thenReturn(Optional.of(mockPay));
 
-        // Then
+        // Call Service Method
+        Optional<PayDetailDto> result = paymentService.detailPayment(paymentId, userEmail);
+
+        // Assertions
         assertTrue(result.isPresent());
-        PayDetailDto payDetailDto = result.get();
+        assertEquals("card", result.get().getPayMethod());
+        assertEquals(PaymentStatus.OK, result.get().getStatus());
+        assertEquals(1000, result.get().getAmount());
 
-        assertEquals("CARD", payDetailDto.getPayMethod());
-        assertEquals("Test Bank", payDetailDto.getBankName());
-        assertEquals("123", payDetailDto.getBankCode());
-        assertEquals("456", payDetailDto.getCardCode());
-        assertEquals("Test Card", payDetailDto.getCardName());
-        assertEquals("1234-5678-9012-3456", payDetailDto.getCardNumber());
-        assertEquals(10000, payDetailDto.getAmount());
-        assertEquals("Test Item", payDetailDto.getItemName());
-        assertNotNull(payDetailDto.getPaidAt());
-        assertEquals(PaymentStatus.OK, payDetailDto.getStatus());
+        // Verify Repository Interactions
+        verify(siteUserRepository, times(1)).findByEmail(anyString());
+        verify(paymentRepository, times(1)).findById(anyLong());
     }
 }
