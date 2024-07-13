@@ -1,4 +1,5 @@
 package com.example.demo.chat.service.impl;
+
 import static com.example.demo.exception.type.ErrorCode.CHATROOM_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.REQUEST_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.USER_NOT_FOUND;

@@ -1,11 +1,13 @@
 package com.example.demo.marketpurchaserequest.service.impl;
 
+import com.example.demo.common.filter.dto.KeywordDto;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.market.entity.Market;
 import com.example.demo.market.repository.MarketRepository;
 import com.example.demo.marketpurchaserequest.dto.DetailMarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
+import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
 import com.example.demo.marketpurchaserequest.service.MarketPurchaseRequestService;
@@ -13,6 +15,10 @@ import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -52,4 +58,35 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
                 .orElseThrow(() -> new MarkethingException(ErrorCode.REQUEST_NOT_FOUND))
                 );
     }
+
+    @Override
+    public Sort confirmSortOrder(String sort) {
+        Sort sortOrder = Sort.unsorted();
+        if("register".equals(sort)) {
+            sortOrder = Sort.by("createdAt").descending(); // 최신순으로 정렬
+            return sortOrder;
+        }
+        if("meetup".equals(sort)) {
+            sortOrder = Sort.by(
+                    Order.asc("meetupDate"), // MeetupDate 기준으로 오름차순 정렬
+                    Order.asc("meetupTime"));  // MeetupTime 기준으로 오름차순 정렬
+            return sortOrder;
+        }
+        if("fee".equals(sort)) {
+            sortOrder = Sort.by("fee").descending(); // 수수료 높은순 정렬
+            return sortOrder;
+        }
+        return sortOrder;
+    }
+
+    @Override
+    public Page<MarketPurchaseRequestPreviewDto> getRequestsByKeyword(KeywordDto keywordDto,
+            Pageable pageable) {
+        if (keywordDto.getKeyword().isBlank()) {
+            return marketPurchaseRequestRepository.findAll(pageable)
+                    .map(MarketPurchaseRequestPreviewDto::fromEntity);
+        }
+        return marketPurchaseRequestRepository.findAllByFilter(keywordDto, pageable)
+                .map(MarketPurchaseRequestPreviewDto::fromEntity);
+     }
 }
