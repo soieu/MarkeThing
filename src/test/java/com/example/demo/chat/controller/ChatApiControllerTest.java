@@ -5,13 +5,15 @@ import com.example.demo.chat.dto.ChatRoomRequestDto;
 import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.chat.service.ChatRoomService;
-import com.example.demo.chat.service.impl.ChatRoomServiceImpl;
 import com.example.demo.config.SecurityConfig;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -130,8 +132,8 @@ public class ChatApiControllerTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(LocalTime.now())
-                .meetupDate(LocalDate.now())
+                .meetupTime(Time.valueOf(LocalTime.now()))
+                .meetupDate(Date.valueOf(LocalDate.now()))
                 .meetupAddress("Address")
                 .meetupLocation(myLocation)
                 .createdAt(LocalDateTime.now())
