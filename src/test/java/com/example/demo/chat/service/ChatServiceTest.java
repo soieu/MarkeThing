@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.demo.chat.dto.ChatRoomRequestDto;
@@ -26,6 +28,7 @@ import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -144,6 +147,35 @@ public class ChatServiceTest {
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
+
+    @Test
+    public void DeleteChatRoomAgent() {
+        // Given
+        ChatRoom chatRoom = getChatRoom();
+        SiteUser agent = getAgent();
+        List<ChatRoom> chatRoomList = new ArrayList<>();
+        chatRoomList.add(chatRoom);
+        when(chatRoomRepository.findById(chatRoom.getId())).thenReturn(Optional.of(chatRoom));
+        // When
+        chatRoomServiceImpl.deleteChatRoom(chatRoom.getId(),agent.getId());
+
+        // Then
+        verify(chatRoomRepository, times(1)).findById(chatRoom.getId());
+    }
+
+    @Test
+    public void deleteFailedCatRoom(){
+        // given
+        ChatRoom chatRoom = getChatRoom();
+        given(chatRoomRepository.findById(chatRoom.getId())).willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> chatRoomServiceImpl.deleteChatRoom(chatRoom.getId(),chatRoom.getAgent().getId()));
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.CHATROOM_NOT_FOUND);
+    }
+
     private ChatRoomRequestDto getChatRoomRequestDto(){
         return ChatRoomRequestDto.builder()
                 .requestId(1L)
