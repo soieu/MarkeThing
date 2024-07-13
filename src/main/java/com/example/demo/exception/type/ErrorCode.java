@@ -19,6 +19,7 @@ public enum ErrorCode {
     REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "존재하지 않는 의뢰글 입니다,"),
     MARKET_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"시장을 찾을 수 없습니다."),
     CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"채팅방을 찾을 수 없습니다."),
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "결제정보를 찾을 수 없습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"댓글을 찾을 수 없습니다."),
     REPLY_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"대댓글을 찾을 수 없습니다."),
 
@@ -45,7 +46,7 @@ public enum ErrorCode {
     ORDER_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "없는 주문정보입니다."),
     PAYMENT_INCOMPLETE(HttpStatus.BAD_REQUEST.value(), "결제가 완료되지 않았습니다."),
     PAYMENT_CANCEL_INCOMPLETE(HttpStatus.BAD_REQUEST.value(), "결제취소가 완료되지 않았습니다."),
-    PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "없는 결제정보입니다."),
+    INSUFFICIENT_POINT(HttpStatus.BAD_REQUEST.value(), "포인트가 부족합니다."),
     LAT_LON_CONVERT_FAIL(HttpStatus.BAD_REQUEST.value(), "선택하신 위도, 경도로 주소를 찾을 수 없습니다."),
     ADDRESS_CONVERT_FAIL(HttpStatus.BAD_REQUEST.value(), "선택하신 주소로 위도, 경도를 찾을 수 없습니다."),
 

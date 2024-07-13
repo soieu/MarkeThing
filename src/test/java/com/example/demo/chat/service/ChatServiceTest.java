@@ -26,16 +26,17 @@ import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
+
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.TreeSet;
-import org.bson.types.ObjectId;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -196,8 +197,8 @@ public class ChatServiceTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(LocalTime.now())
-                .meetupDate(LocalDate.now())
+                .meetupTime(Time.valueOf(LocalTime.now()))
+                .meetupDate(Date.valueOf(LocalDate.now()))
                 .meetupAddress("Address")
                 .meetupLocation(myLocation)
                 .createdAt(LocalDateTime.now())
@@ -216,8 +217,8 @@ public class ChatServiceTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(LocalTime.now())
-                .meetupDate(LocalDate.now())
+                .meetupTime(Time.valueOf(LocalTime.now()))
+                .meetupDate(Date.valueOf(LocalDate.now()))
                 .meetupAddress("Address")
                 .meetupLocation(myLocation)
                 .createdAt(LocalDateTime.now())
