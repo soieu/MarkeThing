@@ -20,51 +20,50 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTUtil jwtUtil;
 
-  private final AuthenticationConfiguration authenticationConfiguration;
-  private final JWTUtil jwtUtil;
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration,
+                          JWTUtil jwtUtil) {
 
-  public SecurityConfig(AuthenticationConfiguration authenticationConfiguration,
-                        JWTUtil jwtUtil) {
+        this.authenticationConfiguration = authenticationConfiguration;
+        this.jwtUtil = jwtUtil;
 
-    this.authenticationConfiguration = authenticationConfiguration;
-    this.jwtUtil = jwtUtil;
+    }
 
-  }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+            throws Exception {
 
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
-          throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 
-    return configuration.getAuthenticationManager();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((authorizeRequest) -> authorizeRequest
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/**"),
+                                new AntPathRequestMatcher("/login"),
+                                new AntPathRequestMatcher("/api/users/signUp"))
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),
+                        jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-    http.csrf(AbstractHttpConfigurer::disable)
-            .formLogin(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests((authorizeRequest) -> authorizeRequest
-                    .requestMatchers(
-                            new AntPathRequestMatcher("/**"),
-                            new AntPathRequestMatcher("/login"),
-                            new AntPathRequestMatcher("/api/users/signUp"))
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
-            .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
-            .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),
-                    jwtUtil), UsernamePasswordAuthenticationFilter.class)
-            .sessionManagement((session) -> session
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-    return http.build();
-  }
+        return http.build();
+    }
 }
