@@ -27,17 +27,17 @@ public class PayDetailDto {
 
     public static PayDetailDto fromEntity(Pay pay) {
         return PayDetailDto.builder()
-                .payMethod(pay.getPayMethod() != null ? pay.getPayMethod() : "")
-                .bankName(pay.getBankName() != null ? pay.getBankName() : "")
-                .bankCode(pay.getBankCode() != null ? pay.getBankCode() : "")
-                .cardCode(pay.getCardCode() != null ? pay.getCardCode() : "")
-                .cardName(pay.getCardName() != null ? pay.getCardName() : "")
-                .cardNumber(pay.getCardNumber() != null ? pay.getCardNumber() : "")
+                .payMethod(pay.getPayMethod())
+                .bankName(pay.getBankName())
+                .bankCode(pay.getBankCode())
+                .cardCode(pay.getCardCode())
+                .cardName(pay.getCardName())
+                .cardNumber(pay.getCardNumber())
                 .amount(pay.getAmount())
-                .itemName(pay.getMarketPurchaseRequest() != null ? pay.getMarketPurchaseRequest().getTitle() : "")
+                .itemName(pay.getMarketPurchaseRequest().getTitle())
                 .paidAt(pay.getPaidAt())
-                .status(pay.getStatus() != null ? pay.getStatus() : PaymentStatus.READY)
-                .failReason(pay.getFailReason() != null ? pay.getFailReason() : "")
+                .status(pay.getStatus())
+                .failReason(pay.getFailReason())
                 .build();
     }
 }

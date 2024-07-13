@@ -41,10 +41,6 @@ public class PaymentApiController {
     @GetMapping("/list/{paymentId}")
     public ResponseEntity<PayDetailDto> paymentDetail(@PathVariable Long paymentId, Principal principal) {
         PayDetailDto result = paymentService.detailPayment(paymentId, principal.getName());
-        if (result != null) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(result);
     }
 }

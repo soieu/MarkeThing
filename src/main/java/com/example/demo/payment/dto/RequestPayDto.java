@@ -19,9 +19,9 @@ public class RequestPayDto {
         return RequestPayDto
                 .builder()
                 .paymentPrice(pay.getAmount())
-                .orderUid(pay.getMarketPurchaseRequest() != null ? pay.getMarketPurchaseRequest().getId() : null)
+                .orderUid(pay.getMarketPurchaseRequest().getId())
                 .buyerName(pay.getBuyerName())
-                .itemName(pay.getMarketPurchaseRequest() != null ? pay.getMarketPurchaseRequest().getTitle() : "")
+                .itemName(pay.getMarketPurchaseRequest().getTitle())
                 .build();
     }
 
