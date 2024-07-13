@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatRoomApiController {
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
+
     // TODO: requester, request, agent 아이디를 어떻게 전송을 해야하는 지 띵킹
     @PostMapping("api/chat/rooms")
     public void createRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
