@@ -7,8 +7,11 @@ import com.example.demo.exception.type.ErrorCode;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+
 
 @RequiredArgsConstructor
 @Service
@@ -32,7 +35,7 @@ public class PhoneAuthService {
     public StringResponseDto verifyCode(String phoneNumber, String authCode) {
         String key = SMS_PREFIX + ":" + phoneNumber;
         String code = redisTemplate.opsForValue().get(key);
-        if (code == null) {
+        if (StringUtils.isBlank(code)){
             throw new MarkethingException(ErrorCode.PHONE_AUTH_NUM_EXPIRED);
         }
         if (code.equals(authCode)) {

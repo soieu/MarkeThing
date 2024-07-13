@@ -91,6 +91,11 @@ dependencies {
     implementation "com.querydsl:querydsl-jpa"
     implementation 'com.querydsl:querydsl-apt'
 
+    // StringUtils
+    implementation "org.apache.commons:commons-lang3:3.12.0"
+
+
+
 }
 
 tasks.named('test') {
