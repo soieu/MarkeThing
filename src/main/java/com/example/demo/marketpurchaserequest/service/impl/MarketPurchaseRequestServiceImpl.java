@@ -115,7 +115,7 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
         Point southWestBound = PointUtils.getBoudaryPoint(myLocation, distance, 225.0);
 
         return marketPurchaseRequestRepository
-                .findAllWithinBoundary(myLocation, northEastBound, southWestBound,pageable)
+                .findAllWithinBoundary(myLocation, northEastBound, southWestBound, pageable)
                 .map(MarketPurchaseRequestPreviewDto::fromEntity);
     }
 }

@@ -222,14 +222,41 @@ public class MarketPurchaseRequestApiControllerTest {
 
         // when & then
         mockMvc.perform(post("/api/requests/list/keyword")
-                .param("page", String.valueOf(0))
-                .param("size", String.valueOf(5))
-                .param("sort", "register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content))
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(5))
+                        .param("sort", "register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].requestId")
                         .value(marketPurchaseRequestPreviewDto.getRequestId()))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("내 주변 시장 의뢰글 리스트 조회")
+    void getMarketPurchaseRequestListAroundMe() throws Exception {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+        List<MarketPurchaseRequestPreviewDto> requestPreviewDtos = new ArrayList<>();
+        requestPreviewDtos.add(marketPurchaseRequestPreviewDto);
+
+        Page<MarketPurchaseRequestPreviewDto> pages
+                = new PageImpl<>(requestPreviewDtos, pageRequest, requestPreviewDtos.size());
+
+        given(marketPurchaseRequestService.confirmSortOrder(eq("register")))
+                .willReturn(Sort.by("createdAt").descending());
+
+        given(marketPurchaseRequestService.getRequestsByKeyword(any(), any()))
+                .willReturn(pages);
+
+        // when & then
+        mockMvc.perform(get("/api/requests/list/map")
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(5))
+                        .param("distance", String.valueOf(3))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }
