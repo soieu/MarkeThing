@@ -21,4 +21,6 @@ public interface MarketPurchaseRequestService {
     Sort confirmSortOrder(String sort);
 
     Page<MarketPurchaseRequestPreviewDto> getRequestsByKeyword(KeywordDto keywordDto, Pageable pageable);
+
+    Page<MarketPurchaseRequestPreviewDto> getRequestsWithinDistance(String email, double distance, Pageable pageable);
 }

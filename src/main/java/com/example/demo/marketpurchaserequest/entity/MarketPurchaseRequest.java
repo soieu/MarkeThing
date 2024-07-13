@@ -2,8 +2,8 @@ package com.example.demo.marketpurchaserequest.entity;
 
 
 import com.example.demo.chat.entiity.ChatRoom;
-import com.example.demo.market.entity.Market;
 import com.example.demo.entity.RequestSuccess;
+import com.example.demo.market.entity.Market;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PurchaseRequestStatus;
@@ -31,7 +31,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.locationtech.jts.geom.Point;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -67,14 +66,20 @@ public class MarketPurchaseRequest {
     @Column(name = "STATUS", length = 50, nullable = false)
     private PurchaseRequestStatus purchaseRequestStatus;
 
-    @Column(name = "MEETUP_TIME",nullable = false)
+    @Column(name = "MEETUP_TIME", nullable = false)
     private LocalTime meetupTime;
 
     @Column(name = "MEETUP_DATE")
     private LocalDate meetupDate;
 
-    @Column(name = "MEETUP_ADDRESS",nullable = false)
+    @Column(name = "MEETUP_ADDRESS", nullable = false)
     private String meetupAddress;
+
+    @Column(name = "MEETUP_LAT")
+    private Double meetupLat;
+
+    @Column(name = "MEETUP_LON")
+    private Double meetupLon;
 
     @OneToOne(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private RequestSuccess success;
@@ -93,15 +98,12 @@ public class MarketPurchaseRequest {
     @OneToOne(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private Pay pay;
 
-    @Column(name = "MEETUP_LOCATION")
-    private Point meetupLocation;
 
     @CreatedDate
-    @Column(name = "CREATED_AT",nullable = false)
+    @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
-
 }

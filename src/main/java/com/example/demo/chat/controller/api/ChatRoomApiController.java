@@ -29,7 +29,7 @@ public class ChatRoomApiController {
         chatRoomService.createChatRoom(chatRoomRequestDto);
     }//생성을 함.
     @GetMapping(value = "api/chat/rooms/{chatRoomId}/user/{userId}")
-    public List<ChatMessageResponseDto> getChatRoom(@PathVariable("chatRoomId") Long chatRoomId, @PathVariable("userId") Long userId){
+    public List<ChatMessageResponseDto> getChatRoom(@PathVariable("chatRoomId") Long chatRoomId, @PathVariable("userId") Long userId) {
         List<ChatMessageResponseDto> chatMessageDtos = chatMessageService.getChatMessages(chatRoomId);
         return chatMessageDtos;
     }

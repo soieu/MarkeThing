@@ -24,8 +24,8 @@ public class DetailMarketPurchaseRequestDto {
     private LocalTime meetupTime;
     private LocalDate meetupDate;
     private String meetupAddress;
-    private Double latitude;
-    private Double longitude;
+    private double meetupLat;
+    private double meetupLon;
     private long userId;
     private String nickname;
     private long marketId;
@@ -47,8 +47,8 @@ public class DetailMarketPurchaseRequestDto {
                 .meetupTime(request.getMeetupTime())
                 .meetupDate(request.getMeetupDate())
                 .meetupAddress(request.getMeetupAddress())
-                .latitude(request.getMeetupLocation().getY())
-                .longitude(request.getMeetupLocation().getX())
+                .meetupLat(request.getMeetupLat())
+                .meetupLon(request.getMeetupLon())
                 .createdAt(request.getCreatedAt())
                 .userId(request.getSiteUser().getId())
                 .nickname(request.getSiteUser().getNickname())

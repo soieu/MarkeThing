@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.example.demo.auth.jwt.JWTFilter;
 import com.example.demo.common.filter.dto.KeywordDto;
-import com.example.demo.community.dto.community.CommunityPreviewDto;
 import com.example.demo.config.SecurityConfig;
 import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.controller.api.MarketPurchaseRequestApiController;
@@ -107,9 +106,8 @@ public class MarketPurchaseRequestApiControllerTest {
                     .fee(15000)
                     .meetupTime(LocalTime.now())
                     .meetupDate(LocalDate.now())
-                    .meetupAddress("서울시")
-                    .latitude(37.5509)
-                    .longitude(127.0506)
+                    .meetupLat(37.5509)
+                    .meetupLon(127.0506)
                     .userId(siteUser.getId())
                     .marketId(market.getId())
                     .build();
@@ -124,8 +122,8 @@ public class MarketPurchaseRequestApiControllerTest {
                     .meetupTime(LocalTime.now())
                     .meetupDate(LocalDate.now())
                     .meetupAddress("서울시")
-                    .latitude(37.5509)
-                    .longitude(127.0506)
+                    .meetupLat(37.5509)
+                    .meetupLon(127.0506)
                     .userId(siteUser.getId())
                     .marketId(market.getId())
                     .marketName(market.getMarketName())
@@ -151,8 +149,9 @@ public class MarketPurchaseRequestApiControllerTest {
     @DisplayName("시장 의뢰글 등록 테스트")
     void createMarketPurchaseRequest() throws Exception {
         // given
+        String meetupAddress = "서울시 송파구";
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,
-                market);
+                market, meetupAddress);
 
         given(marketPurchaseRequestService.createMarketPurchaseRequest(any())).willReturn(
                 marketPurchaseRequest);
@@ -171,8 +170,9 @@ public class MarketPurchaseRequestApiControllerTest {
     @DisplayName("시장 의뢰글 삭제 테스트")
     void deleteMarketPurchaseRequest() throws Exception {
         // given
+        String meetupAddress = "서울시 송파구";
         MarketPurchaseRequest marketPurchaseRequest =
-                marketPurchaseRequestDto.toEntity(siteUser, market);
+                marketPurchaseRequestDto.toEntity(siteUser, market, meetupAddress);
 
         given(marketPurchaseRequestService.createMarketPurchaseRequest(marketPurchaseRequestDto))
                 .willReturn(marketPurchaseRequest);
@@ -231,8 +231,5 @@ public class MarketPurchaseRequestApiControllerTest {
                 .andExpect(jsonPath("$.content[0].requestId")
                         .value(marketPurchaseRequestPreviewDto.getRequestId()))
                 .andDo(print());
-
-
-
     }
 }

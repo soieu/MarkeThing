@@ -1,8 +1,9 @@
-package com.example.demo.common.filter.repository;
+package com.example.demo.common.filter.repository.community;
 
 import static com.example.demo.community.entity.QCommunity.community;
 
 import com.example.demo.common.filter.dto.CommunityFilterDto;
+import com.example.demo.common.filter.repository.BaseQuerydslRepository;
 import com.example.demo.community.entity.Community;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
