@@ -15,4 +15,9 @@ public class CommunityController {
     public String communitiesList() {
         return "communities/communities";
     }
+
+    @GetMapping("/communities/{communityId}")
+    public String communityDetail() {
+        return "communities/community";
+    }
 }

@@ -3,12 +3,9 @@
 <html>
 <head>
     <title>Title</title>
-    <script src="/static/js/communities.js"></script>
+    <script src="/static/js/community.js"></script>
 </head>
 <body>
-    <div id="community-list"></div>
-    <button id="btn-prev"><</button>
-    <button id="btn-next">></button>
-
+    <div id="community-detail"></div>
 </body>
 </html>
