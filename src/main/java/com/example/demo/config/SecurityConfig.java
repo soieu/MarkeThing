@@ -1,11 +1,18 @@
 package com.example.demo.config;
 
+//import com.example.demo.auth.jwt.CustomSuccessHandler;
+
 import com.example.demo.auth.jwt.JWTFilter;
 import com.example.demo.auth.jwt.JWTUtil;
 import com.example.demo.auth.jwt.LoginFilter;
+//import com.example.demo.auth.service.PrincipalOauthUserService;
+import com.example.demo.auth.oauth.CustomOAuth2UserService;
+import com.example.demo.auth.oauth.CustomSuccessHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,17 +26,13 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration,
-                          JWTUtil jwtUtil) {
-
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.jwtUtil = jwtUtil;
-
-    }
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomSuccessHandler customSuccessHandler;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
@@ -39,22 +42,26 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(AbstractHttpConfigurer::disable)
+        return http.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .oauth2Login((oauth2) -> oauth2
+                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService))
+                        .successHandler(customSuccessHandler))
                 .authorizeHttpRequests((authorizeRequest) -> authorizeRequest
                         .requestMatchers(
                                 new AntPathRequestMatcher("/**"),
                                 new AntPathRequestMatcher("/login"),
-                                new AntPathRequestMatcher("/api/users/signUp"))
+                                new AntPathRequestMatcher("/api/users/auth/**"),
+                                new AntPathRequestMatcher("/api/users/sign-up"))
                         .permitAll()
                         .anyRequest()
                         .authenticated())
@@ -62,8 +69,8 @@ public class SecurityConfig {
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),
                         jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        return http.build();
+                        .sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS))
+                .build();
     }
 }

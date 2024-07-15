@@ -6,13 +6,16 @@ import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.locationtech.jts.geom.Point;
 
-@Builder
+
 @Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
+@Builder
 public class SignupDto {
 
     @NotBlank(message = "이메일을 입력해 주세요.")
