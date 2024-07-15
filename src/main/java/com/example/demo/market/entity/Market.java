@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.codec.StringEncoder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.locationtech.jts.geom.Point;
@@ -39,7 +40,7 @@ public class Market {
     private Long id;
 
     @Column(name = "ID_NUM",nullable = false)
-    private int idNum;
+    private String idNum;
 
     @Column(name = "MARKET_NAME", nullable = false)
     private String marketName;
