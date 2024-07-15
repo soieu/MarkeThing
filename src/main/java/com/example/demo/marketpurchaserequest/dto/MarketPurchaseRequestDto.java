@@ -4,8 +4,10 @@ import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.siteuser.entity.SiteUser;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.sql.Date;
+import java.time.LocalTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -34,10 +36,10 @@ public class MarketPurchaseRequestDto {
     private int fee;
 
     @NotEmpty(message = "약속 시간을 입력하세요.")
-    private Time meetupTime;
+    private LocalTime meetupTime;
 
     @NotEmpty(message = "약속 날짜 입력하세요.")
-    private Date meetupDate;
+    private LocalDate meetupDate;
 
     @NotBlank(message = "약속 주소를 입력하세요.")
     private String meetupAddress;
@@ -51,7 +53,7 @@ public class MarketPurchaseRequestDto {
 
     @Builder
     public MarketPurchaseRequestDto(String title, String content, String postImg, int fee,
-            Time meetupTime, Date meetupDate, String meetupAddress, double latitude, double longitude, Long userId, Long marketId) {
+            LocalTime meetupTime, LocalDate meetupDate, String meetupAddress, double latitude, double longitude, Long userId, Long marketId) {
         this.title = title;
         this.content = content;
         this.postImg = postImg;
