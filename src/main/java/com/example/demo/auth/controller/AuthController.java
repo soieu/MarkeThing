@@ -7,6 +7,7 @@ import com.example.demo.auth.dto.StringResponseDto;
 import com.example.demo.auth.dto.UserInfoDto;
 import com.example.demo.auth.service.AuthService;
 import com.example.demo.auth.service.PhoneAuthService;
+import com.example.demo.siteuser.entity.SiteUser;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -65,8 +66,9 @@ public class AuthController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserInfoDto> findUser(@PathVariable String userId){
+    public ResponseEntity<SiteUser> findUser(@PathVariable Long userId){
         var result = authService.findUser(userId);
+        System.out.println("============="+result.toString()+"=============");
         return ResponseEntity.ok(result);
     }
 
