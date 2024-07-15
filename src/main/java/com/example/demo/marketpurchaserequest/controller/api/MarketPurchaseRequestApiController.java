@@ -28,14 +28,16 @@ public class MarketPurchaseRequestApiController {
 
     private final MarketPurchaseRequestService marketPurchaseRequestService;
 
-    @PostMapping
-    public void createMarketPurchaseRequest(@RequestBody MarketPurchaseRequestDto request) {
-        marketPurchaseRequestService.createMarketPurchaseRequest(request);
+    @PostMapping()
+    public void createMarketPurchaseRequest(@RequestBody MarketPurchaseRequestDto request, Principal principal) {
+        String email = principal.getName();
+        marketPurchaseRequestService.createMarketPurchaseRequest(request, email);
     }
 
     @DeleteMapping("/{requestId}")
-    public void deleteMarketPurchaseRequest(@PathVariable Long requestId) {
-        marketPurchaseRequestService.deleteMarketPurchaseRequest(requestId);
+    public void deleteMarketPurchaseRequest(@PathVariable Long requestId, Principal principal) {
+        String email = principal.getName();
+        marketPurchaseRequestService.deleteMarketPurchaseRequest(requestId, email);
     }
 
     @GetMapping("/{requestId}")
