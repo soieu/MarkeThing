@@ -6,6 +6,7 @@ import com.example.demo.common.filter.dto.CommunityFilterDto;
 import com.example.demo.common.filter.repository.BaseQuerydslRepository;
 import com.example.demo.community.entity.Community;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import javax.persistence.EntityManager;
@@ -32,8 +33,8 @@ public class CommunityFilteringRepositoryImpl extends BaseQuerydslRepository
     }
 
     private BooleanExpression area(CommunityFilterDto communityFilterDto) {
-        if(communityFilterDto.getAreas().isEmpty()) {
-            return null;
+        if(communityFilterDto.getAreas().isEmpty()) { // 필터 없는 상태랑 같음.
+            return Expressions.asBoolean(true).isTrue(); // 항상 참인 조건을 나타내는 표현식 반환
         }
         return community.area.in(communityFilterDto.getAreas());
     }
