@@ -91,9 +91,6 @@ dependencies {
     implementation 'com.querydsl:querydsl-sql-codegen'
     implementation 'com.querydsl:querydsl-apt'
 
-    annotationProcessor 'com.querydsl:querydsl-apt-jpa'
-    annotationProcessor 'com.querydsl:querydsl-apt-general'
-
     implementation "org.apache.commons:commons-lang3:3.12.0"
 
 

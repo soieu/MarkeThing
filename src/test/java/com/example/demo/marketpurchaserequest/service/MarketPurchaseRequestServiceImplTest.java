@@ -8,7 +8,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.demo.common.filter.dto.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
 import com.example.demo.common.kakao.KakaoLocalService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
@@ -275,8 +275,8 @@ public class MarketPurchaseRequestServiceImplTest {
                 .fee(15000)
                 .meetupTime(Time.valueOf(LocalTime.now()))
                 .meetupDate(Date.valueOf(LocalDate.now()))
-                .latitude(37.5509)
-                .longitude(127.0506)
+                .meetupLat(37.5509)
+                .meetupLon(127.0506)
                 .userId(siteUser.getId())
                 .marketId(market.getId())
                 .build();

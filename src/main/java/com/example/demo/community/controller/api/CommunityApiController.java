@@ -1,6 +1,6 @@
 package com.example.demo.community.controller.api;
 
-import com.example.demo.common.filter.dto.CommunityFilterRequestDto;
+import com.example.demo.common.filter.dto.community.CommunityFilterRequestDto;
 import com.example.demo.community.dto.community.CommunityDetailDto;
 import com.example.demo.community.dto.community.CommunityPreviewDto;
 import com.example.demo.community.dto.community.CommunityRequestDto;

@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.demo.auth.jwt.JWTFilter;
-import com.example.demo.common.filter.dto.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
 import com.example.demo.config.SecurityConfig;
 import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.controller.api.MarketPurchaseRequestApiController;
