@@ -1,6 +1,6 @@
 package com.example.demo.community.service;
 
-import com.example.demo.common.filter.dto.CommunityFilterDto;
+import com.example.demo.common.filter.dto.community.CommunityFilterDto;
 import com.example.demo.community.dto.community.CommunityDetailDto;
 import com.example.demo.community.dto.community.CommunityPreviewDto;
 import com.example.demo.community.dto.community.CommunityRequestDto;

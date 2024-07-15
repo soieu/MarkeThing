@@ -26,17 +26,13 @@ import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
-
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -185,11 +181,6 @@ public class ChatServiceTest {
                 .build();
     }
     public static MarketPurchaseRequest getRequest(){
-        GeometryFactory geometryFactory = new GeometryFactory();
-        double longitude = 126.9722919; // 경도
-        double latitude = 37.56667062;   // 위도
-        Point myLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
-
         return MarketPurchaseRequest.builder()
                 .id(1L)
                 .title("title")
@@ -197,18 +188,15 @@ public class ChatServiceTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(Time.valueOf(LocalTime.now()))
-                .meetupDate(Date.valueOf(LocalDate.now()))
+                .meetupTime(LocalTime.now())
+                .meetupDate(LocalDate.now())
                 .meetupAddress("Address")
-                .meetupLocation(myLocation)
+                .meetupLat(37.56667062)
+                .meetupLon(126.9722919)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
     public static MarketPurchaseRequest getRequest2(){
-        GeometryFactory geometryFactory = new GeometryFactory();
-        double longitude = 126.9722919; // 경도
-        double latitude = 37.56667062;   // 위도
-        Point myLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
 
         return MarketPurchaseRequest.builder()
                 .id(2L)
@@ -217,16 +205,17 @@ public class ChatServiceTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(Time.valueOf(LocalTime.now()))
-                .meetupDate(Date.valueOf(LocalDate.now()))
+                .meetupTime(LocalTime.now())
+                .meetupDate(LocalDate.now())
                 .meetupAddress("Address")
-                .meetupLocation(myLocation)
+                .meetupLat(37.56667062)
+                .meetupLon(126.9722919)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
     private static SiteUser getRequester() {
         GeometryFactory geometryFactory = new GeometryFactory();
-        double longitude = 126.9722919; // 경도
+        double longitude = 126.97796919; // 경도
         double latitude = 37.56667062;   // 위도
         Point myLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
 
@@ -238,9 +227,9 @@ public class ChatServiceTest {
                 .nickname("nickname")
                 .phoneNumber("010-1234-5678")
                 .address("address")
-                .myLocation(myLocation)
                 .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
+                .myLocation(myLocation)
                 .status(true)
                 .authType(AuthType.GENERAL)
                 .createdAt(LocalDateTime.now())
