@@ -1,5 +1,6 @@
 package com.example.demo.siteuser.entity;
 
+import com.example.demo.auth.dto.UserInfoDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.entity.Account;
@@ -197,6 +198,10 @@ public class SiteUser implements UserDetails {
             throw new MarkethingException(INSUFFICIENT_POINT);
         }
         this.point -= charge;
+    }
+
+    public void updatePassword(String password){
+        this.password = password;
     }
 
 }

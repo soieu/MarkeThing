@@ -55,7 +55,7 @@ public class AuthControllerTest {
     public void SIGN_UP() throws Exception {
         // given
         String password = "123456";
-        SignupDto signupDto = getSignUpDto();
+        SignUpDto signupDto = getSignUpDto();
 
         GeometryFactory geometryFactory = new GeometryFactory();
         double longitude = 126.97796919; // 경도
@@ -112,9 +112,9 @@ public class AuthControllerTest {
         return new AuthCodeRequestDto("01056979712", "12345");
     }
 
-    private static SignupDto getSignUpDto() {
+    private static SignUpDto getSignUpDto() {
 
-        return SignupDto.builder().email("test@naver.com").password("password").name("test")
+        return SignUpDto.builder().email("test@naver.com").password("password").name("test")
                 .nickname("test").phoneNumber("010-1234-1234").address("address")
                 .ProfileImg("ProfileImg").build();
 
