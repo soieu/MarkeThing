@@ -105,7 +105,7 @@ public class AuthControllerTest {
     }
 
     private PhoneNumberRequestDto getPhoneNumberRequestDto() {
-        return new PhoneNumberRequestDto("01056979712");
+        return new PhoneNumberRequestDto("01056979712","mockEmail@gmail.com");
     }
 
     private AuthCodeRequestDto getAuthCodeRequestDto() {
