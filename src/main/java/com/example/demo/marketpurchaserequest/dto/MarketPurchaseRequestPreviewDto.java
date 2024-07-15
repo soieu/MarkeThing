@@ -2,7 +2,9 @@ package com.example.demo.marketpurchaserequest.dto;
 
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,8 +21,8 @@ public class MarketPurchaseRequestPreviewDto {
     private String title;
     private String content;
     private int fee;
-    private Time meetupTime;
-    private Date meetupDate;
+    private LocalTime meetupTime;
+    private LocalDate meetupDate;
     private String meetupAddress;
     private String nickname;
     private String marketName;
