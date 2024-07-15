@@ -1,4 +1,4 @@
-package com.example.demo.common.filter.repository;
+package com.example.demo.common.filter.repository.community;
 
 import com.example.demo.common.filter.dto.CommunityFilterDto;
 import com.example.demo.community.entity.Community;

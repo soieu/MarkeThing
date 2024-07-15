@@ -6,7 +6,9 @@ import com.example.demo.entity.Account;
 import com.example.demo.community.entity.Comment;
 import com.example.demo.community.entity.ReplyComment;
 import com.example.demo.entity.RequestSuccess;
+import com.example.demo.exception.MarkethingException;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
+import com.example.demo.payment.entity.Pay;
 import com.example.demo.siteuser.service.MannerConverter;
 import com.example.demo.type.AuthType;
 import java.time.LocalDateTime;
@@ -41,6 +43,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import static com.example.demo.exception.type.ErrorCode.INSUFFICIENT_POINT;
 
 @Entity
 @Builder
@@ -88,9 +92,15 @@ public class SiteUser implements UserDetails {
     @Column(name = "STATUS", nullable = false)
     private boolean status;
 
+    @Column(name = "POINT", nullable = false)
+    private int point;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "AUTH_TYPE", length = 50, nullable = false)
     private AuthType authType; //회원의 가입 상태.
+
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pay> pays;
 
     @CreatedDate
     @Column(name = "CREATED_AT")
@@ -178,5 +188,15 @@ public class SiteUser implements UserDetails {
         this.profileImg = profileImg;
     }
 
+    public void accumulatePoint(int charge) {
+        this.point += charge / 2;
+    }
+
+    public void spendPoint(int charge) {
+        if (charge > this.point) {
+            throw new MarkethingException(INSUFFICIENT_POINT);
+        }
+        this.point -= charge;
+    }
 
 }
