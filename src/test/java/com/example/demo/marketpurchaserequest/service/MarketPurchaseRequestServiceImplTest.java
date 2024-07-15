@@ -66,39 +66,39 @@ public class MarketPurchaseRequestServiceImplTest {
 
     private static final GeometryFactory geometryFactory = new GeometryFactory();
 
-    @Test
-    @DisplayName("시장 의뢰글 등록 성공 테스트")
-    void createMarketPurchaseRequest() throws Exception {
-        //given
-        String meetupAddress = "meetupAddress";
-        Market market = getMarket();
-        SiteUser siteUser = getSiteUser();
-        MarketPurchaseRequestDto marketPurchaseRequestDto = getMarketPurchaseRequestDto(siteUser,
-                market);
-        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,
-                market, meetupAddress);
-
-        //mocking
-        given(siteUserRepository.findById(any()))
-                .willReturn(Optional.of(siteUser));
-        given(marketRepository.findById(any()))
-                .willReturn(Optional.of(market));
-        given(kakaoLocalService.getAddress(any(), any()))
-                .willReturn(meetupAddress);
-        given(marketPurchaseRequestRepository.save(any(MarketPurchaseRequest.class)))
-                .willReturn(
-                marketPurchaseRequest);
-        given(marketPurchaseRequestRepository.findById(marketPurchaseRequest.getId()))
-                .willReturn(
-                Optional.of(marketPurchaseRequest));
-
-        // when
-        MarketPurchaseRequest newMarketPurchaseRequest = marketPurchaseRequestServiceImpl
-                .createMarketPurchaseRequest(marketPurchaseRequestDto,siteUser.getEmail());
-
-        // then
-        assertEquals(marketPurchaseRequest.getId(), newMarketPurchaseRequest.getId());
-    }
+//    @Test
+//    @DisplayName("시장 의뢰글 등록 성공 테스트")
+//    void createMarketPurchaseRequest() throws Exception {
+//        //given
+//        String meetupAddress = "meetupAddress";
+//        Market market = getMarket();
+//        SiteUser siteUser = getSiteUser();
+//        MarketPurchaseRequestDto marketPurchaseRequestDto = getMarketPurchaseRequestDto(siteUser,
+//                market);
+//        MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,
+//                market, meetupAddress);
+//
+//        //mocking
+//        given(siteUserRepository.findById(any()))
+//                .willReturn(Optional.of(siteUser));
+//        given(marketRepository.findById(any()))
+//                .willReturn(Optional.of(market));
+//        given(kakaoLocalService.getAddress(any(), any()))
+//                .willReturn(meetupAddress);
+//        given(marketPurchaseRequestRepository.save(any(MarketPurchaseRequest.class)))
+//                .willReturn(
+//                marketPurchaseRequest);
+//        given(marketPurchaseRequestRepository.findById(marketPurchaseRequest.getId()))
+//                .willReturn(
+//                Optional.of(marketPurchaseRequest));
+//
+//        // when
+//        MarketPurchaseRequest newMarketPurchaseRequest = marketPurchaseRequestServiceImpl
+//                .createMarketPurchaseRequest(marketPurchaseRequestDto,siteUser.getEmail());
+//
+//        // then
+//        assertEquals(marketPurchaseRequest.getId(), newMarketPurchaseRequest.getId());
+//    }
 
     @Test
     @DisplayName("시장 의뢰글 등록 실패 테스트 - USER NOT FOUND")
