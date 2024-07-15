@@ -12,6 +12,7 @@ import com.example.demo.type.AuthType;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -39,17 +40,17 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @Entity
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@Table(name= "SITE_USER")
+@Table(name = "SITE_USER")
 public class SiteUser implements UserDetails {
 
     @Id
@@ -164,10 +165,13 @@ public class SiteUser implements UserDetails {
         this.mannerScore = manner;
     }
 
-    public void updateSiteUser(String nickname, String phoneNumber,String address, String profileImg) {
+    public void updateSiteUser(String nickname, String phoneNumber, String address,
+            String profileImg) {
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.profileImg = profileImg;
     }
+
+
 }

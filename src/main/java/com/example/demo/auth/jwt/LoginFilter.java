@@ -9,7 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.example.demo.auth.service.AuthService;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -34,7 +33,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 username, password);
 
-
         return authenticationManager.authenticate(authToken);
     }
 
@@ -44,7 +42,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse response, FilterChain chain, Authentication authentication) {
 
         SiteUser siteUser = (SiteUser) authentication.getPrincipal();
-
         String userEmail = siteUser.getEmail();
 
         String token = jwtUtil.createJwt(userEmail, 60 * 60 * 1000L);
