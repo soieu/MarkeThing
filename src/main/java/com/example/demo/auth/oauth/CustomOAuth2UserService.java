@@ -70,8 +70,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             return new CustomOAuth2User(signInDto);
         } else {
-            existDate.setEmail(oAuth2Response.getEmail());
-            existDate.setName(oAuth2Response.getName());
+
+            existDate.loginEmailName(oAuth2Response.getEmail(),oAuth2Response.getName());
 
             oAuthRepository.save(existDate);
 

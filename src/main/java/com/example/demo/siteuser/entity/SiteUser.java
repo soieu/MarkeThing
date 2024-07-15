@@ -161,6 +161,11 @@ public class SiteUser implements UserDetails {
         return true;
     }
 
+    public void loginEmailName(String email, String name){
+        this.email = email;
+        this.name = name;
+    }
+
     public void updateManner(List<String> manner) {
         this.mannerScore = manner;
     }
