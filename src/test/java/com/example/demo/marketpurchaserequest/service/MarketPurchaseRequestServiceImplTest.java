@@ -8,7 +8,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.demo.common.filter.dto.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
 import com.example.demo.common.kakao.KakaoLocalService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
@@ -24,8 +25,6 @@ import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -233,6 +232,38 @@ public class MarketPurchaseRequestServiceImplTest {
                 .isEqualTo(getMarketPurchaseRequest().getContent());
     }
 
+    @Test
+    @DisplayName("시장 의뢰글 필터링 조회 테스트")
+    void getMarketPurchaseRequestsByFilter() throws Exception {
+        // given
+        MarketPurchaseRequestFilterDto requestDto = getMarketPurchaseRequestFilterDto();
+
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+        List<MarketPurchaseRequest> requests = new ArrayList<>();
+        requests.add(getMarketPurchaseRequest());
+
+        Page<MarketPurchaseRequest> pages
+                = new PageImpl<>(requests, pageRequest, requests.size());
+
+        given(marketPurchaseRequestRepository.findAllByFilter(requestDto, pageRequest))
+                .willReturn(pages);
+
+        // when
+        var result = marketPurchaseRequestServiceImpl.getRequestsByFilter(requestDto, pageRequest);
+
+        // then
+        assertThat(result.getContent().get(0).getContent())
+                .isEqualTo(getMarketPurchaseRequest().getContent());
+    }
+
+    private static MarketPurchaseRequestFilterDto getMarketPurchaseRequestFilterDto() {
+        return MarketPurchaseRequestFilterDto
+                .builder()
+                .purchaseRequestStatus(PurchaseRequestStatus.RECRUITING)
+                .meetupEndDt(null)
+                .meetupStartDt(null)
+                .build();
+    }
 
     private static MarketPurchaseRequestPreviewDto getMarketPurchaseRequestPreviewDto() {
         return MarketPurchaseRequestPreviewDto.builder()
@@ -255,8 +286,8 @@ public class MarketPurchaseRequestServiceImplTest {
                 .postImg("postImg")
                 .fee(10000)
                 .purchaseRequestStatus(PurchaseRequestStatus.RECRUITING)
-                .meetupTime(Time.valueOf(LocalTime.now()))
-                .meetupDate(Date.valueOf(LocalDate.now()))
+                .meetupTime(LocalTime.now())
+                .meetupDate(LocalDate.now())
                 .meetupAddress("서울시")
                 .market(getMarket())
                 .siteUser(getSiteUser())
@@ -273,10 +304,10 @@ public class MarketPurchaseRequestServiceImplTest {
                 .title("test request")
                 .content("3 apples")
                 .fee(15000)
-                .meetupTime(Time.valueOf(LocalTime.now()))
-                .meetupDate(Date.valueOf(LocalDate.now()))
-                .latitude(37.5509)
-                .longitude(127.0506)
+                .meetupTime(LocalTime.now())
+                .meetupDate(LocalDate.now())
+                .meetupLat(37.5509)
+                .meetupLon(127.0506)
                 .userId(siteUser.getId())
                 .marketId(market.getId())
                 .build();

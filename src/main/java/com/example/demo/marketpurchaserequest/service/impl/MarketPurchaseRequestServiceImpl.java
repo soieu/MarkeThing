@@ -1,9 +1,9 @@
 package com.example.demo.marketpurchaserequest.service.impl;
 
 import static com.example.demo.exception.type.ErrorCode.KAKAO_LOCAL_ERROR;
-import static com.example.demo.exception.type.ErrorCode.LAT_LON_CONVERT_FAIL;
 
-import com.example.demo.common.filter.dto.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
 import com.example.demo.common.kakao.KakaoLocalService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
@@ -116,6 +116,17 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
 
         return marketPurchaseRequestRepository
                 .findAllWithinBoundary(myLocation, northEastBound, southWestBound, pageable)
+                .map(MarketPurchaseRequestPreviewDto::fromEntity);
+    }
+
+    @Override
+    public Page<MarketPurchaseRequestPreviewDto> getRequestsByFilter(
+            MarketPurchaseRequestFilterDto filterDto, Pageable pageable) {
+        if (filterDto.isEmpty()) {
+            return marketPurchaseRequestRepository.findAll(pageable)
+                    .map(MarketPurchaseRequestPreviewDto::fromEntity);
+        }
+        return marketPurchaseRequestRepository.findAllByFilter(filterDto, pageable)
                 .map(MarketPurchaseRequestPreviewDto::fromEntity);
     }
 }
