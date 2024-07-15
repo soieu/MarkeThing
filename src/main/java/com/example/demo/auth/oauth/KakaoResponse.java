@@ -2,7 +2,6 @@ package com.example.demo.auth.oauth;
 
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.AuthType;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
