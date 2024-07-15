@@ -13,6 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.example.demo.auth.jwt.JWTFilter;
 import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterRequestDto;
 import com.example.demo.config.SecurityConfig;
 import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.controller.api.MarketPurchaseRequestApiController;
@@ -23,6 +25,7 @@ import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.service.MarketPurchaseRequestService;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.AuthType;
+import com.example.demo.type.PurchaseRequestStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.sql.Date;
@@ -122,8 +125,8 @@ public class MarketPurchaseRequestApiControllerTest {
                     .content("content")
                     .postImg("postImg")
                     .fee(50000)
-                    .meetupTime(Time.valueOf(LocalTime.now()))
-                    .meetupDate(Date.valueOf(LocalDate.now()))
+                    .meetupTime(LocalTime.now())
+                    .meetupDate(LocalDate.now())
                     .meetupAddress("서울시")
                     .meetupLat(37.5509)
                     .meetupLon(127.0506)
@@ -146,6 +149,17 @@ public class MarketPurchaseRequestApiControllerTest {
                     .meetupTime(LocalTime.now())
                     .marketName("marketName")
                     .nickname("nickname")
+                    .build();
+
+    private final MarketPurchaseRequestFilterRequestDto marketPurchaseRequestFilterRequestDto =
+            MarketPurchaseRequestFilterRequestDto
+                    .builder()
+                    .filter(MarketPurchaseRequestFilterDto
+                            .builder()
+                            .purchaseRequestStatus(PurchaseRequestStatus.RECRUITING)
+                            .meetupEndDt(null)
+                            .meetupStartDt(null)
+                            .build())
                     .build();
 
     @Test
@@ -260,6 +274,37 @@ public class MarketPurchaseRequestApiControllerTest {
                         .param("distance", String.valueOf(3))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("시장 의뢰글 리스트 필터링 조회")
+    void getMarketPurchaseRequestListByFilter() throws Exception {
+        // given
+        String content = objectMapper.writeValueAsString(marketPurchaseRequestFilterRequestDto);
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+        List<MarketPurchaseRequestPreviewDto> requestPreviewDtos = new ArrayList<>();
+        requestPreviewDtos.add(marketPurchaseRequestPreviewDto);
+
+        Page<MarketPurchaseRequestPreviewDto> pages
+                = new PageImpl<>(requestPreviewDtos, pageRequest, requestPreviewDtos.size());
+
+        given(marketPurchaseRequestService.confirmSortOrder(eq("register")))
+                .willReturn(Sort.by("createdAt").descending());
+
+        given(marketPurchaseRequestService.getRequestsByFilter(any(), any()))
+                .willReturn(pages);
+
+        // when & then
+        mockMvc.perform(post("/api/requests/list")
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(5))
+                        .param("sort", "register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].requestId")
+                        .value(marketPurchaseRequestPreviewDto.getRequestId()))
                 .andDo(print());
     }
 }
