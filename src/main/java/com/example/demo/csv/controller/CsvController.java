@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CsvController {
     private final CsvService csvservice;
-    @GetMapping(value = "get", produces = "application/json")
+    @GetMapping(value = "get/market", produces = "application/json")
     public void readCsv() {
         csvservice.saveMarkets();
     }
