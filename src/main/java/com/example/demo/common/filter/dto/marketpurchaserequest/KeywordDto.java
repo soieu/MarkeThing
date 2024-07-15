@@ -1,4 +1,4 @@
-package com.example.demo.common.filter.dto;
+package com.example.demo.common.filter.dto.marketpurchaserequest;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

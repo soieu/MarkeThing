@@ -1,6 +1,10 @@
 package com.example.demo.marketpurchaserequest.service.impl;
 
-import com.example.demo.common.filter.dto.KeywordDto;
+import static com.example.demo.exception.type.ErrorCode.KAKAO_LOCAL_ERROR;
+
+import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
+import com.example.demo.common.kakao.KakaoLocalService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.market.entity.Market;
@@ -13,8 +17,11 @@ import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRe
 import com.example.demo.marketpurchaserequest.service.MarketPurchaseRequestService;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
+import com.example.demo.util.PointUtils;
+import java.net.URISyntaxException;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,6 +35,7 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
     private final MarketPurchaseRequestRepository marketPurchaseRequestRepository;
     private final SiteUserRepository siteUserRepository;
     private final MarketRepository marketRepository;
+    private final KakaoLocalService kakaoLocalService;
 
     @Override
     @Transactional
@@ -39,8 +47,14 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
         Market market = marketRepository.findById(marketPurchaseRequestDto.getMarketId())
                 .orElseThrow(()-> new MarkethingException(ErrorCode.MARKET_NOT_FOUND));
 
-        return marketPurchaseRequestRepository.save(marketPurchaseRequestDto
-                .toEntity(siteUser,market));
+        try {
+            return marketPurchaseRequestRepository.save(marketPurchaseRequestDto
+                    .toEntity(siteUser, market, kakaoLocalService.getAddress(
+                            marketPurchaseRequestDto.getMeetupLat(),
+                            marketPurchaseRequestDto.getMeetupLon())));
+        } catch (URISyntaxException e) {
+            throw new MarkethingException(KAKAO_LOCAL_ERROR);
+        }
     }
 
     @Override
@@ -89,4 +103,30 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
         return marketPurchaseRequestRepository.findAllByFilter(keywordDto, pageable)
                 .map(MarketPurchaseRequestPreviewDto::fromEntity);
      }
+
+    @Override
+    public Page<MarketPurchaseRequestPreviewDto> getRequestsWithinDistance(String email,
+            double distance, Pageable pageable) {
+        Point myLocation = siteUserRepository.findByEmail(email)
+                .orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND))
+                .getMyLocation();
+
+        Point northEastBound = PointUtils.getBoudaryPoint(myLocation, distance, 45.0);
+        Point southWestBound = PointUtils.getBoudaryPoint(myLocation, distance, 225.0);
+
+        return marketPurchaseRequestRepository
+                .findAllWithinBoundary(myLocation, northEastBound, southWestBound, pageable)
+                .map(MarketPurchaseRequestPreviewDto::fromEntity);
+    }
+
+    @Override
+    public Page<MarketPurchaseRequestPreviewDto> getRequestsByFilter(
+            MarketPurchaseRequestFilterDto filterDto, Pageable pageable) {
+        if (filterDto.isEmpty()) {
+            return marketPurchaseRequestRepository.findAll(pageable)
+                    .map(MarketPurchaseRequestPreviewDto::fromEntity);
+        }
+        return marketPurchaseRequestRepository.findAllByFilter(filterDto, pageable)
+                .map(MarketPurchaseRequestPreviewDto::fromEntity);
+    }
 }

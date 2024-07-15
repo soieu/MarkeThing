@@ -1,10 +1,12 @@
 package com.example.demo.marketpurchaserequest.controller.api;
 
-import com.example.demo.common.filter.dto.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterRequestDto;
 import com.example.demo.marketpurchaserequest.dto.DetailMarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
 import com.example.demo.marketpurchaserequest.service.MarketPurchaseRequestService;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,7 +45,8 @@ public class MarketPurchaseRequestApiController {
     }
 
     @PostMapping("/list/keyword")
-    public ResponseEntity<Page<MarketPurchaseRequestPreviewDto>> getMarketPurchaseRequestListByKeyword(
+    public ResponseEntity<Page<MarketPurchaseRequestPreviewDto>>
+    getMarketPurchaseRequestListByKeyword(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false, defaultValue = "register") String sort,
@@ -56,6 +59,38 @@ public class MarketPurchaseRequestApiController {
                 keywordDto, pageRequest);
 
         return ResponseEntity.ok(result);
+    }
 
+    @GetMapping("/list/map")
+    public ResponseEntity<Page<MarketPurchaseRequestPreviewDto>>
+    getMarketPurchaseRequestListWithinDistance(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required = false, defaultValue = "3") double distance,
+            Principal principal
+    ) {
+        var email = principal.getName();
+        PageRequest pageRequest = PageRequest.of(page, size);
+        var result = marketPurchaseRequestService
+                .getRequestsWithinDistance(email, distance, pageRequest);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/list")
+    public ResponseEntity<Page<MarketPurchaseRequestPreviewDto>>
+    getMarketPurchaseRequestListByFilter(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required = false, defaultValue = "register") String sort,
+            @RequestBody(required = false) MarketPurchaseRequestFilterRequestDto filterRequestDto) {
+
+        Sort sortOrder = marketPurchaseRequestService.confirmSortOrder(sort);
+        PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
+
+        var result = marketPurchaseRequestService
+                .getRequestsByFilter(filterRequestDto.getFilter(), pageRequest);
+
+        return ResponseEntity.ok(result);
     }
 }

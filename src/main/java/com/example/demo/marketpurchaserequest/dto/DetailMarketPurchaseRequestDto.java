@@ -2,9 +2,9 @@ package com.example.demo.marketpurchaserequest.dto;
 
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.type.MarketType;
-import java.sql.Date;
-import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,11 +21,11 @@ public class DetailMarketPurchaseRequestDto {
     private String content;
     private String postImg;
     private int fee;
-    private Time meetupTime;
-    private Date meetupDate;
+    private LocalTime meetupTime;
+    private LocalDate meetupDate;
     private String meetupAddress;
-    private Double latitude;
-    private Double longitude;
+    private double meetupLat;
+    private double meetupLon;
     private long userId;
     private String nickname;
     private long marketId;
@@ -47,8 +47,8 @@ public class DetailMarketPurchaseRequestDto {
                 .meetupTime(request.getMeetupTime())
                 .meetupDate(request.getMeetupDate())
                 .meetupAddress(request.getMeetupAddress())
-                .latitude(request.getMeetupLocation().getY())
-                .longitude(request.getMeetupLocation().getX())
+                .meetupLat(request.getMeetupLat())
+                .meetupLon(request.getMeetupLon())
                 .createdAt(request.getCreatedAt())
                 .userId(request.getSiteUser().getId())
                 .nickname(request.getSiteUser().getNickname())
@@ -60,5 +60,4 @@ public class DetailMarketPurchaseRequestDto {
                 .createdAt(request.getCreatedAt())
                 .build();
     }
-
 }

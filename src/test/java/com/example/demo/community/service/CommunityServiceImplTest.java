@@ -9,7 +9,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.demo.common.filter.dto.CommunityFilterDto;
+import com.example.demo.common.filter.dto.community.CommunityFilterDto;
 import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.repository.CommunityRepository;
