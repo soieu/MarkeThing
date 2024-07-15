@@ -132,8 +132,8 @@ public class ChatApiControllerTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(Time.valueOf(LocalTime.now()))
-                .meetupDate(Date.valueOf(LocalDate.now()))
+                .meetupTime(LocalTime.now())
+                .meetupDate(LocalDate.now())
                 .meetupAddress("Address")
                 .createdAt(LocalDateTime.now())
                 .build();

@@ -105,7 +105,7 @@ public class MarketPurchaseRequestServiceImplTest {
     @DisplayName("시장 의뢰글 등록 실패 테스트 - USER NOT FOUND")
     void createFailedByUserNotFound() throws Exception {
         // given
-        given(siteUserRepository.findById(any())).willReturn(Optional.empty());
+       // given(siteUserRepository.findById(any())).willReturn(Optional.empty());
 
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
@@ -255,8 +255,8 @@ public class MarketPurchaseRequestServiceImplTest {
                 .postImg("postImg")
                 .fee(10000)
                 .purchaseRequestStatus(PurchaseRequestStatus.RECRUITING)
-                .meetupTime(Time.valueOf(LocalTime.now()))
-                .meetupDate(Date.valueOf(LocalDate.now()))
+                .meetupTime(LocalTime.now())
+                .meetupDate(LocalDate.now())
                 .meetupAddress("서울시")
                 .market(getMarket())
                 .siteUser(getSiteUser())
@@ -273,10 +273,10 @@ public class MarketPurchaseRequestServiceImplTest {
                 .title("test request")
                 .content("3 apples")
                 .fee(15000)
-                .meetupTime(Time.valueOf(LocalTime.now()))
-                .meetupDate(Date.valueOf(LocalDate.now()))
-                .latitude(37.5509)
-                .longitude(127.0506)
+                .meetupTime(LocalTime.now())
+                .meetupDate(LocalDate.now())
+                .meetupLat(37.5509)
+                .meetupLon(127.0506)
                 .userId(siteUser.getId())
                 .marketId(market.getId())
                 .build();
