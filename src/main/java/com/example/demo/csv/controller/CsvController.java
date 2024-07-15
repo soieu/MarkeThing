@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 /**
  * springboot 실행 후
  * readCsv api를 호출해줘야 DB에 Market 정보가 저장됩니다.

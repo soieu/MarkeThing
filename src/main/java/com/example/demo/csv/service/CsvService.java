@@ -51,7 +51,6 @@ public class CsvService {
                 GeometryFactory gf = new GeometryFactory(); // 포인트 객체를 처리하기 위한 클래스
                 double lat = Double.parseDouble(stringList.get(5));
                 double lot = Double.parseDouble(stringList.get(6));
-
                 Market temp = Market.builder()
                         .idNum(Integer.parseInt(stringList.get(0)))
                         .type(type)
