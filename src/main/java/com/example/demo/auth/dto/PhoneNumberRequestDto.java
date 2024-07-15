@@ -11,4 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PhoneNumberRequestDto {
     private String phoneNumber;
+    private String userEmail;
 }
