@@ -24,6 +24,7 @@ public class ChatRoomViewController {
     public String myChatRoom(@PathVariable("userId") Long userId, Model model) {
         List<ChatRoomResponseDto> chatRooms = chatRoomService.getMyChatRooms(userId);
         model.addAttribute("chatRooms", chatRooms);
+        model.addAttribute("userId", userId);
         return "chatRooms";
     }
     // TODO: 헤더 값에서 userId 받아오기 아직은 임의로 지정
@@ -31,10 +32,12 @@ public class ChatRoomViewController {
     public String getChatRoom(@PathVariable("chatRoomId") Long chatRoomId, @PathVariable("userId") Long userId, Model model){
         List<ChatMessageResponseDto> chatMessageDtos = chatMessageService.getChatMessages(chatRoomId);
         Long requestId = chatRoomService.getPurchaseRequest(chatRoomId);
+        int  chatRoomStatus = chatRoomService.getChatRoomStatus(chatRoomId);
         model.addAttribute("chatRoomId",chatRoomId);
-        model.addAttribute("userId", userId);
         model.addAttribute("requestId", requestId);
+        model.addAttribute("userId", userId);
         model.addAttribute("chatMessages", chatMessageDtos);
+        model.addAttribute("chatRoomStatus", chatRoomStatus);
         return "chatRoom";
     }
 }

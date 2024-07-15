@@ -1,14 +1,15 @@
 package com.example.demo.payment.service.impl;
 
+import com.example.demo.community.dto.community.CommunityDetailDto;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
-import com.example.demo.payment.dto.CancelPaymentRequestDto;
-import com.example.demo.payment.dto.PaymentCallbackRequestDto;
-import com.example.demo.payment.dto.RequestPayDto;
+import com.example.demo.payment.dto.*;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.payment.service.PaymentService;
+import com.example.demo.siteuser.entity.SiteUser;
+import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.request.CancelData;
@@ -20,6 +21,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.example.demo.exception.type.ErrorCode.*;
 
@@ -31,6 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final IamportClient iamportClient;
     private final MarketPurchaseRequestRepository marketPurchaseRequestRepository;
+    private final SiteUserRepository siteUserRepository;
 
     @Override
     public RequestPayDto findRequestDto(Long orderUid) {
@@ -40,9 +45,9 @@ public class PaymentServiceImpl implements PaymentService {
 
         return RequestPayDto.builder()
                 .buyerName(marketPurchaseRequest.getSiteUser().getName())
-                .paymentPrice((long) marketPurchaseRequest.getPay().getAmount())
+                .paymentPrice(marketPurchaseRequest.getPay().getAmount())
                 .itemName(marketPurchaseRequest.getTitle())
-                .orderUid(String.valueOf(marketPurchaseRequest.getId()))
+                .orderUid(marketPurchaseRequest.getId())
                 .build();
     }
 
@@ -114,5 +119,34 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
+    @Override
+    public List<PayResponseDto> listPayment(String email) {
+        List<Pay> payments = paymentRepository.findAllBySiteUser_id(siteUserRepository.findByEmail(email));
 
+        List<PayResponseDto> responseDtoList = payments.stream()
+                .map(pay -> PayResponseDto.builder()
+                        .payMethod(pay.getPayMethod())
+                        .status(pay.getStatus())
+                        .amount(pay.getAmount())
+                        .createdAt(pay.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+
+        return responseDtoList;
+    }
+
+    @Override
+    public PayDetailDto detailPayment(Long id, String email) {
+        Optional<SiteUser> userOpt = siteUserRepository.findByEmail(email);
+        Optional<Pay> payOpt = paymentRepository.findById(id);
+
+        if (userOpt.isEmpty() || payOpt.isEmpty()) {
+            throw new MarkethingException(UNAUTHORIZED_USER);
+        }
+
+        SiteUser user = userOpt.get();
+        Pay pay = payOpt.get();
+
+        return PayDetailDto.fromEntity(pay);
+    }
 }
