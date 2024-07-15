@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.example.demo.auth.jwt.JWTFilter;
 import com.example.demo.common.filter.dto.KeywordDto;
-import com.example.demo.community.dto.community.CommunityPreviewDto;
 import com.example.demo.config.SecurityConfig;
 import com.example.demo.market.entity.Market;
 import com.example.demo.marketpurchaserequest.controller.api.MarketPurchaseRequestApiController;
@@ -110,9 +109,8 @@ public class MarketPurchaseRequestApiControllerTest {
                     .fee(15000)
                     .meetupTime(LocalTime.now())
                     .meetupDate(LocalDate.now())
-                    .meetupAddress("서울시")
-                    .latitude(37.5509)
-                    .longitude(127.0506)
+                    .meetupLat(37.5509)
+                    .meetupLon(127.0506)
                     .userId(siteUser.getId())
                     .marketId(market.getId())
                     .build();
@@ -127,8 +125,8 @@ public class MarketPurchaseRequestApiControllerTest {
                     .meetupTime(Time.valueOf(LocalTime.now()))
                     .meetupDate(Date.valueOf(LocalDate.now()))
                     .meetupAddress("서울시")
-                    .latitude(37.5509)
-                    .longitude(127.0506)
+                    .meetupLat(37.5509)
+                    .meetupLon(127.0506)
                     .userId(siteUser.getId())
                     .marketId(market.getId())
                     .marketName(market.getMarketName())
@@ -154,8 +152,9 @@ public class MarketPurchaseRequestApiControllerTest {
     @DisplayName("시장 의뢰글 등록 테스트")
     void createMarketPurchaseRequest() throws Exception {
         // given
+        String meetupAddress = "서울시 송파구";
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestDto.toEntity(siteUser,
-                market);
+                market, meetupAddress);
 
         given(marketPurchaseRequestService.createMarketPurchaseRequest(any())).willReturn(
                 marketPurchaseRequest);
@@ -174,8 +173,9 @@ public class MarketPurchaseRequestApiControllerTest {
     @DisplayName("시장 의뢰글 삭제 테스트")
     void deleteMarketPurchaseRequest() throws Exception {
         // given
+        String meetupAddress = "서울시 송파구";
         MarketPurchaseRequest marketPurchaseRequest =
-                marketPurchaseRequestDto.toEntity(siteUser, market);
+                marketPurchaseRequestDto.toEntity(siteUser, market, meetupAddress);
 
         given(marketPurchaseRequestService.createMarketPurchaseRequest(marketPurchaseRequestDto))
                 .willReturn(marketPurchaseRequest);
@@ -225,17 +225,41 @@ public class MarketPurchaseRequestApiControllerTest {
 
         // when & then
         mockMvc.perform(post("/api/requests/list/keyword")
-                .param("page", String.valueOf(0))
-                .param("size", String.valueOf(5))
-                .param("sort", "register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content))
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(5))
+                        .param("sort", "register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].requestId")
                         .value(marketPurchaseRequestPreviewDto.getRequestId()))
                 .andDo(print());
+    }
 
+    @Test
+    @DisplayName("내 주변 시장 의뢰글 리스트 조회")
+    void getMarketPurchaseRequestListAroundMe() throws Exception {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+        List<MarketPurchaseRequestPreviewDto> requestPreviewDtos = new ArrayList<>();
+        requestPreviewDtos.add(marketPurchaseRequestPreviewDto);
 
+        Page<MarketPurchaseRequestPreviewDto> pages
+                = new PageImpl<>(requestPreviewDtos, pageRequest, requestPreviewDtos.size());
 
+        given(marketPurchaseRequestService.confirmSortOrder(eq("register")))
+                .willReturn(Sort.by("createdAt").descending());
+
+        given(marketPurchaseRequestService.getRequestsByKeyword(any(), any()))
+                .willReturn(pages);
+
+        // when & then
+        mockMvc.perform(get("/api/requests/list/map")
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(5))
+                        .param("distance", String.valueOf(3))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 }

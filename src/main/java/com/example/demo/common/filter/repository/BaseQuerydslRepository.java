@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 public abstract class BaseQuerydslRepository {
     protected final JPAQueryFactory queryFactory; // Querydsl 쿼리 생성하는 데 사용
     protected final EntityManager entityManager; // 엔티티의 생명 주기 관리, DB 작업 수행
-    protected static final String HAVERSINE_FORMULA = "ST_Distance_Sphere(point({0}, {1}), point({2}, {3}))"; // 두 위경도 좌표 사이의 거리 구하는 공식
+    protected static final String HAVERSINE_FORMULA = "ST_Distance_Sphere(point({0}, {1}), point({2}, {3}))"; // 두 좌표 사이의 거리 구하는 공식
 
     protected <T> Querydsl getQuerydsl(Class<T> clazz) { // T: 엔티티 타입, Class<T>: 쿼리 빌더 생성할 클래스 타입
         PathBuilder<T> builder = new PathBuilderFactory().create(clazz); // 주어진 클래스 타입에 대해 PathBuilder 생성,

@@ -1,4 +1,4 @@
-package com.example.demo.common.filter.repository;
+package com.example.demo.common.filter.repository.request;
 
 import com.example.demo.common.filter.dto.KeywordDto;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;

@@ -185,11 +185,6 @@ public class ChatServiceTest {
                 .build();
     }
     public static MarketPurchaseRequest getRequest(){
-        GeometryFactory geometryFactory = new GeometryFactory();
-        double longitude = 126.9722919; // 경도
-        double latitude = 37.56667062;   // 위도
-        Point myLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
-
         return MarketPurchaseRequest.builder()
                 .id(1L)
                 .title("title")
@@ -200,15 +195,12 @@ public class ChatServiceTest {
                 .meetupTime(Time.valueOf(LocalTime.now()))
                 .meetupDate(Date.valueOf(LocalDate.now()))
                 .meetupAddress("Address")
-                .meetupLocation(myLocation)
+                .meetupLat(37.56667062)
+                .meetupLon(126.9722919)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
     public static MarketPurchaseRequest getRequest2(){
-        GeometryFactory geometryFactory = new GeometryFactory();
-        double longitude = 126.9722919; // 경도
-        double latitude = 37.56667062;   // 위도
-        Point myLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
 
         return MarketPurchaseRequest.builder()
                 .id(2L)
@@ -220,13 +212,14 @@ public class ChatServiceTest {
                 .meetupTime(Time.valueOf(LocalTime.now()))
                 .meetupDate(Date.valueOf(LocalDate.now()))
                 .meetupAddress("Address")
-                .meetupLocation(myLocation)
+                .meetupLat(37.56667062)
+                .meetupLon(126.9722919)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
     private static SiteUser getRequester() {
         GeometryFactory geometryFactory = new GeometryFactory();
-        double longitude = 126.9722919; // 경도
+        double longitude = 126.97796919; // 경도
         double latitude = 37.56667062;   // 위도
         Point myLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
 
@@ -238,9 +231,9 @@ public class ChatServiceTest {
                 .nickname("nickname")
                 .phoneNumber("010-1234-5678")
                 .address("address")
-                .myLocation(myLocation)
                 .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
+                .myLocation(myLocation)
                 .status(true)
                 .authType(AuthType.GENERAL)
                 .createdAt(LocalDateTime.now())

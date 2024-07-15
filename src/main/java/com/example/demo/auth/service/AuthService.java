@@ -23,8 +23,8 @@ public class AuthService {
     public SiteUser signUp(SignupDto signupDto) {
 
         GeometryFactory geometryFactory = new GeometryFactory();
-        double longitude = 126.97796919; // 경도
-        double latitude = 37.56667062;   // 위도
+        double longitude = 128.876016; // 경도
+        double latitude = 37.751186;   // 위도
         Point myLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
 
         boolean isExists = siteUserRepository.existsByEmail(signupDto.getEmail());

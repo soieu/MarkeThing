@@ -135,7 +135,6 @@ public class ChatApiControllerTest {
                 .meetupTime(Time.valueOf(LocalTime.now()))
                 .meetupDate(Date.valueOf(LocalDate.now()))
                 .meetupAddress("Address")
-                .meetupLocation(myLocation)
                 .createdAt(LocalDateTime.now())
                 .build();
     }

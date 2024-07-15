@@ -1,8 +1,10 @@
-package com.example.demo.common.filter.repository;
+package com.example.demo.common.filter.repository.request.impl;
 
 import static com.example.demo.marketpurchaserequest.entity.QMarketPurchaseRequest.marketPurchaseRequest;
 
 import com.example.demo.common.filter.dto.KeywordDto;
+import com.example.demo.common.filter.repository.BaseQuerydslRepository;
+import com.example.demo.common.filter.repository.request.MarketPurchaseRequestFilteringRepository;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;

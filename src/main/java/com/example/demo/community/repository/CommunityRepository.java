@@ -1,6 +1,6 @@
 package com.example.demo.community.repository;
 
-import com.example.demo.common.filter.repository.CommunityFilteringRepository;
+import com.example.demo.common.filter.repository.community.CommunityFilteringRepository;
 import com.example.demo.community.entity.Community;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
