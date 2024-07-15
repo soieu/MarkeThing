@@ -4,18 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
-import com.example.demo.community.dto.comment.CommentRequestDto;
 import com.example.demo.community.dto.comment.ReplyCommentRequestDto;
 import com.example.demo.community.entity.Comment;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.entity.ReplyComment;
 import com.example.demo.community.repository.CommentRepository;
-import com.example.demo.community.repository.CommunityRepository;
 import com.example.demo.community.repository.ReplyCommentRepository;
-import com.example.demo.community.service.impl.CommentServiceImpl;
 import com.example.demo.community.service.impl.ReplyCommentServiceImpl;
 import com.example.demo.community.type.AreaType;
 import com.example.demo.exception.MarkethingException;

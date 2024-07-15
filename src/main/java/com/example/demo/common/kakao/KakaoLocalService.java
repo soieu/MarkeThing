@@ -18,8 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -74,7 +72,7 @@ public class KakaoLocalService {
 
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         String apiURL =
-                "https://dapi.kakao.com/v2/local/geo/coord2address.json?x="+lat+"&y="+lon;
+                "https://dapi.kakao.com/v2/local/geo/coord2address.json?x="+lon+"&y="+lat;
         URI url = new URI(apiURL);
         try {
             ResponseEntity<String> res = restTemplate.exchange(url, HttpMethod.GET, entity,

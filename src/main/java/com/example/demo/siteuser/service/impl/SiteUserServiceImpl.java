@@ -34,6 +34,20 @@ public class SiteUserServiceImpl implements SiteUserService {
     }
 
     @Override
+    public void accumulatePoint(String email, int charge) {
+        SiteUser siteUser = getSiteUserByEmail(email);
+        siteUser.accumulatePoint(charge);
+        siteUserRepository.save(siteUser);
+    }
+
+    @Override
+    public void spendPoint(String email, int charge) {
+        SiteUser siteUser = getSiteUserByEmail(email);
+        siteUser.spendPoint(charge);
+        siteUserRepository.save(siteUser);
+    }
+
+    @Override
     @Transactional
     public void updateSiteUser(String email, UpdateSiteUserRequestDto updateSiteUserRequestDto) {
         SiteUser siteUser = siteUserRepository.findByEmail(email).orElseThrow(()->new MarkethingException(ErrorCode.USER_NOT_FOUND));

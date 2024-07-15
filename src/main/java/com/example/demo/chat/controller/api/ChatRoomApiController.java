@@ -24,13 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatRoomApiController {
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
+
     // TODO: requester, request, agent 아이디를 어떻게 전송을 해야하는 지 띵킹
     @PostMapping("api/chat/rooms")
     public void createRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
         chatRoomService.createChatRoom(chatRoomRequestDto);
     }//생성을 함.
     @GetMapping(value = "api/chat/rooms/{chatRoomId}/user/{userId}")
-    public List<ChatMessageResponseDto> getChatRoom(@PathVariable("chatRoomId") Long chatRoomId, @PathVariable("userId") Long userId){
+    public List<ChatMessageResponseDto> getChatRoom(@PathVariable("chatRoomId") Long chatRoomId, @PathVariable("userId") Long userId) {
         List<ChatMessageResponseDto> chatMessageDtos = chatMessageService.getChatMessages(chatRoomId);
         return chatMessageDtos;
     }

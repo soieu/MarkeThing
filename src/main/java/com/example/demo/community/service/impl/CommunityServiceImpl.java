@@ -1,7 +1,6 @@
 package com.example.demo.community.service.impl;
 
 import static com.example.demo.exception.type.ErrorCode.COMMUNITY_NOT_FOUND;
-import static com.example.demo.exception.type.ErrorCode.EMAIL_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.UNAUTHORIZED_USER;
 import static com.example.demo.exception.type.ErrorCode.USER_NOT_FOUND;
 
