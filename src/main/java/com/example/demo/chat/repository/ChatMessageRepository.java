@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface ChatMessageRepository extends MongoRepository<ChatMessage, Id> {
 
     ChatMessage findFirstByChatRoomIdOrderByCreatedAtDesc(Long chatRoomId);
+
+    void deleteByChatRoomId(Long chatRoomId);
     List<ChatMessage> findByChatRoomId(Long chatRoomId);
 
 }

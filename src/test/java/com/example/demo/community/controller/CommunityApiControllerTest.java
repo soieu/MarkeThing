@@ -1,7 +1,6 @@
 package com.example.demo.community.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -12,12 +11,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.demo.auth.jwt.JWTFilter;
 import com.example.demo.auth.jwt.JWTUtil;
-import com.example.demo.auth.jwt.LoginFilter;
-import com.example.demo.auth.service.CustomUserDetailsService;
-import com.example.demo.common.filter.dto.CommunityFilterDto;
-import com.example.demo.common.filter.dto.CommunityFilterRequestDto;
+import com.example.demo.common.filter.dto.community.CommunityFilterDto;
+import com.example.demo.common.filter.dto.community.CommunityFilterRequestDto;
 import com.example.demo.community.controller.api.CommunityApiController;
 import com.example.demo.community.dto.community.CommunityDetailDto;
 import com.example.demo.community.dto.community.CommunityPreviewDto;
@@ -25,7 +21,6 @@ import com.example.demo.community.dto.community.CommunityRequestDto;
 import com.example.demo.community.entity.Community;
 import com.example.demo.community.service.CommunityService;
 import com.example.demo.community.type.AreaType;
-import com.example.demo.config.SecurityConfig;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.AuthType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,7 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -49,7 +43,6 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
 @WebMvcTest(CommunityApiController.class)
@@ -117,12 +110,14 @@ public class CommunityApiControllerTest {
     public void deleteCommunityTest() throws Exception {
         // when & then
         mockMvc.perform(delete("/api/communities/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf()))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
     @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
     public void getCommunityListTest() throws Exception {
         //given
         CommunityFilterRequestDto communityFilterRequestDto = getCommunityFilterRequestDto();
@@ -135,7 +130,6 @@ public class CommunityApiControllerTest {
 
         Page<CommunityPreviewDto> pages
                 = new PageImpl<>(communityPreviewDtos, pageRequest, communityPreviewDtos.size());
-
 
         given(communityService.confirmSortOrder(eq("date")))
                 .willReturn(Sort.by("createdAt").descending());
@@ -150,7 +144,7 @@ public class CommunityApiControllerTest {
                         .param("size", String.valueOf(5))
                         .param("sort", "date")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)) // requestBody에 들어가는 인자 저장
+                        .content(content).with(csrf())) // requestBody에 들어가는 인자 저장
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].area").value(
                         communityPreviewDto.getArea().toString()))
@@ -159,6 +153,7 @@ public class CommunityApiControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "mockEmail@gmail.com")
     public void getCommunityDetailTest() throws Exception {
         // given
         Community community = getCommunity();
@@ -168,7 +163,8 @@ public class CommunityApiControllerTest {
 
         //when & then
         mockMvc.perform(get("/api/communities/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(community.getId()))
                 .andExpect(jsonPath("$.area").value(community.getArea().toString()))

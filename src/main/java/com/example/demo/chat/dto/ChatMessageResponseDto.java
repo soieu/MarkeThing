@@ -15,7 +15,7 @@ import lombok.Setter;
 public class ChatMessageResponseDto {
     private Long senderId;
     private String content; // 내용
-    private String time; // 전송 시
+    private String time; // 전송 시간
 
     public static ChatMessageResponseDto fromEntity(ChatMessage chatMessage, String time) {
         return ChatMessageResponseDto.builder()

@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.demo.chat.dto.ChatRoomRequestDto;
@@ -26,12 +28,11 @@ import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.TreeSet;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -143,6 +144,35 @@ public class ChatServiceTest {
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
+
+    @Test
+    public void DeleteChatRoomAgent() {
+        // Given
+        ChatRoom chatRoom = getChatRoom();
+        SiteUser agent = getAgent();
+        List<ChatRoom> chatRoomList = new ArrayList<>();
+        chatRoomList.add(chatRoom);
+        when(chatRoomRepository.findById(chatRoom.getId())).thenReturn(Optional.of(chatRoom));
+        // When
+        chatRoomServiceImpl.deleteChatRoom(chatRoom.getId(),agent.getId());
+
+        // Then
+        verify(chatRoomRepository, times(1)).findById(chatRoom.getId());
+    }
+
+    @Test
+    public void deleteFailedCatRoom(){
+        // given
+        ChatRoom chatRoom = getChatRoom();
+        given(chatRoomRepository.findById(chatRoom.getId())).willReturn(Optional.empty());
+
+        // when
+        MarkethingException exception = assertThrows(MarkethingException.class,
+                () -> chatRoomServiceImpl.deleteChatRoom(chatRoom.getId(),chatRoom.getAgent().getId()));
+        // then
+        assertEquals(exception.getErrorCode(), ErrorCode.CHATROOM_NOT_FOUND);
+    }
+
     private ChatRoomRequestDto getChatRoomRequestDto(){
         return ChatRoomRequestDto.builder()
                 .requestId(1L)
@@ -151,11 +181,6 @@ public class ChatServiceTest {
                 .build();
     }
     public static MarketPurchaseRequest getRequest(){
-        GeometryFactory geometryFactory = new GeometryFactory();
-        double longitude = 126.9722919; // 경도
-        double latitude = 37.56667062;   // 위도
-        Point myLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
-
         return MarketPurchaseRequest.builder()
                 .id(1L)
                 .title("title")
@@ -163,18 +188,15 @@ public class ChatServiceTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(LocalDate.now())
+                .meetupTime(LocalTime.now())
                 .meetupDate(LocalDate.now())
                 .meetupAddress("Address")
-                .meetupLocation(myLocation)
+                .meetupLat(37.56667062)
+                .meetupLon(126.9722919)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
     public static MarketPurchaseRequest getRequest2(){
-        GeometryFactory geometryFactory = new GeometryFactory();
-        double longitude = 126.9722919; // 경도
-        double latitude = 37.56667062;   // 위도
-        Point myLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
 
         return MarketPurchaseRequest.builder()
                 .id(2L)
@@ -183,16 +205,17 @@ public class ChatServiceTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(LocalDate.now())
+                .meetupTime(LocalTime.now())
                 .meetupDate(LocalDate.now())
                 .meetupAddress("Address")
-                .meetupLocation(myLocation)
+                .meetupLat(37.56667062)
+                .meetupLon(126.9722919)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
     private static SiteUser getRequester() {
         GeometryFactory geometryFactory = new GeometryFactory();
-        double longitude = 126.9722919; // 경도
+        double longitude = 126.97796919; // 경도
         double latitude = 37.56667062;   // 위도
         Point myLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
 
@@ -204,9 +227,9 @@ public class ChatServiceTest {
                 .nickname("nickname")
                 .phoneNumber("010-1234-5678")
                 .address("address")
-                .myLocation(myLocation)
                 .mannerScore(List.of("0,0,0"))
                 .profileImg("profileImg")
+                .myLocation(myLocation)
                 .status(true)
                 .authType(AuthType.GENERAL)
                 .createdAt(LocalDateTime.now())

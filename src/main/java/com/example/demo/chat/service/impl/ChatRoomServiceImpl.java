@@ -1,4 +1,5 @@
 package com.example.demo.chat.service.impl;
+
 import static com.example.demo.exception.type.ErrorCode.CHATROOM_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.REQUEST_NOT_FOUND;
 import static com.example.demo.exception.type.ErrorCode.USER_NOT_FOUND;
@@ -22,7 +23,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -86,6 +86,42 @@ public class ChatRoomServiceImpl implements ChatRoomService{
             chatRoomResponseDtos.add(ChatRoomResponseDto.fromEntity(chatRoom,lastChatMessage,time));
         }
         return chatRoomResponseDtos;
+    }
+
+
+    /**
+     * 채팅방을 삭제하는 메소드
+     * 현재 자신의 userId에 속해 있는 siteuser의 연관관계를 끊게 되면
+     * 다음 자신의 채팅방들을 반환할 때, 화면에 표시가 되지 않는다.
+     * Status가 1인 상태에서 채팅의 대화 상대는 채팅 메시지 입력이 비활성되며,
+     * deleteChatRoom을 호출하면 해당 채팅방에 속해있는 메시지와 채팅방이 일괄 삭제된다.
+     * (채팅 메시지는 MongoDB에 저장이 되기 때문에 삭제 로직 두번 수행.)
+     * @param chatRoomId 채팅방의 아이디
+     */
+    @Override
+    @Transactional
+    public void deleteChatRoom(Long chatRoomId, Long userId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new MarkethingException(CHATROOM_NOT_FOUND));
+        if (chatRoom.getAgent().getId() == userId) {
+            chatRoom.detachAgent();
+        } else {
+            chatRoom.detachRequester();
+        }
+        if(chatRoom.getChatRoomStatus() == 2) {
+            chatRoom.minusStatus();
+            chatRoomRepository.save(chatRoom); // 변경 사항을 명시적으로 저장
+        }
+        else { // 두명 이상의 유저가 나갔기 때문에 더 이상 채팅방의 존재가 의미가 없게됨
+            chatMessageRepository.deleteByChatRoomId(chatRoomId); // 해당 채팅방에 존재하는 메시지들도 지워짐.
+            chatRoomRepository.delete(chatRoom);
+        }
+    }
+    @Override
+    public int getChatRoomStatus(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new MarkethingException(CHATROOM_NOT_FOUND));
+        return chatRoom.getChatRoomStatus();
     }
     /*
     LocalDateTime을 hh:mm a 형식으로 반환해주는 메소드를 의미 이때 a는 오전, 오후가 표시됨

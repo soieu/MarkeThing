@@ -2,6 +2,7 @@ package com.example.demo.payment.entity;
 
 
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
+import com.example.demo.payment.dto.PayDetailDto;
 import com.example.demo.payment.dto.RequestPayDto;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PaymentStatus;
@@ -127,14 +128,4 @@ public class Pay {
     public void changePaymentByCancel() {
         status = PaymentStatus.CANCEL;
     }
-    public RequestPayDto toRequestPayDto() {
-        return RequestPayDto
-                .builder()
-                .paymentPrice(amount)
-                .orderUid(marketPurchaseRequest.getId())
-                .buyerName(buyerName)
-                .itemName(marketPurchaseRequest.getTitle())
-                .build();
-    }
-
 }

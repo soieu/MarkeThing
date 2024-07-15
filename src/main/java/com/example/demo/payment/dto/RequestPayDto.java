@@ -1,11 +1,11 @@
 package com.example.demo.payment.dto;
 
+import com.example.demo.payment.entity.Pay;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,4 +14,16 @@ public class RequestPayDto {
     private String itemName;
     private String buyerName;
     private int paymentPrice;
+
+    public static RequestPayDto fromEntity(Pay pay) {
+        return RequestPayDto
+                .builder()
+                .paymentPrice(pay.getAmount())
+                .orderUid(pay.getMarketPurchaseRequest().getId())
+                .buyerName(pay.getBuyerName())
+                .itemName(pay.getMarketPurchaseRequest().getTitle())
+                .build();
+    }
+
 }
+

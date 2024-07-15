@@ -1,4 +1,4 @@
-package com.example.demo.common.filter.dto;
+package com.example.demo.common.filter.dto.community;
 
 import com.example.demo.community.type.AreaType;
 import java.util.List;

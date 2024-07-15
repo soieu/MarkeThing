@@ -6,6 +6,7 @@ import com.example.demo.entity.Account;
 import com.example.demo.community.entity.Comment;
 import com.example.demo.community.entity.ReplyComment;
 import com.example.demo.entity.RequestSuccess;
+import com.example.demo.exception.MarkethingException;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.siteuser.service.MannerConverter;
@@ -13,6 +14,7 @@ import com.example.demo.type.AuthType;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -40,17 +42,19 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import static com.example.demo.exception.type.ErrorCode.INSUFFICIENT_POINT;
 
 @Entity
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
-@Table(name= "SITE_USER")
+@Table(name = "SITE_USER")
 public class SiteUser implements UserDetails {
 
     @Id
@@ -88,9 +92,15 @@ public class SiteUser implements UserDetails {
     @Column(name = "STATUS", nullable = false)
     private boolean status;
 
+    @Column(name = "POINT", nullable = false)
+    private int point;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "AUTH_TYPE", length = 50, nullable = false)
     private AuthType authType; //회원의 가입 상태.
+
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pay> pays;
 
     @CreatedDate
     @Column(name = "CREATED_AT")
@@ -111,9 +121,6 @@ public class SiteUser implements UserDetails {
 
     @OneToMany(mappedBy = "taker", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Manner> takers;
-
-    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Pay> pays;
 
     // 평가를 한 목록
     @OneToMany(mappedBy = "rater", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -164,7 +171,32 @@ public class SiteUser implements UserDetails {
         return true;
     }
 
+    public void loginEmailName(String email, String name){
+        this.email = email;
+        this.name = name;
+    }
+
     public void updateManner(List<String> manner) {
         this.mannerScore = manner;
     }
+
+    public void updateSiteUser(String nickname, String phoneNumber, String address,
+            String profileImg) {
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.profileImg = profileImg;
+    }
+
+    public void accumulatePoint(int charge) {
+        this.point += charge / 2;
+    }
+
+    public void spendPoint(int charge) {
+        if (charge > this.point) {
+            throw new MarkethingException(INSUFFICIENT_POINT);
+        }
+        this.point -= charge;
+    }
+
 }

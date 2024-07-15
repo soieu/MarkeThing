@@ -1,5 +1,6 @@
 package com.example.demo.payment.service.impl;
 
+import com.example.demo.community.dto.community.CommunityDetailDto;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
@@ -21,6 +22,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.demo.exception.type.ErrorCode.*;
@@ -118,8 +120,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<PayResponseDto> listPayment(PaymentListRequestDto paymentListRequestDto) {
-        List<Pay> payments = paymentRepository.findBySiteUser(siteUserRepository.findById(paymentListRequestDto.getUserId()));
+    public List<PayResponseDto> listPayment(String email) {
+        List<Pay> payments = paymentRepository.findAllBySiteUser_id(siteUserRepository.findByEmail(email));
 
         List<PayResponseDto> responseDtoList = payments.stream()
                 .map(pay -> PayResponseDto.builder()
@@ -127,10 +129,24 @@ public class PaymentServiceImpl implements PaymentService {
                         .status(pay.getStatus())
                         .amount(pay.getAmount())
                         .createdAt(pay.getCreatedAt())
-                        // 필요에 따라 다른 필드들도 추가
                         .build())
                 .collect(Collectors.toList());
 
         return responseDtoList;
+    }
+
+    @Override
+    public PayDetailDto detailPayment(Long id, String email) {
+        Optional<SiteUser> userOpt = siteUserRepository.findByEmail(email);
+        Optional<Pay> payOpt = paymentRepository.findById(id);
+
+        if (userOpt.isEmpty() || payOpt.isEmpty()) {
+            throw new MarkethingException(UNAUTHORIZED_USER);
+        }
+
+        SiteUser user = userOpt.get();
+        Pay pay = payOpt.get();
+
+        return PayDetailDto.fromEntity(pay);
     }
 }

@@ -1,11 +1,22 @@
 package com.example.demo.chat.controller;
 
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.example.demo.chat.controller.api.ChatRoomApiController;
 import com.example.demo.chat.dto.ChatRoomRequestDto;
 import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.chat.service.ChatRoomService;
-import com.example.demo.chat.service.impl.ChatRoomServiceImpl;
 import com.example.demo.config.SecurityConfig;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.siteuser.entity.SiteUser;
@@ -14,6 +25,7 @@ import com.example.demo.type.PurchaseRequestStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -23,19 +35,10 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import static org.mockito.ArgumentMatchers.eq;
-
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ChatRoomApiController.class)
 @Import(SecurityConfig.class)
@@ -91,6 +94,19 @@ public class ChatApiControllerTest {
 
 
     }
+    @Test
+    public void deleteMyChatRoom() throws Exception {
+        Long chatRoomId = 1L;
+        Long userId = 1L;
+
+        // When
+        mockMvc.perform(delete("/api/chat/rooms/{chatRoomId}/user/{userId}", chatRoomId, userId))
+                .andExpect(status().isOk());
+        // delete: MockMvc에서 제공하는 메서드로, HTTP DELETE 요청을 생성하는 메서드임
+
+        // Then
+        verify(chatRoomService, times(1)).deleteChatRoom(chatRoomId, userId);
+    }
     private ChatRoomRequestDto getChatRoomRequestDto(){
         return ChatRoomRequestDto.builder()
                 .requestId(1L)
@@ -113,10 +129,9 @@ public class ChatApiControllerTest {
                 .postImg("postImg")
                 .fee(1)
                 .purchaseRequestStatus(PurchaseRequestStatus.IN_PROGRESS)
-                .meetupTime(LocalDate.now())
+                .meetupTime(LocalTime.now())
                 .meetupDate(LocalDate.now())
                 .meetupAddress("Address")
-                .meetupLocation(myLocation)
                 .createdAt(LocalDateTime.now())
                 .build();
     }
