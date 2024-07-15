@@ -44,7 +44,6 @@ public class MarketPurchaseRequestDto {
     private Long marketId;
 
     public MarketPurchaseRequest toEntity(SiteUser siteUser, Market market, String meetupAddress) {
-
         return MarketPurchaseRequest.builder()
                 .title(title)
                 .content(content)

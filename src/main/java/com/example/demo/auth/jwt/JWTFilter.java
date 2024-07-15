@@ -5,6 +5,7 @@ import com.example.demo.exception.type.ErrorCode;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,16 +26,30 @@ public class JWTFilter extends OncePerRequestFilter {
             FilterChain chain)
             throws ServletException, IOException {
 
+        // OAuth2 로그인
+        String authorization = null;
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            // System.out.println("====================="+cookie+"=====================");
+            if (cookie.getName().equals("Authorization")) {
+                authorization = cookie.getValue();
+            }
+        }
+
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            chain.doFilter(request, response);
 
-            return;
+            if(authorization == null || authorization.isBlank()) {
+                chain.doFilter(request, response);
+                return;
+            }
+
         }
 
         try {
-            String token = authorizationHeader.split(" ")[1];
+            String token = authorizationHeader == null ? authorization : authorizationHeader.split(" ")[1];
+
             Authentication auth = jwtUtil.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
 
@@ -55,3 +70,4 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
 }
+

@@ -46,8 +46,11 @@ public class Market {
     @Column(name = "MARKET_TYPE",nullable = false)
     private int type;
 
-    @Column(name = "LOCATION", nullable = false)
-    private Point location;
+    @Column(name = "LAT", nullable = false)
+    private Double lat;
+
+    @Column(name = "LOT", nullable = false)
+    private Double lot;
 
     @Column(name = "ROAD_ADDRESS", nullable = false)
     private String roadAddress; // 도로명 주소
@@ -57,6 +60,7 @@ public class Market {
 
     @OneToMany(mappedBy = "market", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MarketPurchaseRequest> marketPurchaseRequests;
+
 
     public MarketType converMarketType() {
         if(type == MarketType.FIVE_DAY.getValue()) {
