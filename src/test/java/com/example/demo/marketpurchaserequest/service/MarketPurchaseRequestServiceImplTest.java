@@ -13,18 +13,17 @@ import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRe
 import com.example.demo.common.kakao.KakaoLocalService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
-import com.example.demo.marketpurchaserequest.entity.Market;
-import com.example.demo.marketpurchaserequest.repository.MarketRepository;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
+import com.example.demo.marketpurchaserequest.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
+import com.example.demo.marketpurchaserequest.repository.MarketRepository;
 import com.example.demo.marketpurchaserequest.service.impl.MarketPurchaseRequestServiceImpl;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -340,7 +339,8 @@ public class MarketPurchaseRequestServiceImplTest {
                 .type(1)
                 .roadAddress("강원특별자치도 강릉시 금성로21")
                 .streetAddress("강원특별자치도 강릉시 성남동 50")
-                .location(geometryFactory.createPoint(new Coordinate(37.75402359, 128.8986233)))
+                .lat(37.75402359)
+                .lon(128.8986233)
                 .build();
     }
 }

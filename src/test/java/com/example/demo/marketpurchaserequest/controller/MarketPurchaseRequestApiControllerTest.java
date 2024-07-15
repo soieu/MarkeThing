@@ -16,18 +16,17 @@ import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
 import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
 import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterRequestDto;
 import com.example.demo.config.SecurityConfig;
-import com.example.demo.marketpurchaserequest.entity.Market;
 import com.example.demo.marketpurchaserequest.controller.api.MarketPurchaseRequestApiController;
 import com.example.demo.marketpurchaserequest.dto.DetailMarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
+import com.example.demo.marketpurchaserequest.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.service.MarketPurchaseRequestService;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -99,8 +98,8 @@ public class MarketPurchaseRequestApiControllerTest {
             .type(1)
             .roadAddress("강원특별자치도 강릉시 금성로21")
             .streetAddress("강원특별자치도 강릉시 성남동 50")
-            .location(geometryFactory
-                    .createPoint(new Coordinate(37.75402359, 128.8986233)))
+            .lon(128.8986233)
+            .lat(37.75402359)
             .build();
 
     private final MarketPurchaseRequestDto marketPurchaseRequestDto =

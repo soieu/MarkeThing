@@ -38,7 +38,7 @@ public class Market {
     private Long id;
 
     @Column(name = "ID_NUM",nullable = false)
-    private int idNum;
+    private String idNum;
 
     @Column(name = "MARKET_NAME", nullable = false)
     private String marketName;
@@ -49,8 +49,8 @@ public class Market {
     @Column(name = "LAT", nullable = false)
     private Double lat;
 
-    @Column(name = "LOT", nullable = false)
-    private Double lot;
+    @Column(name = "LON", nullable = false)
+    private Double lon;
 
     @Column(name = "ROAD_ADDRESS", nullable = false)
     private String roadAddress; // 도로명 주소

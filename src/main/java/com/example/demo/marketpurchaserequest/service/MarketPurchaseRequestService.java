@@ -9,7 +9,6 @@ import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDt
 import com.example.demo.marketpurchaserequest.dto.MarketResponseDto;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -33,5 +32,5 @@ public interface MarketPurchaseRequestService {
 
     Sort confirmMarketSortOrder(String sort);
 
-    Page<MarketResponseDto> getMarketsByFilter(MarketFilterDto filter, PageRequest pageRequest);
+    Page<MarketResponseDto> getMarketsByFilter(MarketFilterDto filter, Pageable pageable);
 }
