@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.codec.StringEncoder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.locationtech.jts.geom.Point;
@@ -60,7 +61,6 @@ public class Market {
 
     @OneToMany(mappedBy = "market", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MarketPurchaseRequest> marketPurchaseRequests;
-
 
     public MarketType converMarketType() {
         if(type == MarketType.FIVE_DAY.getValue()) {

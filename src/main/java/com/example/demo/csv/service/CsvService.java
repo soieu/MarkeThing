@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CsvService {
 
     private final MarketRepository marketRepository;
-
     @Transactional
     public void saveMarkets() {
         try {
@@ -49,7 +48,7 @@ public class CsvService {
                 double lat = Double.parseDouble(stringList.get(5));
                 double lot = Double.parseDouble(stringList.get(6));
                 Market temp = Market.builder()
-                        .idNum(Integer.parseInt(stringList.get(0)))
+                        .idNum(stringList.get(0))
                         .type(type)
                         .marketName(stringList.get(1))
                         .roadAddress(stringList.get(3))

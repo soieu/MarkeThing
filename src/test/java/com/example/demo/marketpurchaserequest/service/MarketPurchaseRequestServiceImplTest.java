@@ -334,7 +334,7 @@ public class MarketPurchaseRequestServiceImplTest {
     private static Market getMarket() {
         return Market.builder()
                 .id(1L)
-                .idNum(04003)
+                .idNum("04003")
                 .marketName("강릉중앙시장")
                 .type(1)
                 .roadAddress("강원특별자치도 강릉시 금성로21")
