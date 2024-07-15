@@ -58,7 +58,8 @@ public class CsvService {
                         .marketName(stringList.get(1))
                         .roadAddress(stringList.get(3))
                         .streetAddress(stringList.get(4))
-                        .location(gf.createPoint(new Coordinate(lat, lot)))
+                        .lat(lat)
+                        .lot(lot)
                         .build();
                 // Market 데이터 생성
                 marketRepository.save(temp);
