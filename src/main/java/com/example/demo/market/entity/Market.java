@@ -63,7 +63,6 @@ public class Market {
     @OneToMany(mappedBy = "market", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MarketPurchaseRequest> marketPurchaseRequests;
 
-
     public MarketType converMarketType() {
         if(type == MarketType.FIVE_DAY.getValue()) {
             return MarketType.FIVE_DAY;

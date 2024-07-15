@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CsvService {
 
     private final MarketRepository marketRepository;
-
     @Transactional
     public void saveMarkets() {
         try {
