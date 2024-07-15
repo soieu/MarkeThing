@@ -12,10 +12,18 @@ import org.apache.commons.lang3.StringUtils;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MarketFilterDto {
-    private String sidoId;
-    private List<String> sigunguId;
 
-    public boolean isEmpty() {
-        return StringUtils.isBlank(sidoId);
+    private String sidoId;
+    private List<String> sigunguIds;
+
+    public boolean isAllSidoIncluded() {
+        return StringUtils.isBlank(sidoId)
+                || "00".equals(sidoId);
+    }
+
+    public boolean isAllSigunguIncluded() {
+        return sigunguIds.isEmpty()
+                || sigunguIds.contains("000");
     }
 }
+

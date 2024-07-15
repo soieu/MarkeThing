@@ -104,13 +104,8 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
     @Override
     public Page<MarketResponseDto> getMarketsByFilter(MarketFilterDto marketFilterDto,
             Pageable pageable) {
-        if (marketFilterDto.isEmpty()) {
-            return marketRepository.findAll(pageable)
-                    .map(MarketResponseDto::fromEntity);
-        }
-        return null;
-//        return marketRepository.findAllByFilter(marketFilterDto, pageable)
-//                .map(MarketResponseDto::fromEntity);
+        return marketRepository.findAllByFilter(marketFilterDto, pageable)
+                .map(MarketResponseDto::fromEntity);
     }
 
     @Override
