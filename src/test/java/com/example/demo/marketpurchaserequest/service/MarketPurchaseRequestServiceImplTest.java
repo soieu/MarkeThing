@@ -271,8 +271,8 @@ public class MarketPurchaseRequestServiceImplTest {
                 .title("title")
                 .content("content")
                 .fee(15000)
-                .meetupDate(LocalDate.now())
-                .meetupTime(LocalTime.now())
+                .meetupDate(Date.valueOf(LocalDate.now()))
+                .meetupTime(Time.valueOf(LocalTime.now()))
                 .marketName("marketName")
                 .nickname("nickname")
                 .build();

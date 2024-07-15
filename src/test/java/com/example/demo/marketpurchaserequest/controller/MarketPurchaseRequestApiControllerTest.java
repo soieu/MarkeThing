@@ -96,13 +96,11 @@ public class MarketPurchaseRequestApiControllerTest {
 
     private final Market market = Market.builder()
             .id(1L)
-            .idNum(04003)
+            .idNum("04003")
             .marketName("강릉중앙시장")
             .type(1)
             .roadAddress("강원특별자치도 강릉시 금성로21")
             .streetAddress("강원특별자치도 강릉시 성남동 50")
-            .location(geometryFactory
-                    .createPoint(new Coordinate(37.75402359, 128.8986233)))
             .build();
 
     private final MarketPurchaseRequestDto marketPurchaseRequestDto =

@@ -7,8 +7,10 @@ import com.example.demo.market.entity.Market;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PurchaseRequestStatus;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.sql.Date;
 import java.time.LocalTime;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -97,6 +99,7 @@ public class MarketPurchaseRequest {
 
     @OneToOne(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private Pay pay;
+
 
     @CreatedDate
     @Column(name = "CREATED_AT", nullable = false)

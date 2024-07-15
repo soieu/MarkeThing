@@ -30,7 +30,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String token = jwtUtil.createJwt(userEmail, 60 * 60 * 1000L);
 
         response.addCookie(createCookie("Authorization", token));
-        response.sendRedirect("http://localhost:8080/");
+        response.sendRedirect("http://localhost:8080");
     }
 
     private Cookie createCookie(String key, String value) {

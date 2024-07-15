@@ -24,7 +24,6 @@ public class AuthController {
 
     private final AuthService authService;
     private final PhoneAuthService phoneAuthService;
-//    private final PrincipalOauthUserService principalOauthUserService;
 
     @PostMapping("/sign-up")
     public void signUp(@RequestBody SignupDto signupDto) {
@@ -45,5 +44,6 @@ public class AuthController {
                 authCodeRequestDto.getAuthCode());
         return ResponseEntity.ok(result);
     }
+
 
 }
