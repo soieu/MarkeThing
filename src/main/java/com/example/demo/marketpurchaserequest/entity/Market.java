@@ -1,7 +1,6 @@
-package com.example.demo.market.entity;
+package com.example.demo.marketpurchaserequest.entity;
 
 
-import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.type.MarketType;
 import java.util.List;
 import javax.persistence.CascadeType;

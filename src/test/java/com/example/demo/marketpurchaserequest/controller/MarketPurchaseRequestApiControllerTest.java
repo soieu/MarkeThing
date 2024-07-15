@@ -16,7 +16,7 @@ import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
 import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
 import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterRequestDto;
 import com.example.demo.config.SecurityConfig;
-import com.example.demo.market.entity.Market;
+import com.example.demo.marketpurchaserequest.entity.Market;
 import com.example.demo.marketpurchaserequest.controller.api.MarketPurchaseRequestApiController;
 import com.example.demo.marketpurchaserequest.dto.DetailMarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
@@ -28,8 +28,6 @@ import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

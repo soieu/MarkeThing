@@ -1,10 +1,12 @@
 package com.example.demo.marketpurchaserequest.service;
 
 import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketFilterDto;
 import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
 import com.example.demo.marketpurchaserequest.dto.DetailMarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
+import com.example.demo.marketpurchaserequest.dto.MarketResponseDto;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,4 +30,8 @@ public interface MarketPurchaseRequestService {
 
     Page<MarketPurchaseRequestPreviewDto> getRequestsByFilter(
             MarketPurchaseRequestFilterDto filterRequestDto, Pageable pageable);
+
+    Sort confirmMarketSortOrder(String sort);
+
+    Page<MarketResponseDto> getMarketsByFilter(MarketFilterDto filter, PageRequest pageRequest);
 }

@@ -13,8 +13,8 @@ import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRe
 import com.example.demo.common.kakao.KakaoLocalService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
-import com.example.demo.market.entity.Market;
-import com.example.demo.market.repository.MarketRepository;
+import com.example.demo.marketpurchaserequest.entity.Market;
+import com.example.demo.marketpurchaserequest.repository.MarketRepository;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
