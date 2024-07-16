@@ -39,8 +39,6 @@ public class MarketPurchaseRequestDto {
     private Double meetupLat;
     private Double meetupLon;
 
-    private Long userId;
-
     private Long marketId;
 
     public MarketPurchaseRequest toEntity(SiteUser siteUser, Market market, String meetupAddress) {

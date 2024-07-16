@@ -16,7 +16,7 @@ import org.locationtech.jts.geom.Point;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
-public class SignupDto {
+public class SignUpDto {
 
     @NotBlank(message = "이메일을 입력해 주세요.")
     private String email;
@@ -38,7 +38,7 @@ public class SignupDto {
 
     private Point myLocation;
 
-    private String ProfileImg;
+    private String profileImg;
 
     public SiteUser toEntity(String password, Point myLocation) {
         return SiteUser.builder()
@@ -48,7 +48,7 @@ public class SignupDto {
                 .nickname(nickname)
                 .phoneNumber(phoneNumber)
                 .address(address)
-                .profileImg(ProfileImg)
+                .profileImg(profileImg)
                 .myLocation(myLocation)
                 .build();
     }

@@ -9,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,7 +32,6 @@ public class JWTFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
         if(cookies != null) {
             for (Cookie cookie : cookies) {
-                // System.out.println("====================="+cookie+"=====================");
                 if (cookie.getName().equals("Authorization")) {
                     authorization = cookie.getValue();
                 }
@@ -42,11 +42,10 @@ public class JWTFilter extends OncePerRequestFilter {
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
 
-            if(authorization == null || authorization.isBlank()) {
+            if(StringUtils.isBlank(authorization)) {
                 chain.doFilter(request, response);
                 return;
             }
-
         }
 
         try {
