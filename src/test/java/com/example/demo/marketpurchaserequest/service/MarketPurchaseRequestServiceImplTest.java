@@ -10,12 +10,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketFilterDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketFilterRequestDto;
 import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
 import com.example.demo.common.kakao.KakaoLocalService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
+import com.example.demo.marketpurchaserequest.dto.MarketResponseDto;
 import com.example.demo.marketpurchaserequest.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
@@ -254,6 +257,40 @@ public class MarketPurchaseRequestServiceImplTest {
         // then
         assertThat(result.getContent().get(0).getContent())
                 .isEqualTo(getMarketPurchaseRequest().getContent());
+    }
+
+    @Test
+    @DisplayName("시장 리스트 필터링 조회 테스트")
+    void getMarketsByFilter() throws Exception {
+        // given
+        MarketFilterRequestDto requestDto = getMarketFilterRequestDto();
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+        List<Market> requests = new ArrayList<>();
+        requests.add(getMarket());
+
+        Page<Market> pages
+                = new PageImpl<>(requests, pageRequest, requests.size());
+
+        given(marketRepository.findAllByFilter(requestDto.getFilter(), pageRequest))
+                .willReturn(pages);
+
+        // when
+        var result = marketPurchaseRequestServiceImpl
+                .getMarketsByFilter(requestDto.getFilter(), pageRequest);
+
+        // then
+        assertThat(result.getContent().get(0).getIdNum())
+                .isEqualTo(getMarket().getIdNum());
+    }
+
+    private static MarketFilterRequestDto getMarketFilterRequestDto() {
+        return MarketFilterRequestDto
+                .builder()
+                .filter(MarketFilterDto
+                        .builder()
+                        .sidoId("04")
+                        .build())
+                .build();
     }
 
     private static MarketPurchaseRequestFilterDto getMarketPurchaseRequestFilterDto() {

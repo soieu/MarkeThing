@@ -13,6 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.example.demo.auth.jwt.JWTFilter;
 import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketFilterDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketFilterRequestDto;
 import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
 import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterRequestDto;
 import com.example.demo.config.SecurityConfig;
@@ -20,6 +22,7 @@ import com.example.demo.marketpurchaserequest.controller.api.MarketPurchaseReque
 import com.example.demo.marketpurchaserequest.dto.DetailMarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
+import com.example.demo.marketpurchaserequest.dto.MarketResponseDto;
 import com.example.demo.marketpurchaserequest.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.service.MarketPurchaseRequestService;
@@ -158,6 +161,18 @@ public class MarketPurchaseRequestApiControllerTest {
                             .meetupStartDt(null)
                             .build())
                     .build();
+
+    private final MarketFilterRequestDto marketFilterRequestDto =
+            MarketFilterRequestDto
+                    .builder()
+                    .filter(MarketFilterDto
+                            .builder()
+                            .sidoId("04")
+                            .build())
+                    .build();
+
+    private final MarketResponseDto marketResponseDto =
+            MarketResponseDto.fromEntity(market);
 
     @Test
     @DisplayName("시장 의뢰글 등록 테스트")
@@ -302,6 +317,37 @@ public class MarketPurchaseRequestApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].requestId")
                         .value(marketPurchaseRequestPreviewDto.getRequestId()))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("시장 리스트 필터링 조회")
+    void getMarketListByFilter() throws Exception {
+        // given
+        String content = objectMapper.writeValueAsString(marketFilterRequestDto);
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+        List<MarketResponseDto> marketResponseDtos = new ArrayList<>();
+        marketResponseDtos.add(marketResponseDto);
+
+        Page<MarketResponseDto> pages
+                = new PageImpl<>(marketResponseDtos, pageRequest, marketResponseDtos.size());
+
+        given(marketPurchaseRequestService.confirmMarketSortOrder(eq("name")))
+                .willReturn(Sort.by("marketName").ascending());
+
+        given(marketPurchaseRequestService.getMarketsByFilter(any(), any()))
+                .willReturn(pages);
+
+        // when & then
+        mockMvc.perform(post("/api/requests/markets/list")
+                        .param("page", String.valueOf(0))
+                        .param("size", String.valueOf(5))
+                        .param("sort", "name")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].idNum")
+                        .value(marketResponseDto.getIdNum()))
                 .andDo(print());
     }
 }
