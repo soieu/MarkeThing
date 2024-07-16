@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -97,7 +98,7 @@ public class MarketPurchaseRequestServiceImplTest {
 //
 //        // when
 //        MarketPurchaseRequest newMarketPurchaseRequest = marketPurchaseRequestServiceImpl
-//                .createMarketPurchaseRequest(marketPurchaseRequestDto);
+//                .createMarketPurchaseRequest(marketPurchaseRequestDto,siteUser.getEmail());
 //
 //        // then
 //        assertEquals(marketPurchaseRequest.getId(), newMarketPurchaseRequest.getId());
@@ -107,13 +108,14 @@ public class MarketPurchaseRequestServiceImplTest {
     @DisplayName("시장 의뢰글 등록 실패 테스트 - USER NOT FOUND")
     void createFailedByUserNotFound() throws Exception {
         // given
-        given(siteUserRepository.findById(anyLong())).willReturn(Optional.empty());
+        SiteUser siteUser = getSiteUser();
+        Market market = getMarket();
+        lenient().when(siteUserRepository.findById(siteUser.getId())).thenReturn(Optional.empty());
 
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
-                () -> marketPurchaseRequestServiceImpl.createMarketPurchaseRequest(
-                        getMarketPurchaseRequestDto(getSiteUser(), getMarket())));
-
+                ()-> marketPurchaseRequestServiceImpl.createMarketPurchaseRequest(getMarketPurchaseRequestDto(siteUser,market),
+                        siteUser.getEmail()));
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
@@ -135,7 +137,7 @@ public class MarketPurchaseRequestServiceImplTest {
                 Optional.ofNullable(marketPurchaseRequest));
 
         // when
-        marketPurchaseRequestServiceImpl.deleteMarketPurchaseRequest(marketPurchaseRequest.getId());
+        marketPurchaseRequestServiceImpl.deleteMarketPurchaseRequest(marketPurchaseRequest.getId(), siteUser.getEmail());
 
         // then
         verify(marketPurchaseRequestRepository, times(1)).delete(marketPurchaseRequest);
@@ -145,11 +147,13 @@ public class MarketPurchaseRequestServiceImplTest {
     @DisplayName("시장 의뢰글 삭제 실패 테스트 - USER NOT FOUND")
     void deleteFailedByRequestNotFound() throws Exception {
         // given
-        given(marketPurchaseRequestRepository.findById(any())).willReturn(Optional.empty());
+        SiteUser siteUser = getSiteUser();
+        MarketPurchaseRequest marketPurchaseRequest = getMarketPurchaseRequest();
+        given(marketPurchaseRequestRepository.findById(marketPurchaseRequest.getId())).willReturn(Optional.empty());
 
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
-                () -> marketPurchaseRequestServiceImpl.deleteMarketPurchaseRequest(1L));
+                () -> marketPurchaseRequestServiceImpl.deleteMarketPurchaseRequest(1L, siteUser.getEmail()));
 
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.REQUEST_NOT_FOUND);
@@ -345,7 +349,6 @@ public class MarketPurchaseRequestServiceImplTest {
                 .meetupDate(LocalDate.now())
                 .meetupLat(37.5509)
                 .meetupLon(127.0506)
-                .userId(siteUser.getId())
                 .marketId(market.getId())
                 .build();
     }

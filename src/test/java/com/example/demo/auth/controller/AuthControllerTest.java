@@ -105,7 +105,7 @@ public class AuthControllerTest {
     }
 
     private PhoneNumberRequestDto getPhoneNumberRequestDto() {
-        return new PhoneNumberRequestDto("01056979712", "mockup@email.com");
+        return new PhoneNumberRequestDto("01056979712","mockEmail@gmail.com");
     }
 
     private AuthCodeRequestDto getAuthCodeRequestDto() {
@@ -117,8 +117,5 @@ public class AuthControllerTest {
         return SignUpDto.builder().email("test@naver.com").password("password").name("test")
                 .nickname("test").phoneNumber("010-1234-1234").address("address")
                 .profileImg("ProfileImg").build();
-
     }
-
-
 }

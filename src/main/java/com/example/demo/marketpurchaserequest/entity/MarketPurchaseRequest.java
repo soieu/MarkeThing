@@ -97,6 +97,7 @@ public class MarketPurchaseRequest {
     @OneToOne(mappedBy = "marketPurchaseRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private Pay pay;
 
+
     @CreatedDate
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;

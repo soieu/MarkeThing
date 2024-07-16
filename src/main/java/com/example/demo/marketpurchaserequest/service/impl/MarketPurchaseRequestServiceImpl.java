@@ -43,9 +43,8 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
     @Override
     @Transactional
     public MarketPurchaseRequest createMarketPurchaseRequest(
-            MarketPurchaseRequestDto marketPurchaseRequestDto) {
-        SiteUser siteUser = siteUserRepository.findById(marketPurchaseRequestDto.getUserId())
-                .orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
+            MarketPurchaseRequestDto marketPurchaseRequestDto, String email) {
+        SiteUser siteUser = siteUserRepository.findByEmail(email).orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
 
         Market market = marketRepository.findById(marketPurchaseRequestDto.getMarketId())
                 .orElseThrow(()-> new MarkethingException(ErrorCode.MARKET_NOT_FOUND));
@@ -61,9 +60,10 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
     }
 
     @Override
-    public void deleteMarketPurchaseRequest(Long id) {
+    public void deleteMarketPurchaseRequest(Long id, String email) {
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestRepository.findById(id)
                 .orElseThrow(() -> new MarkethingException(ErrorCode.REQUEST_NOT_FOUND));
+        validateAuthorization(email, marketPurchaseRequest);
         marketPurchaseRequestRepository.delete(marketPurchaseRequest);
     }
 
@@ -143,5 +143,10 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
         }
         return marketPurchaseRequestRepository.findAllByFilter(filterDto, pageable)
                 .map(MarketPurchaseRequestPreviewDto::fromEntity);
+    }
+    private static void validateAuthorization(String email, MarketPurchaseRequest marketPurchaseRequest) {
+        if(!email.equals(marketPurchaseRequest.getSiteUser().getEmail())) {
+            throw new MarkethingException(ErrorCode.UNAUTHORIZED_USER);
+        }
     }
 }

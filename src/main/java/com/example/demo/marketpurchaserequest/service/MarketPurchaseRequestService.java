@@ -15,9 +15,9 @@ import org.springframework.data.domain.Sort;
 public interface MarketPurchaseRequestService {
 
     MarketPurchaseRequest createMarketPurchaseRequest(
-            MarketPurchaseRequestDto marketPurchaseRequestDto);
+            MarketPurchaseRequestDto marketPurchaseRequestDto, String email);
 
-    void deleteMarketPurchaseRequest(Long id);
+    void deleteMarketPurchaseRequest(Long id, String email);
 
     DetailMarketPurchaseRequestDto getMarketPurchaseRequest(Long requestId);
 
