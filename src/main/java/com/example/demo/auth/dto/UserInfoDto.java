@@ -13,11 +13,13 @@ public class UserInfoDto {
     private List<String> mannerScore;
     private String profileImg;
 
-//    public SiteUser toEntity(){
-//        return SiteUser.builder()
-//
-//                .build()
-//    }
+    public SiteUser toEntity(String nickname, List<String> mannerScore, String profileImg){
+        return SiteUser.builder()
+                .nickname(nickname)
+                .mannerScore(mannerScore)
+                .profileImg(profileImg)
+                .build();
+    }
 
 
 
