@@ -1,7 +1,6 @@
-package com.example.demo.market.entity;
+package com.example.demo.marketpurchaserequest.entity;
 
 
-import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.type.MarketType;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -51,8 +50,8 @@ public class Market {
     @Column(name = "LAT", nullable = false)
     private Double lat;
 
-    @Column(name = "LOT", nullable = false)
-    private Double lot;
+    @Column(name = "LON", nullable = false)
+    private Double lon;
 
     @Column(name = "ROAD_ADDRESS", nullable = false)
     private String roadAddress; // 도로명 주소

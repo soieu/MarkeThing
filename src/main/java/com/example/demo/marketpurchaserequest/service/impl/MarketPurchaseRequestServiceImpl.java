@@ -3,12 +3,14 @@ package com.example.demo.marketpurchaserequest.service.impl;
 import static com.example.demo.exception.type.ErrorCode.KAKAO_LOCAL_ERROR;
 
 import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketFilterDto;
 import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
 import com.example.demo.common.kakao.KakaoLocalService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
-import com.example.demo.market.entity.Market;
-import com.example.demo.market.repository.MarketRepository;
+import com.example.demo.marketpurchaserequest.dto.MarketResponseDto;
+import com.example.demo.marketpurchaserequest.entity.Market;
+import com.example.demo.marketpurchaserequest.repository.MarketRepository;
 import com.example.demo.marketpurchaserequest.dto.DetailMarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
@@ -23,6 +25,7 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -40,9 +43,8 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
     @Override
     @Transactional
     public MarketPurchaseRequest createMarketPurchaseRequest(
-            MarketPurchaseRequestDto marketPurchaseRequestDto) {
-        SiteUser siteUser = siteUserRepository.findById(marketPurchaseRequestDto.getUserId())
-                .orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
+            MarketPurchaseRequestDto marketPurchaseRequestDto, String email) {
+        SiteUser siteUser = siteUserRepository.findByEmail(email).orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
 
         Market market = marketRepository.findById(marketPurchaseRequestDto.getMarketId())
                 .orElseThrow(()-> new MarkethingException(ErrorCode.MARKET_NOT_FOUND));
@@ -58,9 +60,10 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
     }
 
     @Override
-    public void deleteMarketPurchaseRequest(Long id) {
+    public void deleteMarketPurchaseRequest(Long id, String email) {
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestRepository.findById(id)
                 .orElseThrow(() -> new MarkethingException(ErrorCode.REQUEST_NOT_FOUND));
+        validateAuthorization(email, marketPurchaseRequest);
         marketPurchaseRequestRepository.delete(marketPurchaseRequest);
     }
 
@@ -91,6 +94,18 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
             return sortOrder;
         }
         return sortOrder;
+    }
+
+    @Override
+    public Sort confirmMarketSortOrder(String sort) {
+        return Sort.by("marketName").ascending();
+    }
+
+    @Override
+    public Page<MarketResponseDto> getMarketsByFilter(MarketFilterDto marketFilterDto,
+            Pageable pageable) {
+        return marketRepository.findAllByFilter(marketFilterDto, pageable)
+                .map(MarketResponseDto::fromEntity);
     }
 
     @Override
@@ -128,5 +143,10 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
         }
         return marketPurchaseRequestRepository.findAllByFilter(filterDto, pageable)
                 .map(MarketPurchaseRequestPreviewDto::fromEntity);
+    }
+    private static void validateAuthorization(String email, MarketPurchaseRequest marketPurchaseRequest) {
+        if(!email.equals(marketPurchaseRequest.getSiteUser().getEmail())) {
+            throw new MarkethingException(ErrorCode.UNAUTHORIZED_USER);
+        }
     }
 }

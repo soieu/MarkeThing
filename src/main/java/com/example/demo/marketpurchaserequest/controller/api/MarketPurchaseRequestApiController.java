@@ -1,10 +1,12 @@
 package com.example.demo.marketpurchaserequest.controller.api;
 
 import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketFilterRequestDto;
 import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterRequestDto;
 import com.example.demo.marketpurchaserequest.dto.DetailMarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
+import com.example.demo.marketpurchaserequest.dto.MarketResponseDto;
 import com.example.demo.marketpurchaserequest.service.MarketPurchaseRequestService;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +30,16 @@ public class MarketPurchaseRequestApiController {
 
     private final MarketPurchaseRequestService marketPurchaseRequestService;
 
-    @PostMapping
-    public void createMarketPurchaseRequest(@RequestBody MarketPurchaseRequestDto request) {
-        marketPurchaseRequestService.createMarketPurchaseRequest(request);
+    @PostMapping()
+    public void createMarketPurchaseRequest(@RequestBody MarketPurchaseRequestDto request, Principal principal) {
+        String email = principal.getName();
+        marketPurchaseRequestService.createMarketPurchaseRequest(request, email);
     }
 
     @DeleteMapping("/{requestId}")
-    public void deleteMarketPurchaseRequest(@PathVariable Long requestId) {
-        marketPurchaseRequestService.deleteMarketPurchaseRequest(requestId);
+    public void deleteMarketPurchaseRequest(@PathVariable Long requestId, Principal principal) {
+        String email = principal.getName();
+        marketPurchaseRequestService.deleteMarketPurchaseRequest(requestId, email);
     }
 
     @GetMapping("/{requestId}")
@@ -46,7 +50,7 @@ public class MarketPurchaseRequestApiController {
 
     @PostMapping("/list/keyword")
     public ResponseEntity<Page<MarketPurchaseRequestPreviewDto>>
-    getMarketPurchaseRequestListByKeyword(
+    getMarketPurchaseRequestsByKeyword(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false, defaultValue = "register") String sort,
@@ -63,7 +67,7 @@ public class MarketPurchaseRequestApiController {
 
     @GetMapping("/list/map")
     public ResponseEntity<Page<MarketPurchaseRequestPreviewDto>>
-    getMarketPurchaseRequestListWithinDistance(
+    getMarketPurchaseRequestsWithinDistance(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false, defaultValue = "3") double distance,
@@ -79,7 +83,7 @@ public class MarketPurchaseRequestApiController {
 
     @PostMapping("/list")
     public ResponseEntity<Page<MarketPurchaseRequestPreviewDto>>
-    getMarketPurchaseRequestListByFilter(
+    getMarketPurchaseRequestsByFilter(
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false, defaultValue = "register") String sort,
@@ -90,6 +94,23 @@ public class MarketPurchaseRequestApiController {
 
         var result = marketPurchaseRequestService
                 .getRequestsByFilter(filterRequestDto.getFilter(), pageRequest);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/markets/list")
+    public ResponseEntity<Page<MarketResponseDto>>
+    getMarketsByFilter(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required = false, defaultValue = "name") String sort,
+            @RequestBody(required = false) MarketFilterRequestDto filterRequestDto) {
+
+        Sort sortOrder = marketPurchaseRequestService.confirmMarketSortOrder(sort);
+        PageRequest pageRequest = PageRequest.of(page, size, sortOrder);
+
+        var result = marketPurchaseRequestService
+                .getMarketsByFilter(filterRequestDto.getFilter(), pageRequest);
 
         return ResponseEntity.ok(result);
     }

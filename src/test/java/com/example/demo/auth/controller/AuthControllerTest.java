@@ -1,6 +1,15 @@
 package com.example.demo.auth.controller;
 
-import com.example.demo.auth.dto.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.example.demo.auth.dto.AuthCodeRequestDto;
+import com.example.demo.auth.dto.PhoneNumberRequestDto;
+import com.example.demo.auth.dto.SignUpDto;
+import com.example.demo.auth.dto.StringResponseDto;
 import com.example.demo.auth.service.AuthService;
 import com.example.demo.auth.service.PhoneAuthService;
 import com.example.demo.config.SecurityConfig;
@@ -20,12 +29,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import(SecurityConfig.class)
 @WebMvcTest(AuthController.class)
@@ -85,7 +88,7 @@ public class AuthControllerTest {
         // then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/auth/send-code")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(getPhoneNumberRequestDto())))
+                        .content(new ObjectMapper().writeValueAsString(getPhoneNumberRequestDto().getPhoneNumber())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(print());
     }
@@ -105,7 +108,7 @@ public class AuthControllerTest {
     }
 
     private PhoneNumberRequestDto getPhoneNumberRequestDto() {
-        return new PhoneNumberRequestDto("01056979712");
+        return new PhoneNumberRequestDto("01056979712","mockEmail@gmail.com");
     }
 
     private AuthCodeRequestDto getAuthCodeRequestDto() {
@@ -116,9 +119,6 @@ public class AuthControllerTest {
 
         return SignupDto.builder().email("test@naver.com").password("password").name("test")
                 .nickname("test").phoneNumber("010-1234-1234").address("address")
-                .ProfileImg("ProfileImg").build();
-
+                .profileImg("ProfileImg").build();
     }
-
-
 }

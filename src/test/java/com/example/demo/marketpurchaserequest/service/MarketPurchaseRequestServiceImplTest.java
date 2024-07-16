@@ -4,27 +4,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketFilterDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketFilterRequestDto;
 import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
 import com.example.demo.common.kakao.KakaoLocalService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
-import com.example.demo.market.entity.Market;
-import com.example.demo.market.repository.MarketRepository;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
+import com.example.demo.marketpurchaserequest.dto.MarketResponseDto;
+import com.example.demo.marketpurchaserequest.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.marketpurchaserequest.repository.MarketPurchaseRequestRepository;
+import com.example.demo.marketpurchaserequest.repository.MarketRepository;
 import com.example.demo.marketpurchaserequest.service.impl.MarketPurchaseRequestServiceImpl;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
 import com.example.demo.type.AuthType;
 import com.example.demo.type.PurchaseRequestStatus;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -94,7 +98,7 @@ public class MarketPurchaseRequestServiceImplTest {
 //
 //        // when
 //        MarketPurchaseRequest newMarketPurchaseRequest = marketPurchaseRequestServiceImpl
-//                .createMarketPurchaseRequest(marketPurchaseRequestDto);
+//                .createMarketPurchaseRequest(marketPurchaseRequestDto,siteUser.getEmail());
 //
 //        // then
 //        assertEquals(marketPurchaseRequest.getId(), newMarketPurchaseRequest.getId());
@@ -104,13 +108,14 @@ public class MarketPurchaseRequestServiceImplTest {
     @DisplayName("시장 의뢰글 등록 실패 테스트 - USER NOT FOUND")
     void createFailedByUserNotFound() throws Exception {
         // given
-        given(siteUserRepository.findById(any())).willReturn(Optional.empty());
+        SiteUser siteUser = getSiteUser();
+        Market market = getMarket();
+        lenient().when(siteUserRepository.findById(siteUser.getId())).thenReturn(Optional.empty());
 
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
-                () -> marketPurchaseRequestServiceImpl.createMarketPurchaseRequest(
-                        getMarketPurchaseRequestDto(getSiteUser(), getMarket())));
-
+                ()-> marketPurchaseRequestServiceImpl.createMarketPurchaseRequest(getMarketPurchaseRequestDto(siteUser,market),
+                        siteUser.getEmail()));
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.USER_NOT_FOUND);
     }
@@ -132,7 +137,7 @@ public class MarketPurchaseRequestServiceImplTest {
                 Optional.ofNullable(marketPurchaseRequest));
 
         // when
-        marketPurchaseRequestServiceImpl.deleteMarketPurchaseRequest(marketPurchaseRequest.getId());
+        marketPurchaseRequestServiceImpl.deleteMarketPurchaseRequest(marketPurchaseRequest.getId(), siteUser.getEmail());
 
         // then
         verify(marketPurchaseRequestRepository, times(1)).delete(marketPurchaseRequest);
@@ -142,11 +147,13 @@ public class MarketPurchaseRequestServiceImplTest {
     @DisplayName("시장 의뢰글 삭제 실패 테스트 - USER NOT FOUND")
     void deleteFailedByRequestNotFound() throws Exception {
         // given
-        given(marketPurchaseRequestRepository.findById(any())).willReturn(Optional.empty());
+        SiteUser siteUser = getSiteUser();
+        MarketPurchaseRequest marketPurchaseRequest = getMarketPurchaseRequest();
+        given(marketPurchaseRequestRepository.findById(marketPurchaseRequest.getId())).willReturn(Optional.empty());
 
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,
-                () -> marketPurchaseRequestServiceImpl.deleteMarketPurchaseRequest(1L));
+                () -> marketPurchaseRequestServiceImpl.deleteMarketPurchaseRequest(1L, siteUser.getEmail()));
 
         // then
         assertEquals(exception.getErrorCode(), ErrorCode.REQUEST_NOT_FOUND);
@@ -256,6 +263,40 @@ public class MarketPurchaseRequestServiceImplTest {
                 .isEqualTo(getMarketPurchaseRequest().getContent());
     }
 
+    @Test
+    @DisplayName("시장 리스트 필터링 조회 테스트")
+    void getMarketsByFilter() throws Exception {
+        // given
+        MarketFilterRequestDto requestDto = getMarketFilterRequestDto();
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.unsorted());
+        List<Market> requests = new ArrayList<>();
+        requests.add(getMarket());
+
+        Page<Market> pages
+                = new PageImpl<>(requests, pageRequest, requests.size());
+
+        given(marketRepository.findAllByFilter(requestDto.getFilter(), pageRequest))
+                .willReturn(pages);
+
+        // when
+        var result = marketPurchaseRequestServiceImpl
+                .getMarketsByFilter(requestDto.getFilter(), pageRequest);
+
+        // then
+        assertThat(result.getContent().get(0).getIdNum())
+                .isEqualTo(getMarket().getIdNum());
+    }
+
+    private static MarketFilterRequestDto getMarketFilterRequestDto() {
+        return MarketFilterRequestDto
+                .builder()
+                .filter(MarketFilterDto
+                        .builder()
+                        .sidoId("04")
+                        .build())
+                .build();
+    }
+
     private static MarketPurchaseRequestFilterDto getMarketPurchaseRequestFilterDto() {
         return MarketPurchaseRequestFilterDto
                 .builder()
@@ -308,7 +349,6 @@ public class MarketPurchaseRequestServiceImplTest {
                 .meetupDate(LocalDate.now())
                 .meetupLat(37.5509)
                 .meetupLon(127.0506)
-                .userId(siteUser.getId())
                 .marketId(market.getId())
                 .build();
     }
@@ -335,12 +375,13 @@ public class MarketPurchaseRequestServiceImplTest {
     private static Market getMarket() {
         return Market.builder()
                 .id(1L)
-                .idNum(04003)
+                .idNum("04003")
                 .marketName("강릉중앙시장")
                 .type(1)
                 .roadAddress("강원특별자치도 강릉시 금성로21")
                 .streetAddress("강원특별자치도 강릉시 성남동 50")
-                .location(geometryFactory.createPoint(new Coordinate(37.75402359, 128.8986233)))
+                .lat(37.75402359)
+                .lon(128.8986233)
                 .build();
     }
 }

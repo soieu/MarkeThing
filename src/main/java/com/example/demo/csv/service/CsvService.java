@@ -1,19 +1,17 @@
 package com.example.demo.csv.service;
 
 
-import com.example.demo.market.entity.Market;
-import com.example.demo.market.repository.MarketRepository;
+import com.example.demo.marketpurchaserequest.entity.Market;
+import com.example.demo.marketpurchaserequest.repository.MarketRepository;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +45,7 @@ public class CsvService {
                 }
                 GeometryFactory gf = new GeometryFactory(); // 포인트 객체를 처리하기 위한 클래스
                 double lat = Double.parseDouble(stringList.get(5));
-                double lot = Double.parseDouble(stringList.get(6));
+                double lon = Double.parseDouble(stringList.get(6));
                 Market temp = Market.builder()
                         .idNum(stringList.get(0))
                         .type(type)
@@ -55,7 +53,7 @@ public class CsvService {
                         .roadAddress(stringList.get(3))
                         .streetAddress(stringList.get(4))
                         .lat(lat)
-                        .lot(lot)
+                        .lon(lon)
                         .build();
                 // Market 데이터 생성
                 marketRepository.save(temp);
