@@ -2,7 +2,6 @@ package com.example.demo.community.controller.view;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class CommunityController {
@@ -19,5 +18,10 @@ public class CommunityController {
     @GetMapping("/communities/{communityId}")
     public String communityDetail() {
         return "communities/community";
+    }
+
+    @GetMapping("/communities")
+    public String newBoard() {
+        return "communities/newCommunity";
     }
 }
