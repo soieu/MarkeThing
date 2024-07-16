@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MarketResponseDto {
+    private String idNum;
     private long id;
     private String marketName;
     private double lat;
@@ -20,6 +21,7 @@ public class MarketResponseDto {
 
     public static MarketResponseDto fromEntity(Market market) {
         return MarketResponseDto.builder()
+                .idNum(market.getIdNum())
                 .id(market.getId())
                 .marketName(market.getMarketName())
                 .marketType(market.converMarketType().getName())

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -103,7 +104,7 @@ public class MarketPurchaseRequestServiceImplTest {
     @DisplayName("시장 의뢰글 등록 실패 테스트 - USER NOT FOUND")
     void createFailedByUserNotFound() throws Exception {
         // given
-        given(siteUserRepository.findById(any())).willReturn(Optional.empty());
+        given(siteUserRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when
         MarkethingException exception = assertThrows(MarkethingException.class,

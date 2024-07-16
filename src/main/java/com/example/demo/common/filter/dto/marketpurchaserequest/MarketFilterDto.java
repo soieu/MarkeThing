@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 @Builder
 @Getter
@@ -22,7 +23,7 @@ public class MarketFilterDto {
     }
 
     public boolean isAllSigunguIncluded() {
-        return sigunguIds.isEmpty()
+        return CollectionUtils.isEmpty(sigunguIds)
                 || sigunguIds.contains("000");
     }
 }
