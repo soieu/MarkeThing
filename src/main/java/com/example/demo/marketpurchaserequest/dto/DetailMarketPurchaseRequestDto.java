@@ -60,5 +60,4 @@ public class DetailMarketPurchaseRequestDto {
                 .createdAt(request.getCreatedAt())
                 .build();
     }
-
 }

@@ -1,6 +1,7 @@
 package com.example.demo.marketpurchaserequest.service;
 
-import com.example.demo.common.filter.dto.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
 import com.example.demo.marketpurchaserequest.dto.DetailMarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestDto;
 import com.example.demo.marketpurchaserequest.dto.MarketPurchaseRequestPreviewDto;
@@ -12,9 +13,9 @@ import org.springframework.data.domain.Sort;
 public interface MarketPurchaseRequestService {
 
     MarketPurchaseRequest createMarketPurchaseRequest(
-            MarketPurchaseRequestDto marketPurchaseRequestDto);
+            MarketPurchaseRequestDto marketPurchaseRequestDto, String email);
 
-    void deleteMarketPurchaseRequest(Long id);
+    void deleteMarketPurchaseRequest(Long id, String email);
 
     DetailMarketPurchaseRequestDto getMarketPurchaseRequest(Long requestId);
 
@@ -23,4 +24,7 @@ public interface MarketPurchaseRequestService {
     Page<MarketPurchaseRequestPreviewDto> getRequestsByKeyword(KeywordDto keywordDto, Pageable pageable);
 
     Page<MarketPurchaseRequestPreviewDto> getRequestsWithinDistance(String email, double distance, Pageable pageable);
+
+    Page<MarketPurchaseRequestPreviewDto> getRequestsByFilter(
+            MarketPurchaseRequestFilterDto filterRequestDto, Pageable pageable);
 }

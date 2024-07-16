@@ -90,6 +90,9 @@ dependencies {
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.3'
     implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.3.0'
 
+    //S3 의존성 추가
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
     // Querydsl 관련
     implementation "com.querydsl:querydsl-jpa"
     implementation 'com.querydsl:querydsl-sql'

@@ -1,10 +1,10 @@
-package com.example.demo.common.filter.dto;
+package com.example.demo.common.filter.dto.marketpurchaserequest;
 
+import com.example.demo.common.filter.dto.community.CommunityFilterDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommunityFilterRequestDto {
+public class MarketPurchaseRequestFilterRequestDto {
 
-    @JsonProperty("filtersForCommunity")
-    private CommunityFilterDto filter;
+    @JsonProperty("filtersForRequest")
+    private MarketPurchaseRequestFilterDto filter;
 }

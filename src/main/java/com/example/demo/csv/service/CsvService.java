@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CsvService {
 
     private final MarketRepository marketRepository;
-
     @Transactional
     public void saveMarkets() {
         try {
@@ -42,23 +41,21 @@ public class CsvService {
                 if(stringList.size() != 7) {
                     continue;
                 }
-
                 int type = 0; // 상설장:0 5일장:1
                 if(stringList.get(2).equals("5일장")) {
                     type = 1;
                 }
-
                 GeometryFactory gf = new GeometryFactory(); // 포인트 객체를 처리하기 위한 클래스
                 double lat = Double.parseDouble(stringList.get(5));
                 double lot = Double.parseDouble(stringList.get(6));
-
                 Market temp = Market.builder()
-                        .idNum(Integer.parseInt(stringList.get(0)))
+                        .idNum(stringList.get(0))
                         .type(type)
                         .marketName(stringList.get(1))
                         .roadAddress(stringList.get(3))
                         .streetAddress(stringList.get(4))
-                        .location(gf.createPoint(new Coordinate(lat, lot)))
+                        .lat(lat)
+                        .lot(lot)
                         .build();
                 // Market 데이터 생성
                 marketRepository.save(temp);

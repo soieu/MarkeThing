@@ -1,9 +1,9 @@
 package com.example.demo.marketpurchaserequest.service.impl;
 
 import static com.example.demo.exception.type.ErrorCode.KAKAO_LOCAL_ERROR;
-import static com.example.demo.exception.type.ErrorCode.LAT_LON_CONVERT_FAIL;
 
-import com.example.demo.common.filter.dto.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.KeywordDto;
+import com.example.demo.common.filter.dto.marketpurchaserequest.MarketPurchaseRequestFilterDto;
 import com.example.demo.common.kakao.KakaoLocalService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
@@ -40,9 +40,8 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
     @Override
     @Transactional
     public MarketPurchaseRequest createMarketPurchaseRequest(
-            MarketPurchaseRequestDto marketPurchaseRequestDto) {
-        SiteUser siteUser = siteUserRepository.findById(marketPurchaseRequestDto.getUserId())
-                .orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
+            MarketPurchaseRequestDto marketPurchaseRequestDto, String email) {
+        SiteUser siteUser = siteUserRepository.findByEmail(email).orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
 
         Market market = marketRepository.findById(marketPurchaseRequestDto.getMarketId())
                 .orElseThrow(()-> new MarkethingException(ErrorCode.MARKET_NOT_FOUND));
@@ -58,9 +57,10 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
     }
 
     @Override
-    public void deleteMarketPurchaseRequest(Long id) {
+    public void deleteMarketPurchaseRequest(Long id, String email) {
         MarketPurchaseRequest marketPurchaseRequest = marketPurchaseRequestRepository.findById(id)
                 .orElseThrow(() -> new MarkethingException(ErrorCode.REQUEST_NOT_FOUND));
+        validateAuthorization(email, marketPurchaseRequest);
         marketPurchaseRequestRepository.delete(marketPurchaseRequest);
     }
 
@@ -117,5 +117,21 @@ public class MarketPurchaseRequestServiceImpl implements MarketPurchaseRequestSe
         return marketPurchaseRequestRepository
                 .findAllWithinBoundary(myLocation, northEastBound, southWestBound, pageable)
                 .map(MarketPurchaseRequestPreviewDto::fromEntity);
+    }
+
+    @Override
+    public Page<MarketPurchaseRequestPreviewDto> getRequestsByFilter(
+            MarketPurchaseRequestFilterDto filterDto, Pageable pageable) {
+        if (filterDto.isEmpty()) {
+            return marketPurchaseRequestRepository.findAll(pageable)
+                    .map(MarketPurchaseRequestPreviewDto::fromEntity);
+        }
+        return marketPurchaseRequestRepository.findAllByFilter(filterDto, pageable)
+                .map(MarketPurchaseRequestPreviewDto::fromEntity);
+    }
+    private static void validateAuthorization(String email, MarketPurchaseRequest marketPurchaseRequest) {
+        if(!email.equals(marketPurchaseRequest.getSiteUser().getEmail())) {
+            throw new MarkethingException(ErrorCode.UNAUTHORIZED_USER);
+        }
     }
 }
