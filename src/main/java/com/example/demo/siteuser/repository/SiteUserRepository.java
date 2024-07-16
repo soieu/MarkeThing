@@ -11,4 +11,13 @@ public interface SiteUserRepository extends JpaRepository<SiteUser, Long> {
     Optional<SiteUser> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    Optional<SiteUser> findByPhoneNumber(String phoneNumber);
+
+    Optional<SiteUser> findByEmailAndPhoneNumber(String email, String phoneNumber);
+
+    Optional<SiteUser> findById(Long id);
+
+
+
 }
