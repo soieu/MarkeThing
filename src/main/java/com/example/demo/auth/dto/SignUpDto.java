@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.locationtech.jts.geom.Point;
 
@@ -14,7 +13,6 @@ import org.locationtech.jts.geom.Point;
 @Getter
 @Setter
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 public class SignUpDto {
 
@@ -52,6 +50,4 @@ public class SignUpDto {
                 .myLocation(myLocation)
                 .build();
     }
-
-
 }

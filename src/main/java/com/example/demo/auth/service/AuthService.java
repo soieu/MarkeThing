@@ -4,10 +4,13 @@ import com.example.demo.auth.dto.PhoneNumberRequestDto;
 import com.example.demo.auth.dto.SignUpDto;
 import com.example.demo.auth.dto.StringResponseDto;
 import com.example.demo.auth.dto.UserInfoDto;
+import com.example.demo.common.kakao.KakaoLocalService;
 import com.example.demo.exception.MarkethingException;
 import com.example.demo.exception.type.ErrorCode;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.siteuser.repository.SiteUserRepository;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
@@ -24,13 +27,16 @@ public class AuthService {
 
     private final SiteUserRepository siteUserRepository;
     private final PasswordEncoder passwordEncoder;
-    @Autowired PhoneAuthService phoneAuthService;
+    @Autowired
+    PhoneAuthService phoneAuthService;
+    private final KakaoLocalService kakaoLocalService;
 
-    public SiteUser signUp(SignUpDto signupDto) {
-
+    public SiteUser signUp(SignUpDto signupDto)
+            throws UnsupportedEncodingException, URISyntaxException {
+        double[] temp = kakaoLocalService.getCoord(signupDto.getAddress());
         GeometryFactory geometryFactory = new GeometryFactory();
-        double longitude = 128.876016; // 경도
-        double latitude = 37.751186;   // 위도
+        double longitude = temp[1]; // 경도
+        double latitude = temp[0]; // 위도
         Point myLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
 
         boolean isExists = siteUserRepository.existsByEmail(signupDto.getEmail());

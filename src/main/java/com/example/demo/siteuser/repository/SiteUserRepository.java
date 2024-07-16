@@ -18,6 +18,4 @@ public interface SiteUserRepository extends JpaRepository<SiteUser, Long> {
 
     Optional<SiteUser> findById(Long id);
 
-
-
 }

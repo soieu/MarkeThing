@@ -7,6 +7,8 @@ import com.example.demo.auth.dto.StringResponseDto;
 import com.example.demo.auth.dto.UserInfoDto;
 import com.example.demo.auth.service.AuthService;
 import com.example.demo.auth.service.PhoneAuthService;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import com.example.demo.siteuser.entity.SiteUser;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +27,11 @@ public class AuthController {
 
     private final AuthService authService;
     private final PhoneAuthService phoneAuthService;
+//    private final PrincipalOauthUserService principalOauthUserService;
 
     @PostMapping("/sign-up")
-    public void signUp(@RequestBody SignUpDto signupDto) {
+    public void signUp(@RequestBody SignUpDto signupDto)
+            throws UnsupportedEncodingException, URISyntaxException {
         authService.signUp(signupDto);
     }
 
