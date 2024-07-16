@@ -45,7 +45,6 @@ public class SiteUserApiController {
     public void updateSiteUser(@RequestBody UpdateSiteUserRequestDto requestDto, Principal principal) {
         String email = principal.getName();
         siteUserService.updateSiteUser(email, requestDto);
-
     }
 
     @PostMapping("/point/accumulate")
@@ -54,8 +53,11 @@ public class SiteUserApiController {
     }
 
     @DeleteMapping("/point/spend")
-    public void spendPoint(Principal principal,  @RequestBody PointDto pointDto) {
+    public void spendPoint(Principal principal, @RequestBody PointDto pointDto) {
         siteUserService.spendPoint(principal.getName(), pointDto.getAmount());
     }
-
+    @GetMapping("/getMyId")
+    public Long getMyId(Principal principal) {
+        return 1L;
+    }
 }

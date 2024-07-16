@@ -6,16 +6,13 @@ import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
-
-@Getter
-@Setter
-@AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class SignupDto {
 
     @NotBlank(message = "이메일을 입력해 주세요.")
@@ -36,9 +33,11 @@ public class SignupDto {
     @NotBlank(message = "주소를 입력해 주세요.")
     private String address;
 
+    private String profileImg;
+
     private Point myLocation;
 
-    private String ProfileImg;
+
 
     public SiteUser toEntity(String password, Point myLocation) {
         return SiteUser.builder()
@@ -48,10 +47,8 @@ public class SignupDto {
                 .nickname(nickname)
                 .phoneNumber(phoneNumber)
                 .address(address)
-                .profileImg(ProfileImg)
+                .profileImg(profileImg)
                 .myLocation(myLocation)
                 .build();
     }
-
-
 }

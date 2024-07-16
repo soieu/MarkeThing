@@ -1,0 +1,49 @@
+body {
+  background-color: #f4f4f4;
+  font-family: Arial, sans-serif;
+  height: 100vh; /* 뷰포트 높이를 100%로 설정 */
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  position: absolute;
+  top: 50%; /* 요소의 상단을 화면의 중앙으로 */
+  left: 50%; /* 요소의 왼쪽을 화면의 중앙으로 */
+  transform: translate(-50%, -50%); /* 요소를 정확한 중앙으로 이동 */
+  width: 100%;
+  max-width: 500px;
+  height: 100%; /* 요소의 높이를 100%로 설정 */
+  max-height: 100vh; /* 요소의 최대 높이를 뷰포트 높이로 제한 */
+}
+
+.card {
+  border: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.card-title {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.btn-primary {
+  background-color: #7FB069;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #6DA55F;
+}
+
+.btn-custom-color {
+  background-color: #7FB069 !important;
+  border-color: #7FB069 !important;
+  color: #fff;
+}

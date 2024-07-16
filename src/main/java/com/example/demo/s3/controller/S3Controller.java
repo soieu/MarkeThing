@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class S3Controller {
     private final S3Service s3Service;
 
-    @PostMapping("/upload")
+    @PostMapping("/api/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             String fileUrl = s3Service.saveFile(file);

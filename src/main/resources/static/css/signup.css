@@ -1,0 +1,83 @@
+body {
+  background-color: #f4f4f4;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  margin-top: 50px;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.btn-primary {
+  background-color: #7FB069;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #0069d9;
+}
+
+.btn-custom-color {
+  background-color: #7FB069 !important; /* !important를 사용하여 우선 순위를 높입니다 */
+  border-color: #7FB069 !important; /* 버튼의 border 색상도 함께 설정 */
+  color: #fff; /* 버튼 텍스트 색상을 밝은 색으로 설정 */
+}
+
+/* 추가적인 CSS 스타일링 */
+/* style.css */
+
+/* style.css */
+
+.profile-img-preview {
+  max-width: 100%;
+  max-height: 200px;
+  margin-top: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 50%;
+  border: 2px solid #7FB069;
+}
+
+.btn-custom-color {
+  background-color: #7FB069;
+  border-color: #7FB069;
+  color: #fff;
+}
+
+.btn-address-search {
+  background-color: #7FB069;
+  border-color: #7FB069;
+  color: white;
+}
+
+.textBox {
+  margin-top: 15px;
+}
+
+.textBox p {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group {
+  position: relative;
+}
+
+#profilePictureDisplay {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
