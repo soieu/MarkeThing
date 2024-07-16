@@ -65,14 +65,12 @@ public class AuthService {
         return new StringResponseDto("비밀번호 변경이 완료되었습니다.");
     }
 
-    public UserInfoDto findUser(String userId){
+    public SiteUser findUser(Long userId){
         SiteUser siteUser = siteUserRepository.findById(userId)
                 .orElseThrow(() -> new MarkethingException(ErrorCode.USER_NOT_FOUND));
         UserInfoDto userInfo = new UserInfoDto();
-        userInfo.setNickname(siteUser.getNickname());
-        userInfo.setProfileImg(siteUser.getProfileImg());
-        userInfo.setMannerScore(siteUser.getMannerScore());
-        return userInfo;
+        return userInfo.toEntity(siteUser.getNickname(), siteUser.getMannerScore(),
+                siteUser.getProfileImg());
     }
 
 
