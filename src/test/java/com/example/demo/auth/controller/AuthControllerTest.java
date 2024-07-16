@@ -119,7 +119,6 @@ public class AuthControllerTest {
 
         return SignUpDto.builder().email("test@naver.com").password("password").name("test")
                 .nickname("test").phoneNumber("010-1234-1234").address("address")
-                .profileImg("profileImg").build();
-
+                .profileImg("ProfileImg").build();
     }
 }

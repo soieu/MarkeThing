@@ -3,7 +3,6 @@ package com.example.demo.marketpurchaserequest.entity;
 
 import com.example.demo.chat.entiity.ChatRoom;
 import com.example.demo.entity.RequestSuccess;
-import com.example.demo.market.entity.Market;
 import com.example.demo.payment.entity.Pay;
 import com.example.demo.siteuser.entity.SiteUser;
 import com.example.demo.type.PurchaseRequestStatus;

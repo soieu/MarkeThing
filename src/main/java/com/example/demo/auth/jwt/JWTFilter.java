@@ -30,7 +30,7 @@ public class JWTFilter extends OncePerRequestFilter {
         // OAuth2 로그인
         String authorization = null;
         Cookie[] cookies = request.getCookies();
-        if(cookies != null) {
+        if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("Authorization")) {
                     authorization = cookie.getValue();

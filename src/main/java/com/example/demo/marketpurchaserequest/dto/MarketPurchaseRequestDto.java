@@ -1,6 +1,6 @@
 package com.example.demo.marketpurchaserequest.dto;
 
-import com.example.demo.market.entity.Market;
+import com.example.demo.marketpurchaserequest.entity.Market;
 import com.example.demo.marketpurchaserequest.entity.MarketPurchaseRequest;
 import com.example.demo.siteuser.entity.SiteUser;
 import java.time.LocalDate;
