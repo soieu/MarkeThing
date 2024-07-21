@@ -100,8 +100,7 @@ dependencies {
     implementation 'com.querydsl:querydsl-apt'
 
     implementation "org.apache.commons:commons-lang3:3.12.0"
-
-
+    implementation files('libs/cos.jar')
 }
 
 tasks.named('test') {
